@@ -1,0 +1,50 @@
+true
+...
+false
+cvint
+vint
+cint
+int
+cvbool
+vbool
+cbool
+bool
+cmint
+mint
+cmbool
+mbool
+123
+01001
+123+321
+321-123
+123*321
+123.*321
+int_var_matrix'
+sum(123)
+123>>
+123<<
+!true
+abc and bca
+abc && bca
+123 < 321
+321 > 123
+a <- 123
+for i=0: size
+if
+beginif
+endif
+for
+beginfor
+endfor
+move(1+2)
+left
+right
+wall
+exit
+(
+)
+{
+}
+function hello(vint input_vector, int size)
+begin
+end

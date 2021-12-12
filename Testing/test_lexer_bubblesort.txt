@@ -1,0 +1,14 @@
+int vector_size = 7
+int tmp = 0
+vint vector = {2, 4, 7,...
+5, 1, 9, 3}
+for i = 0: vector_size - 1 beginfor
+    for j = 0: vector_size - i - 1 beginfor
+        if vector(j) > vector(j + 1) beginif
+            tmp <- vector(j)
+            vector(j) <- vector(j+1)
+            vector(j+1) <- tmp
+        endif
+    endif
+endif
+
