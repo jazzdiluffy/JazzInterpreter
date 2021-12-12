@@ -1,0 +1,12 @@
+int a = 5
+int b = 10
+bool flag1 = true
+bool flag2 = false
+
+int result1 = a + b
+int result2 = 123 + 321
+int result3 = 123 + b
+
+result1 <- a + b
+result2 <- 123 + 321
+result3 <- 123 + b

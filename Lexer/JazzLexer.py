@@ -121,7 +121,7 @@ class JazzLexer(object):
 if __name__ == '__main__':
     print("Test filename: ", end="")
     filename = input()
-    filepath = '/Users/jazzdiluffy/Desktop/TA/interpreter/Testing/test_lexer_' + filename + '.txt'
+    filepath = '/Users/jazzdiluffy/Desktop/JazzInterpreter/Testing/test_lexer_' + filename + '.txt'
 
     f = open(filepath, 'r+')
     data = f.read()
