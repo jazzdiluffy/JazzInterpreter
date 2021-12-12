@@ -1,0 +1,9 @@
+if a beginif
+    int b = 3
+    bool flag = false
+endif
+
+for i = 0: stop beginfor
+    int b = 3
+    bool flag = false
+endfor

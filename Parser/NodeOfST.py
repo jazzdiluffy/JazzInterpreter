@@ -17,21 +17,6 @@ class NodeOfST:
             result += child.__str__(level + 1)
         return result
 
-    def print(self, level: int = 0):
-        if self is None:
-            return
-        print(' ' * level, self)
-        if isinstance(self.children, NodeOfST):
-            self.children.print(level + 1)
-        elif isinstance(self.children, list):
-            for i in range(len(self.children)):
-                self.children[i].print(level + 1)
-        elif isinstance(self.children, dict):
-            for key, value in self.children.items():
-                print(' ' * (level + 1), key)
-                if value:
-                    value.print(level + 2)
-
 
 if __name__ == '__main__':
     root = NodeOfST(node_type="type0", value=0)

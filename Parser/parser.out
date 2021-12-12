@@ -3,24 +3,14 @@ Created by PLY version 3.11 (http://www.dabeaz.com/ply)
 Unused terminals:
 
     BEGIN
-    BEGINFOR
-    BEGINIF
-    COMMA
-    DOUBLE_DOT
     END
-    ENDFOR
-    ENDIF
     EXIT
-    FOR
     FUNCTION
-    IF
     LEFT
     LEFT_BRACKET
-    LEFT_FIGURE_BRACKET
     MOVE
     RIGHT
     RIGHT_BRACKET
-    RIGHT_FIGURE_BRACKET
     SUM
     WALL
 
@@ -32,112 +22,126 @@ Rule 2     sentence_list -> sentence_list single_sentence
 Rule 3     sentence_list -> single_sentence
 Rule 4     single_sentence -> declaration NEW_LINE
 Rule 5     single_sentence -> assignment NEW_LINE
-Rule 6     declaration -> type VARIABLE EQUAL expression
-Rule 7     assignment -> variable ASSIGN expression
-Rule 8     expression -> math_expression
-Rule 9     expression -> variable
-Rule 10    expression -> constant
-Rule 11    math_expression -> expression PLUS expression
-Rule 12    math_expression -> expression MINUS expression
-Rule 13    math_expression -> expression MATRIX_MUL expression
-Rule 14    math_expression -> expression ELEMENTAL_MUL expression
-Rule 15    math_expression -> expression LEFT_CYCLIC_SHIFT
-Rule 16    math_expression -> expression RIGHT_CYCLIC_SHIFT
-Rule 17    math_expression -> expression TRANSPOSITION
-Rule 18    math_expression -> expression LESS expression
-Rule 19    math_expression -> expression GREATER expression
-Rule 20    math_expression -> NEGATIVE expression
-Rule 21    math_expression -> expression AND expression
-Rule 22    variable -> VARIABLE
-Rule 23    type -> int
-Rule 24    type -> bool
-Rule 25    int -> INT
-Rule 26    int -> CVINT
-Rule 27    int -> VINT
-Rule 28    int -> CMINT
-Rule 29    int -> MINT
-Rule 30    int -> CINT
-Rule 31    bool -> BOOL
-Rule 32    bool -> CMBOOL
-Rule 33    bool -> MBOOL
-Rule 34    bool -> CVBOOL
-Rule 35    bool -> VBOOL
-Rule 36    bool -> CBOOL
-Rule 37    constant -> INT_BINARY
-Rule 38    constant -> INT_DECIMAL
-Rule 39    constant -> TRUE
-Rule 40    constant -> FALSE
+Rule 6     single_sentence -> if NEW_LINE
+Rule 7     single_sentence -> for NEW_LINE
+Rule 8     declaration -> type VARIABLE EQUAL expression
+Rule 9     declaration -> type VARIABLE EQUAL LEFT_FIGURE_BRACKET list_args RIGHT_FIGURE_BRACKET
+Rule 10    assignment -> variable ASSIGN expression
+Rule 11    expression -> math_expression
+Rule 12    expression -> variable
+Rule 13    expression -> constant
+Rule 14    math_expression -> expression PLUS expression
+Rule 15    math_expression -> expression MINUS expression
+Rule 16    math_expression -> expression MATRIX_MUL expression
+Rule 17    math_expression -> expression ELEMENTAL_MUL expression
+Rule 18    math_expression -> expression LEFT_CYCLIC_SHIFT
+Rule 19    math_expression -> expression RIGHT_CYCLIC_SHIFT
+Rule 20    math_expression -> expression TRANSPOSITION
+Rule 21    math_expression -> expression LESS expression
+Rule 22    math_expression -> expression GREATER expression
+Rule 23    math_expression -> NEGATIVE expression
+Rule 24    math_expression -> expression AND expression
+Rule 25    variable -> VARIABLE
+Rule 26    type -> int
+Rule 27    type -> bool
+Rule 28    int -> INT
+Rule 29    int -> CVINT
+Rule 30    int -> VINT
+Rule 31    int -> CMINT
+Rule 32    int -> MINT
+Rule 33    int -> CINT
+Rule 34    bool -> BOOL
+Rule 35    bool -> CMBOOL
+Rule 36    bool -> MBOOL
+Rule 37    bool -> CVBOOL
+Rule 38    bool -> VBOOL
+Rule 39    bool -> CBOOL
+Rule 40    constant -> INT_BINARY
+Rule 41    constant -> INT_DECIMAL
+Rule 42    constant -> TRUE
+Rule 43    constant -> FALSE
+Rule 44    list_args -> LEFT_FIGURE_BRACKET list_expressions RIGHT_FIGURE_BRACKET
+Rule 45    list_args -> list_args COMMA LEFT_FIGURE_BRACKET list_args RIGHT_FIGURE_BRACKET
+Rule 46    list_args -> list_expressions
+Rule 47    list_expressions -> list_expressions COMMA expression
+Rule 48    list_expressions -> expression
+Rule 49    if -> IF expression BEGINIF NEW_LINE sentence_list ENDIF
+Rule 50    for -> FOR VARIABLE EQUAL expression DOUBLE_DOT expression BEGINFOR NEW_LINE sentence_list ENDFOR
 
 Terminals, with rules where they appear
 
-AND                  : 21
-ASSIGN               : 7
+AND                  : 24
+ASSIGN               : 10
 BEGIN                : 
-BEGINFOR             : 
-BEGINIF              : 
-BOOL                 : 31
-CBOOL                : 36
-CINT                 : 30
-CMBOOL               : 32
-CMINT                : 28
-COMMA                : 
-CVBOOL               : 34
-CVINT                : 26
-DOUBLE_DOT           : 
-ELEMENTAL_MUL        : 14
+BEGINFOR             : 50
+BEGINIF              : 49
+BOOL                 : 34
+CBOOL                : 39
+CINT                 : 33
+CMBOOL               : 35
+CMINT                : 31
+COMMA                : 45 47
+CVBOOL               : 37
+CVINT                : 29
+DOUBLE_DOT           : 50
+ELEMENTAL_MUL        : 17
 END                  : 
-ENDFOR               : 
-ENDIF                : 
-EQUAL                : 6
+ENDFOR               : 50
+ENDIF                : 49
+EQUAL                : 8 9 50
 EXIT                 : 
-FALSE                : 40
-FOR                  : 
+FALSE                : 43
+FOR                  : 50
 FUNCTION             : 
-GREATER              : 19
-IF                   : 
-INT                  : 25
-INT_BINARY           : 37
-INT_DECIMAL          : 38
+GREATER              : 22
+IF                   : 49
+INT                  : 28
+INT_BINARY           : 40
+INT_DECIMAL          : 41
 LEFT                 : 
 LEFT_BRACKET         : 
-LEFT_CYCLIC_SHIFT    : 15
-LEFT_FIGURE_BRACKET  : 
-LESS                 : 18
-MATRIX_MUL           : 13
-MBOOL                : 33
-MINT                 : 29
-MINUS                : 12
+LEFT_CYCLIC_SHIFT    : 18
+LEFT_FIGURE_BRACKET  : 9 44 45
+LESS                 : 21
+MATRIX_MUL           : 16
+MBOOL                : 36
+MINT                 : 32
+MINUS                : 15
 MOVE                 : 
-NEGATIVE             : 20
-NEW_LINE             : 4 5
-PLUS                 : 11
+NEGATIVE             : 23
+NEW_LINE             : 4 5 6 7 49 50
+PLUS                 : 14
 RIGHT                : 
 RIGHT_BRACKET        : 
-RIGHT_CYCLIC_SHIFT   : 16
-RIGHT_FIGURE_BRACKET : 
+RIGHT_CYCLIC_SHIFT   : 19
+RIGHT_FIGURE_BRACKET : 9 44 45
 SUM                  : 
-TRANSPOSITION        : 17
-TRUE                 : 39
-VARIABLE             : 6 22
-VBOOL                : 35
-VINT                 : 27
+TRANSPOSITION        : 20
+TRUE                 : 42
+VARIABLE             : 8 9 25 50
+VBOOL                : 38
+VINT                 : 30
 WALL                 : 
 error                : 
 
 Nonterminals, with rules where they appear
 
 assignment           : 5
-bool                 : 24
-constant             : 10
+bool                 : 27
+constant             : 13
 declaration          : 4
-expression           : 6 7 11 11 12 12 13 13 14 14 15 16 17 18 18 19 19 20 21 21
-int                  : 23
-math_expression      : 8
+expression           : 8 10 14 14 15 15 16 16 17 17 18 19 20 21 21 22 22 23 24 24 47 48 49 50 50
+for                  : 7
+if                   : 6
+int                  : 26
+list_args            : 9 45 45
+list_expressions     : 44 46 47
+math_expression      : 11
 program              : 0
-sentence_list        : 1 2
+sentence_list        : 1 2 49 50
 single_sentence      : 2 3
-type                 : 6
-variable             : 7 9
+type                 : 8 9
+variable             : 10 12
 
 Parsing method: LALR
 
@@ -149,47 +153,56 @@ state 0
     (3) sentence_list -> . single_sentence
     (4) single_sentence -> . declaration NEW_LINE
     (5) single_sentence -> . assignment NEW_LINE
-    (6) declaration -> . type VARIABLE EQUAL expression
-    (7) assignment -> . variable ASSIGN expression
-    (23) type -> . int
-    (24) type -> . bool
-    (22) variable -> . VARIABLE
-    (25) int -> . INT
-    (26) int -> . CVINT
-    (27) int -> . VINT
-    (28) int -> . CMINT
-    (29) int -> . MINT
-    (30) int -> . CINT
-    (31) bool -> . BOOL
-    (32) bool -> . CMBOOL
-    (33) bool -> . MBOOL
-    (34) bool -> . CVBOOL
-    (35) bool -> . VBOOL
-    (36) bool -> . CBOOL
+    (6) single_sentence -> . if NEW_LINE
+    (7) single_sentence -> . for NEW_LINE
+    (8) declaration -> . type VARIABLE EQUAL expression
+    (9) declaration -> . type VARIABLE EQUAL LEFT_FIGURE_BRACKET list_args RIGHT_FIGURE_BRACKET
+    (10) assignment -> . variable ASSIGN expression
+    (49) if -> . IF expression BEGINIF NEW_LINE sentence_list ENDIF
+    (50) for -> . FOR VARIABLE EQUAL expression DOUBLE_DOT expression BEGINFOR NEW_LINE sentence_list ENDFOR
+    (26) type -> . int
+    (27) type -> . bool
+    (25) variable -> . VARIABLE
+    (28) int -> . INT
+    (29) int -> . CVINT
+    (30) int -> . VINT
+    (31) int -> . CMINT
+    (32) int -> . MINT
+    (33) int -> . CINT
+    (34) bool -> . BOOL
+    (35) bool -> . CMBOOL
+    (36) bool -> . MBOOL
+    (37) bool -> . CVBOOL
+    (38) bool -> . VBOOL
+    (39) bool -> . CBOOL
 
-    VARIABLE        shift and go to state 7
-    INT             shift and go to state 11
-    CVINT           shift and go to state 12
-    VINT            shift and go to state 13
-    CMINT           shift and go to state 14
-    MINT            shift and go to state 15
-    CINT            shift and go to state 16
-    BOOL            shift and go to state 17
-    CMBOOL          shift and go to state 18
-    MBOOL           shift and go to state 19
-    CVBOOL          shift and go to state 20
-    VBOOL           shift and go to state 21
-    CBOOL           shift and go to state 22
+    IF              shift and go to state 11
+    FOR             shift and go to state 12
+    VARIABLE        shift and go to state 9
+    INT             shift and go to state 15
+    CVINT           shift and go to state 16
+    VINT            shift and go to state 17
+    CMINT           shift and go to state 18
+    MINT            shift and go to state 19
+    CINT            shift and go to state 20
+    BOOL            shift and go to state 21
+    CMBOOL          shift and go to state 22
+    MBOOL           shift and go to state 23
+    CVBOOL          shift and go to state 24
+    VBOOL           shift and go to state 25
+    CBOOL           shift and go to state 26
 
     program                        shift and go to state 1
     sentence_list                  shift and go to state 2
     single_sentence                shift and go to state 3
     declaration                    shift and go to state 4
     assignment                     shift and go to state 5
-    type                           shift and go to state 6
-    variable                       shift and go to state 8
-    int                            shift and go to state 9
-    bool                           shift and go to state 10
+    if                             shift and go to state 6
+    for                            shift and go to state 7
+    type                           shift and go to state 8
+    variable                       shift and go to state 10
+    int                            shift and go to state 13
+    bool                           shift and go to state 14
 
 state 1
 
@@ -203,51 +216,62 @@ state 2
     (2) sentence_list -> sentence_list . single_sentence
     (4) single_sentence -> . declaration NEW_LINE
     (5) single_sentence -> . assignment NEW_LINE
-    (6) declaration -> . type VARIABLE EQUAL expression
-    (7) assignment -> . variable ASSIGN expression
-    (23) type -> . int
-    (24) type -> . bool
-    (22) variable -> . VARIABLE
-    (25) int -> . INT
-    (26) int -> . CVINT
-    (27) int -> . VINT
-    (28) int -> . CMINT
-    (29) int -> . MINT
-    (30) int -> . CINT
-    (31) bool -> . BOOL
-    (32) bool -> . CMBOOL
-    (33) bool -> . MBOOL
-    (34) bool -> . CVBOOL
-    (35) bool -> . VBOOL
-    (36) bool -> . CBOOL
+    (6) single_sentence -> . if NEW_LINE
+    (7) single_sentence -> . for NEW_LINE
+    (8) declaration -> . type VARIABLE EQUAL expression
+    (9) declaration -> . type VARIABLE EQUAL LEFT_FIGURE_BRACKET list_args RIGHT_FIGURE_BRACKET
+    (10) assignment -> . variable ASSIGN expression
+    (49) if -> . IF expression BEGINIF NEW_LINE sentence_list ENDIF
+    (50) for -> . FOR VARIABLE EQUAL expression DOUBLE_DOT expression BEGINFOR NEW_LINE sentence_list ENDFOR
+    (26) type -> . int
+    (27) type -> . bool
+    (25) variable -> . VARIABLE
+    (28) int -> . INT
+    (29) int -> . CVINT
+    (30) int -> . VINT
+    (31) int -> . CMINT
+    (32) int -> . MINT
+    (33) int -> . CINT
+    (34) bool -> . BOOL
+    (35) bool -> . CMBOOL
+    (36) bool -> . MBOOL
+    (37) bool -> . CVBOOL
+    (38) bool -> . VBOOL
+    (39) bool -> . CBOOL
 
     $end            reduce using rule 1 (program -> sentence_list .)
-    VARIABLE        shift and go to state 7
-    INT             shift and go to state 11
-    CVINT           shift and go to state 12
-    VINT            shift and go to state 13
-    CMINT           shift and go to state 14
-    MINT            shift and go to state 15
-    CINT            shift and go to state 16
-    BOOL            shift and go to state 17
-    CMBOOL          shift and go to state 18
-    MBOOL           shift and go to state 19
-    CVBOOL          shift and go to state 20
-    VBOOL           shift and go to state 21
-    CBOOL           shift and go to state 22
+    IF              shift and go to state 11
+    FOR             shift and go to state 12
+    VARIABLE        shift and go to state 9
+    INT             shift and go to state 15
+    CVINT           shift and go to state 16
+    VINT            shift and go to state 17
+    CMINT           shift and go to state 18
+    MINT            shift and go to state 19
+    CINT            shift and go to state 20
+    BOOL            shift and go to state 21
+    CMBOOL          shift and go to state 22
+    MBOOL           shift and go to state 23
+    CVBOOL          shift and go to state 24
+    VBOOL           shift and go to state 25
+    CBOOL           shift and go to state 26
 
-    single_sentence                shift and go to state 23
+    single_sentence                shift and go to state 27
     declaration                    shift and go to state 4
     assignment                     shift and go to state 5
-    type                           shift and go to state 6
-    variable                       shift and go to state 8
-    int                            shift and go to state 9
-    bool                           shift and go to state 10
+    if                             shift and go to state 6
+    for                            shift and go to state 7
+    type                           shift and go to state 8
+    variable                       shift and go to state 10
+    int                            shift and go to state 13
+    bool                           shift and go to state 14
 
 state 3
 
     (3) sentence_list -> single_sentence .
 
+    IF              reduce using rule 3 (sentence_list -> single_sentence .)
+    FOR             reduce using rule 3 (sentence_list -> single_sentence .)
     VARIABLE        reduce using rule 3 (sentence_list -> single_sentence .)
     INT             reduce using rule 3 (sentence_list -> single_sentence .)
     CVINT           reduce using rule 3 (sentence_list -> single_sentence .)
@@ -262,156 +286,222 @@ state 3
     VBOOL           reduce using rule 3 (sentence_list -> single_sentence .)
     CBOOL           reduce using rule 3 (sentence_list -> single_sentence .)
     $end            reduce using rule 3 (sentence_list -> single_sentence .)
+    ENDIF           reduce using rule 3 (sentence_list -> single_sentence .)
+    ENDFOR          reduce using rule 3 (sentence_list -> single_sentence .)
 
 
 state 4
 
     (4) single_sentence -> declaration . NEW_LINE
 
-    NEW_LINE        shift and go to state 24
+    NEW_LINE        shift and go to state 28
 
 
 state 5
 
     (5) single_sentence -> assignment . NEW_LINE
 
-    NEW_LINE        shift and go to state 25
+    NEW_LINE        shift and go to state 29
 
 
 state 6
 
-    (6) declaration -> type . VARIABLE EQUAL expression
+    (6) single_sentence -> if . NEW_LINE
 
-    VARIABLE        shift and go to state 26
+    NEW_LINE        shift and go to state 30
 
 
 state 7
 
-    (22) variable -> VARIABLE .
+    (7) single_sentence -> for . NEW_LINE
 
-    ASSIGN          reduce using rule 22 (variable -> VARIABLE .)
-    PLUS            reduce using rule 22 (variable -> VARIABLE .)
-    MINUS           reduce using rule 22 (variable -> VARIABLE .)
-    MATRIX_MUL      reduce using rule 22 (variable -> VARIABLE .)
-    ELEMENTAL_MUL   reduce using rule 22 (variable -> VARIABLE .)
-    LEFT_CYCLIC_SHIFT reduce using rule 22 (variable -> VARIABLE .)
-    RIGHT_CYCLIC_SHIFT reduce using rule 22 (variable -> VARIABLE .)
-    TRANSPOSITION   reduce using rule 22 (variable -> VARIABLE .)
-    LESS            reduce using rule 22 (variable -> VARIABLE .)
-    GREATER         reduce using rule 22 (variable -> VARIABLE .)
-    AND             reduce using rule 22 (variable -> VARIABLE .)
-    NEW_LINE        reduce using rule 22 (variable -> VARIABLE .)
+    NEW_LINE        shift and go to state 31
 
 
 state 8
 
-    (7) assignment -> variable . ASSIGN expression
+    (8) declaration -> type . VARIABLE EQUAL expression
+    (9) declaration -> type . VARIABLE EQUAL LEFT_FIGURE_BRACKET list_args RIGHT_FIGURE_BRACKET
 
-    ASSIGN          shift and go to state 27
+    VARIABLE        shift and go to state 32
 
 
 state 9
 
-    (23) type -> int .
+    (25) variable -> VARIABLE .
 
-    VARIABLE        reduce using rule 23 (type -> int .)
+    ASSIGN          reduce using rule 25 (variable -> VARIABLE .)
+    BEGINIF         reduce using rule 25 (variable -> VARIABLE .)
+    PLUS            reduce using rule 25 (variable -> VARIABLE .)
+    MINUS           reduce using rule 25 (variable -> VARIABLE .)
+    MATRIX_MUL      reduce using rule 25 (variable -> VARIABLE .)
+    ELEMENTAL_MUL   reduce using rule 25 (variable -> VARIABLE .)
+    LEFT_CYCLIC_SHIFT reduce using rule 25 (variable -> VARIABLE .)
+    RIGHT_CYCLIC_SHIFT reduce using rule 25 (variable -> VARIABLE .)
+    TRANSPOSITION   reduce using rule 25 (variable -> VARIABLE .)
+    LESS            reduce using rule 25 (variable -> VARIABLE .)
+    GREATER         reduce using rule 25 (variable -> VARIABLE .)
+    AND             reduce using rule 25 (variable -> VARIABLE .)
+    NEW_LINE        reduce using rule 25 (variable -> VARIABLE .)
+    DOUBLE_DOT      reduce using rule 25 (variable -> VARIABLE .)
+    COMMA           reduce using rule 25 (variable -> VARIABLE .)
+    RIGHT_FIGURE_BRACKET reduce using rule 25 (variable -> VARIABLE .)
+    BEGINFOR        reduce using rule 25 (variable -> VARIABLE .)
 
 
 state 10
 
-    (24) type -> bool .
+    (10) assignment -> variable . ASSIGN expression
 
-    VARIABLE        reduce using rule 24 (type -> bool .)
+    ASSIGN          shift and go to state 33
 
 
 state 11
 
-    (25) int -> INT .
+    (49) if -> IF . expression BEGINIF NEW_LINE sentence_list ENDIF
+    (11) expression -> . math_expression
+    (12) expression -> . variable
+    (13) expression -> . constant
+    (14) math_expression -> . expression PLUS expression
+    (15) math_expression -> . expression MINUS expression
+    (16) math_expression -> . expression MATRIX_MUL expression
+    (17) math_expression -> . expression ELEMENTAL_MUL expression
+    (18) math_expression -> . expression LEFT_CYCLIC_SHIFT
+    (19) math_expression -> . expression RIGHT_CYCLIC_SHIFT
+    (20) math_expression -> . expression TRANSPOSITION
+    (21) math_expression -> . expression LESS expression
+    (22) math_expression -> . expression GREATER expression
+    (23) math_expression -> . NEGATIVE expression
+    (24) math_expression -> . expression AND expression
+    (25) variable -> . VARIABLE
+    (40) constant -> . INT_BINARY
+    (41) constant -> . INT_DECIMAL
+    (42) constant -> . TRUE
+    (43) constant -> . FALSE
 
-    VARIABLE        reduce using rule 25 (int -> INT .)
+    NEGATIVE        shift and go to state 38
+    VARIABLE        shift and go to state 9
+    INT_BINARY      shift and go to state 39
+    INT_DECIMAL     shift and go to state 40
+    TRUE            shift and go to state 41
+    FALSE           shift and go to state 42
 
+    expression                     shift and go to state 34
+    math_expression                shift and go to state 35
+    variable                       shift and go to state 36
+    constant                       shift and go to state 37
 
 state 12
 
-    (26) int -> CVINT .
+    (50) for -> FOR . VARIABLE EQUAL expression DOUBLE_DOT expression BEGINFOR NEW_LINE sentence_list ENDFOR
 
-    VARIABLE        reduce using rule 26 (int -> CVINT .)
+    VARIABLE        shift and go to state 43
 
 
 state 13
 
-    (27) int -> VINT .
+    (26) type -> int .
 
-    VARIABLE        reduce using rule 27 (int -> VINT .)
+    VARIABLE        reduce using rule 26 (type -> int .)
 
 
 state 14
 
-    (28) int -> CMINT .
+    (27) type -> bool .
 
-    VARIABLE        reduce using rule 28 (int -> CMINT .)
+    VARIABLE        reduce using rule 27 (type -> bool .)
 
 
 state 15
 
-    (29) int -> MINT .
+    (28) int -> INT .
 
-    VARIABLE        reduce using rule 29 (int -> MINT .)
+    VARIABLE        reduce using rule 28 (int -> INT .)
 
 
 state 16
 
-    (30) int -> CINT .
+    (29) int -> CVINT .
 
-    VARIABLE        reduce using rule 30 (int -> CINT .)
+    VARIABLE        reduce using rule 29 (int -> CVINT .)
 
 
 state 17
 
-    (31) bool -> BOOL .
+    (30) int -> VINT .
 
-    VARIABLE        reduce using rule 31 (bool -> BOOL .)
+    VARIABLE        reduce using rule 30 (int -> VINT .)
 
 
 state 18
 
-    (32) bool -> CMBOOL .
+    (31) int -> CMINT .
 
-    VARIABLE        reduce using rule 32 (bool -> CMBOOL .)
+    VARIABLE        reduce using rule 31 (int -> CMINT .)
 
 
 state 19
 
-    (33) bool -> MBOOL .
+    (32) int -> MINT .
 
-    VARIABLE        reduce using rule 33 (bool -> MBOOL .)
+    VARIABLE        reduce using rule 32 (int -> MINT .)
 
 
 state 20
 
-    (34) bool -> CVBOOL .
+    (33) int -> CINT .
 
-    VARIABLE        reduce using rule 34 (bool -> CVBOOL .)
+    VARIABLE        reduce using rule 33 (int -> CINT .)
 
 
 state 21
 
-    (35) bool -> VBOOL .
+    (34) bool -> BOOL .
 
-    VARIABLE        reduce using rule 35 (bool -> VBOOL .)
+    VARIABLE        reduce using rule 34 (bool -> BOOL .)
 
 
 state 22
 
-    (36) bool -> CBOOL .
+    (35) bool -> CMBOOL .
 
-    VARIABLE        reduce using rule 36 (bool -> CBOOL .)
+    VARIABLE        reduce using rule 35 (bool -> CMBOOL .)
 
 
 state 23
 
+    (36) bool -> MBOOL .
+
+    VARIABLE        reduce using rule 36 (bool -> MBOOL .)
+
+
+state 24
+
+    (37) bool -> CVBOOL .
+
+    VARIABLE        reduce using rule 37 (bool -> CVBOOL .)
+
+
+state 25
+
+    (38) bool -> VBOOL .
+
+    VARIABLE        reduce using rule 38 (bool -> VBOOL .)
+
+
+state 26
+
+    (39) bool -> CBOOL .
+
+    VARIABLE        reduce using rule 39 (bool -> CBOOL .)
+
+
+state 27
+
     (2) sentence_list -> sentence_list single_sentence .
 
+    IF              reduce using rule 2 (sentence_list -> sentence_list single_sentence .)
+    FOR             reduce using rule 2 (sentence_list -> sentence_list single_sentence .)
     VARIABLE        reduce using rule 2 (sentence_list -> sentence_list single_sentence .)
     INT             reduce using rule 2 (sentence_list -> sentence_list single_sentence .)
     CVINT           reduce using rule 2 (sentence_list -> sentence_list single_sentence .)
@@ -426,12 +516,16 @@ state 23
     VBOOL           reduce using rule 2 (sentence_list -> sentence_list single_sentence .)
     CBOOL           reduce using rule 2 (sentence_list -> sentence_list single_sentence .)
     $end            reduce using rule 2 (sentence_list -> sentence_list single_sentence .)
+    ENDIF           reduce using rule 2 (sentence_list -> sentence_list single_sentence .)
+    ENDFOR          reduce using rule 2 (sentence_list -> sentence_list single_sentence .)
 
 
-state 24
+state 28
 
     (4) single_sentence -> declaration NEW_LINE .
 
+    IF              reduce using rule 4 (single_sentence -> declaration NEW_LINE .)
+    FOR             reduce using rule 4 (single_sentence -> declaration NEW_LINE .)
     VARIABLE        reduce using rule 4 (single_sentence -> declaration NEW_LINE .)
     INT             reduce using rule 4 (single_sentence -> declaration NEW_LINE .)
     CVINT           reduce using rule 4 (single_sentence -> declaration NEW_LINE .)
@@ -446,12 +540,16 @@ state 24
     VBOOL           reduce using rule 4 (single_sentence -> declaration NEW_LINE .)
     CBOOL           reduce using rule 4 (single_sentence -> declaration NEW_LINE .)
     $end            reduce using rule 4 (single_sentence -> declaration NEW_LINE .)
+    ENDIF           reduce using rule 4 (single_sentence -> declaration NEW_LINE .)
+    ENDFOR          reduce using rule 4 (single_sentence -> declaration NEW_LINE .)
 
 
-state 25
+state 29
 
     (5) single_sentence -> assignment NEW_LINE .
 
+    IF              reduce using rule 5 (single_sentence -> assignment NEW_LINE .)
+    FOR             reduce using rule 5 (single_sentence -> assignment NEW_LINE .)
     VARIABLE        reduce using rule 5 (single_sentence -> assignment NEW_LINE .)
     INT             reduce using rule 5 (single_sentence -> assignment NEW_LINE .)
     CVINT           reduce using rule 5 (single_sentence -> assignment NEW_LINE .)
@@ -466,938 +564,719 @@ state 25
     VBOOL           reduce using rule 5 (single_sentence -> assignment NEW_LINE .)
     CBOOL           reduce using rule 5 (single_sentence -> assignment NEW_LINE .)
     $end            reduce using rule 5 (single_sentence -> assignment NEW_LINE .)
-
-
-state 26
-
-    (6) declaration -> type VARIABLE . EQUAL expression
-
-    EQUAL           shift and go to state 28
-
-
-state 27
-
-    (7) assignment -> variable ASSIGN . expression
-    (8) expression -> . math_expression
-    (9) expression -> . variable
-    (10) expression -> . constant
-    (11) math_expression -> . expression PLUS expression
-    (12) math_expression -> . expression MINUS expression
-    (13) math_expression -> . expression MATRIX_MUL expression
-    (14) math_expression -> . expression ELEMENTAL_MUL expression
-    (15) math_expression -> . expression LEFT_CYCLIC_SHIFT
-    (16) math_expression -> . expression RIGHT_CYCLIC_SHIFT
-    (17) math_expression -> . expression TRANSPOSITION
-    (18) math_expression -> . expression LESS expression
-    (19) math_expression -> . expression GREATER expression
-    (20) math_expression -> . NEGATIVE expression
-    (21) math_expression -> . expression AND expression
-    (22) variable -> . VARIABLE
-    (37) constant -> . INT_BINARY
-    (38) constant -> . INT_DECIMAL
-    (39) constant -> . TRUE
-    (40) constant -> . FALSE
-
-    NEGATIVE        shift and go to state 33
-    VARIABLE        shift and go to state 7
-    INT_BINARY      shift and go to state 34
-    INT_DECIMAL     shift and go to state 35
-    TRUE            shift and go to state 36
-    FALSE           shift and go to state 37
-
-    variable                       shift and go to state 29
-    expression                     shift and go to state 30
-    math_expression                shift and go to state 31
-    constant                       shift and go to state 32
-
-state 28
-
-    (6) declaration -> type VARIABLE EQUAL . expression
-    (8) expression -> . math_expression
-    (9) expression -> . variable
-    (10) expression -> . constant
-    (11) math_expression -> . expression PLUS expression
-    (12) math_expression -> . expression MINUS expression
-    (13) math_expression -> . expression MATRIX_MUL expression
-    (14) math_expression -> . expression ELEMENTAL_MUL expression
-    (15) math_expression -> . expression LEFT_CYCLIC_SHIFT
-    (16) math_expression -> . expression RIGHT_CYCLIC_SHIFT
-    (17) math_expression -> . expression TRANSPOSITION
-    (18) math_expression -> . expression LESS expression
-    (19) math_expression -> . expression GREATER expression
-    (20) math_expression -> . NEGATIVE expression
-    (21) math_expression -> . expression AND expression
-    (22) variable -> . VARIABLE
-    (37) constant -> . INT_BINARY
-    (38) constant -> . INT_DECIMAL
-    (39) constant -> . TRUE
-    (40) constant -> . FALSE
-
-    NEGATIVE        shift and go to state 33
-    VARIABLE        shift and go to state 7
-    INT_BINARY      shift and go to state 34
-    INT_DECIMAL     shift and go to state 35
-    TRUE            shift and go to state 36
-    FALSE           shift and go to state 37
-
-    expression                     shift and go to state 38
-    math_expression                shift and go to state 31
-    variable                       shift and go to state 29
-    constant                       shift and go to state 32
-
-state 29
-
-    (9) expression -> variable .
-
-    PLUS            reduce using rule 9 (expression -> variable .)
-    MINUS           reduce using rule 9 (expression -> variable .)
-    MATRIX_MUL      reduce using rule 9 (expression -> variable .)
-    ELEMENTAL_MUL   reduce using rule 9 (expression -> variable .)
-    LEFT_CYCLIC_SHIFT reduce using rule 9 (expression -> variable .)
-    RIGHT_CYCLIC_SHIFT reduce using rule 9 (expression -> variable .)
-    TRANSPOSITION   reduce using rule 9 (expression -> variable .)
-    LESS            reduce using rule 9 (expression -> variable .)
-    GREATER         reduce using rule 9 (expression -> variable .)
-    AND             reduce using rule 9 (expression -> variable .)
-    NEW_LINE        reduce using rule 9 (expression -> variable .)
+    ENDIF           reduce using rule 5 (single_sentence -> assignment NEW_LINE .)
+    ENDFOR          reduce using rule 5 (single_sentence -> assignment NEW_LINE .)
 
 
 state 30
 
-    (7) assignment -> variable ASSIGN expression .
-    (11) math_expression -> expression . PLUS expression
-    (12) math_expression -> expression . MINUS expression
-    (13) math_expression -> expression . MATRIX_MUL expression
-    (14) math_expression -> expression . ELEMENTAL_MUL expression
-    (15) math_expression -> expression . LEFT_CYCLIC_SHIFT
-    (16) math_expression -> expression . RIGHT_CYCLIC_SHIFT
-    (17) math_expression -> expression . TRANSPOSITION
-    (18) math_expression -> expression . LESS expression
-    (19) math_expression -> expression . GREATER expression
-    (21) math_expression -> expression . AND expression
+    (6) single_sentence -> if NEW_LINE .
 
-    NEW_LINE        reduce using rule 7 (assignment -> variable ASSIGN expression .)
-    PLUS            shift and go to state 39
-    MINUS           shift and go to state 40
-    MATRIX_MUL      shift and go to state 41
-    ELEMENTAL_MUL   shift and go to state 42
-    LEFT_CYCLIC_SHIFT shift and go to state 43
-    RIGHT_CYCLIC_SHIFT shift and go to state 44
-    TRANSPOSITION   shift and go to state 45
-    LESS            shift and go to state 46
-    GREATER         shift and go to state 47
-    AND             shift and go to state 48
+    IF              reduce using rule 6 (single_sentence -> if NEW_LINE .)
+    FOR             reduce using rule 6 (single_sentence -> if NEW_LINE .)
+    VARIABLE        reduce using rule 6 (single_sentence -> if NEW_LINE .)
+    INT             reduce using rule 6 (single_sentence -> if NEW_LINE .)
+    CVINT           reduce using rule 6 (single_sentence -> if NEW_LINE .)
+    VINT            reduce using rule 6 (single_sentence -> if NEW_LINE .)
+    CMINT           reduce using rule 6 (single_sentence -> if NEW_LINE .)
+    MINT            reduce using rule 6 (single_sentence -> if NEW_LINE .)
+    CINT            reduce using rule 6 (single_sentence -> if NEW_LINE .)
+    BOOL            reduce using rule 6 (single_sentence -> if NEW_LINE .)
+    CMBOOL          reduce using rule 6 (single_sentence -> if NEW_LINE .)
+    MBOOL           reduce using rule 6 (single_sentence -> if NEW_LINE .)
+    CVBOOL          reduce using rule 6 (single_sentence -> if NEW_LINE .)
+    VBOOL           reduce using rule 6 (single_sentence -> if NEW_LINE .)
+    CBOOL           reduce using rule 6 (single_sentence -> if NEW_LINE .)
+    $end            reduce using rule 6 (single_sentence -> if NEW_LINE .)
+    ENDIF           reduce using rule 6 (single_sentence -> if NEW_LINE .)
+    ENDFOR          reduce using rule 6 (single_sentence -> if NEW_LINE .)
 
 
 state 31
 
-    (8) expression -> math_expression .
+    (7) single_sentence -> for NEW_LINE .
 
-    PLUS            reduce using rule 8 (expression -> math_expression .)
-    MINUS           reduce using rule 8 (expression -> math_expression .)
-    MATRIX_MUL      reduce using rule 8 (expression -> math_expression .)
-    ELEMENTAL_MUL   reduce using rule 8 (expression -> math_expression .)
-    LEFT_CYCLIC_SHIFT reduce using rule 8 (expression -> math_expression .)
-    RIGHT_CYCLIC_SHIFT reduce using rule 8 (expression -> math_expression .)
-    TRANSPOSITION   reduce using rule 8 (expression -> math_expression .)
-    LESS            reduce using rule 8 (expression -> math_expression .)
-    GREATER         reduce using rule 8 (expression -> math_expression .)
-    AND             reduce using rule 8 (expression -> math_expression .)
-    NEW_LINE        reduce using rule 8 (expression -> math_expression .)
+    IF              reduce using rule 7 (single_sentence -> for NEW_LINE .)
+    FOR             reduce using rule 7 (single_sentence -> for NEW_LINE .)
+    VARIABLE        reduce using rule 7 (single_sentence -> for NEW_LINE .)
+    INT             reduce using rule 7 (single_sentence -> for NEW_LINE .)
+    CVINT           reduce using rule 7 (single_sentence -> for NEW_LINE .)
+    VINT            reduce using rule 7 (single_sentence -> for NEW_LINE .)
+    CMINT           reduce using rule 7 (single_sentence -> for NEW_LINE .)
+    MINT            reduce using rule 7 (single_sentence -> for NEW_LINE .)
+    CINT            reduce using rule 7 (single_sentence -> for NEW_LINE .)
+    BOOL            reduce using rule 7 (single_sentence -> for NEW_LINE .)
+    CMBOOL          reduce using rule 7 (single_sentence -> for NEW_LINE .)
+    MBOOL           reduce using rule 7 (single_sentence -> for NEW_LINE .)
+    CVBOOL          reduce using rule 7 (single_sentence -> for NEW_LINE .)
+    VBOOL           reduce using rule 7 (single_sentence -> for NEW_LINE .)
+    CBOOL           reduce using rule 7 (single_sentence -> for NEW_LINE .)
+    $end            reduce using rule 7 (single_sentence -> for NEW_LINE .)
+    ENDIF           reduce using rule 7 (single_sentence -> for NEW_LINE .)
+    ENDFOR          reduce using rule 7 (single_sentence -> for NEW_LINE .)
 
 
 state 32
 
-    (10) expression -> constant .
+    (8) declaration -> type VARIABLE . EQUAL expression
+    (9) declaration -> type VARIABLE . EQUAL LEFT_FIGURE_BRACKET list_args RIGHT_FIGURE_BRACKET
 
-    PLUS            reduce using rule 10 (expression -> constant .)
-    MINUS           reduce using rule 10 (expression -> constant .)
-    MATRIX_MUL      reduce using rule 10 (expression -> constant .)
-    ELEMENTAL_MUL   reduce using rule 10 (expression -> constant .)
-    LEFT_CYCLIC_SHIFT reduce using rule 10 (expression -> constant .)
-    RIGHT_CYCLIC_SHIFT reduce using rule 10 (expression -> constant .)
-    TRANSPOSITION   reduce using rule 10 (expression -> constant .)
-    LESS            reduce using rule 10 (expression -> constant .)
-    GREATER         reduce using rule 10 (expression -> constant .)
-    AND             reduce using rule 10 (expression -> constant .)
-    NEW_LINE        reduce using rule 10 (expression -> constant .)
+    EQUAL           shift and go to state 44
 
 
 state 33
 
-    (20) math_expression -> NEGATIVE . expression
-    (8) expression -> . math_expression
-    (9) expression -> . variable
-    (10) expression -> . constant
-    (11) math_expression -> . expression PLUS expression
-    (12) math_expression -> . expression MINUS expression
-    (13) math_expression -> . expression MATRIX_MUL expression
-    (14) math_expression -> . expression ELEMENTAL_MUL expression
-    (15) math_expression -> . expression LEFT_CYCLIC_SHIFT
-    (16) math_expression -> . expression RIGHT_CYCLIC_SHIFT
-    (17) math_expression -> . expression TRANSPOSITION
-    (18) math_expression -> . expression LESS expression
-    (19) math_expression -> . expression GREATER expression
-    (20) math_expression -> . NEGATIVE expression
-    (21) math_expression -> . expression AND expression
-    (22) variable -> . VARIABLE
-    (37) constant -> . INT_BINARY
-    (38) constant -> . INT_DECIMAL
-    (39) constant -> . TRUE
-    (40) constant -> . FALSE
+    (10) assignment -> variable ASSIGN . expression
+    (11) expression -> . math_expression
+    (12) expression -> . variable
+    (13) expression -> . constant
+    (14) math_expression -> . expression PLUS expression
+    (15) math_expression -> . expression MINUS expression
+    (16) math_expression -> . expression MATRIX_MUL expression
+    (17) math_expression -> . expression ELEMENTAL_MUL expression
+    (18) math_expression -> . expression LEFT_CYCLIC_SHIFT
+    (19) math_expression -> . expression RIGHT_CYCLIC_SHIFT
+    (20) math_expression -> . expression TRANSPOSITION
+    (21) math_expression -> . expression LESS expression
+    (22) math_expression -> . expression GREATER expression
+    (23) math_expression -> . NEGATIVE expression
+    (24) math_expression -> . expression AND expression
+    (25) variable -> . VARIABLE
+    (40) constant -> . INT_BINARY
+    (41) constant -> . INT_DECIMAL
+    (42) constant -> . TRUE
+    (43) constant -> . FALSE
 
-    NEGATIVE        shift and go to state 33
-    VARIABLE        shift and go to state 7
-    INT_BINARY      shift and go to state 34
-    INT_DECIMAL     shift and go to state 35
-    TRUE            shift and go to state 36
-    FALSE           shift and go to state 37
+    NEGATIVE        shift and go to state 38
+    VARIABLE        shift and go to state 9
+    INT_BINARY      shift and go to state 39
+    INT_DECIMAL     shift and go to state 40
+    TRUE            shift and go to state 41
+    FALSE           shift and go to state 42
 
-    expression                     shift and go to state 49
-    math_expression                shift and go to state 31
-    variable                       shift and go to state 29
-    constant                       shift and go to state 32
+    variable                       shift and go to state 36
+    expression                     shift and go to state 45
+    math_expression                shift and go to state 35
+    constant                       shift and go to state 37
 
 state 34
 
-    (37) constant -> INT_BINARY .
+    (49) if -> IF expression . BEGINIF NEW_LINE sentence_list ENDIF
+    (14) math_expression -> expression . PLUS expression
+    (15) math_expression -> expression . MINUS expression
+    (16) math_expression -> expression . MATRIX_MUL expression
+    (17) math_expression -> expression . ELEMENTAL_MUL expression
+    (18) math_expression -> expression . LEFT_CYCLIC_SHIFT
+    (19) math_expression -> expression . RIGHT_CYCLIC_SHIFT
+    (20) math_expression -> expression . TRANSPOSITION
+    (21) math_expression -> expression . LESS expression
+    (22) math_expression -> expression . GREATER expression
+    (24) math_expression -> expression . AND expression
 
-    PLUS            reduce using rule 37 (constant -> INT_BINARY .)
-    MINUS           reduce using rule 37 (constant -> INT_BINARY .)
-    MATRIX_MUL      reduce using rule 37 (constant -> INT_BINARY .)
-    ELEMENTAL_MUL   reduce using rule 37 (constant -> INT_BINARY .)
-    LEFT_CYCLIC_SHIFT reduce using rule 37 (constant -> INT_BINARY .)
-    RIGHT_CYCLIC_SHIFT reduce using rule 37 (constant -> INT_BINARY .)
-    TRANSPOSITION   reduce using rule 37 (constant -> INT_BINARY .)
-    LESS            reduce using rule 37 (constant -> INT_BINARY .)
-    GREATER         reduce using rule 37 (constant -> INT_BINARY .)
-    AND             reduce using rule 37 (constant -> INT_BINARY .)
-    NEW_LINE        reduce using rule 37 (constant -> INT_BINARY .)
+    BEGINIF         shift and go to state 46
+    PLUS            shift and go to state 47
+    MINUS           shift and go to state 48
+    MATRIX_MUL      shift and go to state 49
+    ELEMENTAL_MUL   shift and go to state 50
+    LEFT_CYCLIC_SHIFT shift and go to state 51
+    RIGHT_CYCLIC_SHIFT shift and go to state 52
+    TRANSPOSITION   shift and go to state 53
+    LESS            shift and go to state 54
+    GREATER         shift and go to state 55
+    AND             shift and go to state 56
 
 
 state 35
 
-    (38) constant -> INT_DECIMAL .
+    (11) expression -> math_expression .
 
-    PLUS            reduce using rule 38 (constant -> INT_DECIMAL .)
-    MINUS           reduce using rule 38 (constant -> INT_DECIMAL .)
-    MATRIX_MUL      reduce using rule 38 (constant -> INT_DECIMAL .)
-    ELEMENTAL_MUL   reduce using rule 38 (constant -> INT_DECIMAL .)
-    LEFT_CYCLIC_SHIFT reduce using rule 38 (constant -> INT_DECIMAL .)
-    RIGHT_CYCLIC_SHIFT reduce using rule 38 (constant -> INT_DECIMAL .)
-    TRANSPOSITION   reduce using rule 38 (constant -> INT_DECIMAL .)
-    LESS            reduce using rule 38 (constant -> INT_DECIMAL .)
-    GREATER         reduce using rule 38 (constant -> INT_DECIMAL .)
-    AND             reduce using rule 38 (constant -> INT_DECIMAL .)
-    NEW_LINE        reduce using rule 38 (constant -> INT_DECIMAL .)
+    BEGINIF         reduce using rule 11 (expression -> math_expression .)
+    PLUS            reduce using rule 11 (expression -> math_expression .)
+    MINUS           reduce using rule 11 (expression -> math_expression .)
+    MATRIX_MUL      reduce using rule 11 (expression -> math_expression .)
+    ELEMENTAL_MUL   reduce using rule 11 (expression -> math_expression .)
+    LEFT_CYCLIC_SHIFT reduce using rule 11 (expression -> math_expression .)
+    RIGHT_CYCLIC_SHIFT reduce using rule 11 (expression -> math_expression .)
+    TRANSPOSITION   reduce using rule 11 (expression -> math_expression .)
+    LESS            reduce using rule 11 (expression -> math_expression .)
+    GREATER         reduce using rule 11 (expression -> math_expression .)
+    AND             reduce using rule 11 (expression -> math_expression .)
+    NEW_LINE        reduce using rule 11 (expression -> math_expression .)
+    DOUBLE_DOT      reduce using rule 11 (expression -> math_expression .)
+    COMMA           reduce using rule 11 (expression -> math_expression .)
+    RIGHT_FIGURE_BRACKET reduce using rule 11 (expression -> math_expression .)
+    BEGINFOR        reduce using rule 11 (expression -> math_expression .)
 
 
 state 36
 
-    (39) constant -> TRUE .
+    (12) expression -> variable .
 
-    PLUS            reduce using rule 39 (constant -> TRUE .)
-    MINUS           reduce using rule 39 (constant -> TRUE .)
-    MATRIX_MUL      reduce using rule 39 (constant -> TRUE .)
-    ELEMENTAL_MUL   reduce using rule 39 (constant -> TRUE .)
-    LEFT_CYCLIC_SHIFT reduce using rule 39 (constant -> TRUE .)
-    RIGHT_CYCLIC_SHIFT reduce using rule 39 (constant -> TRUE .)
-    TRANSPOSITION   reduce using rule 39 (constant -> TRUE .)
-    LESS            reduce using rule 39 (constant -> TRUE .)
-    GREATER         reduce using rule 39 (constant -> TRUE .)
-    AND             reduce using rule 39 (constant -> TRUE .)
-    NEW_LINE        reduce using rule 39 (constant -> TRUE .)
+    BEGINIF         reduce using rule 12 (expression -> variable .)
+    PLUS            reduce using rule 12 (expression -> variable .)
+    MINUS           reduce using rule 12 (expression -> variable .)
+    MATRIX_MUL      reduce using rule 12 (expression -> variable .)
+    ELEMENTAL_MUL   reduce using rule 12 (expression -> variable .)
+    LEFT_CYCLIC_SHIFT reduce using rule 12 (expression -> variable .)
+    RIGHT_CYCLIC_SHIFT reduce using rule 12 (expression -> variable .)
+    TRANSPOSITION   reduce using rule 12 (expression -> variable .)
+    LESS            reduce using rule 12 (expression -> variable .)
+    GREATER         reduce using rule 12 (expression -> variable .)
+    AND             reduce using rule 12 (expression -> variable .)
+    NEW_LINE        reduce using rule 12 (expression -> variable .)
+    DOUBLE_DOT      reduce using rule 12 (expression -> variable .)
+    COMMA           reduce using rule 12 (expression -> variable .)
+    RIGHT_FIGURE_BRACKET reduce using rule 12 (expression -> variable .)
+    BEGINFOR        reduce using rule 12 (expression -> variable .)
 
 
 state 37
 
-    (40) constant -> FALSE .
+    (13) expression -> constant .
 
-    PLUS            reduce using rule 40 (constant -> FALSE .)
-    MINUS           reduce using rule 40 (constant -> FALSE .)
-    MATRIX_MUL      reduce using rule 40 (constant -> FALSE .)
-    ELEMENTAL_MUL   reduce using rule 40 (constant -> FALSE .)
-    LEFT_CYCLIC_SHIFT reduce using rule 40 (constant -> FALSE .)
-    RIGHT_CYCLIC_SHIFT reduce using rule 40 (constant -> FALSE .)
-    TRANSPOSITION   reduce using rule 40 (constant -> FALSE .)
-    LESS            reduce using rule 40 (constant -> FALSE .)
-    GREATER         reduce using rule 40 (constant -> FALSE .)
-    AND             reduce using rule 40 (constant -> FALSE .)
-    NEW_LINE        reduce using rule 40 (constant -> FALSE .)
+    BEGINIF         reduce using rule 13 (expression -> constant .)
+    PLUS            reduce using rule 13 (expression -> constant .)
+    MINUS           reduce using rule 13 (expression -> constant .)
+    MATRIX_MUL      reduce using rule 13 (expression -> constant .)
+    ELEMENTAL_MUL   reduce using rule 13 (expression -> constant .)
+    LEFT_CYCLIC_SHIFT reduce using rule 13 (expression -> constant .)
+    RIGHT_CYCLIC_SHIFT reduce using rule 13 (expression -> constant .)
+    TRANSPOSITION   reduce using rule 13 (expression -> constant .)
+    LESS            reduce using rule 13 (expression -> constant .)
+    GREATER         reduce using rule 13 (expression -> constant .)
+    AND             reduce using rule 13 (expression -> constant .)
+    NEW_LINE        reduce using rule 13 (expression -> constant .)
+    DOUBLE_DOT      reduce using rule 13 (expression -> constant .)
+    COMMA           reduce using rule 13 (expression -> constant .)
+    RIGHT_FIGURE_BRACKET reduce using rule 13 (expression -> constant .)
+    BEGINFOR        reduce using rule 13 (expression -> constant .)
 
 
 state 38
 
-    (6) declaration -> type VARIABLE EQUAL expression .
-    (11) math_expression -> expression . PLUS expression
-    (12) math_expression -> expression . MINUS expression
-    (13) math_expression -> expression . MATRIX_MUL expression
-    (14) math_expression -> expression . ELEMENTAL_MUL expression
-    (15) math_expression -> expression . LEFT_CYCLIC_SHIFT
-    (16) math_expression -> expression . RIGHT_CYCLIC_SHIFT
-    (17) math_expression -> expression . TRANSPOSITION
-    (18) math_expression -> expression . LESS expression
-    (19) math_expression -> expression . GREATER expression
-    (21) math_expression -> expression . AND expression
+    (23) math_expression -> NEGATIVE . expression
+    (11) expression -> . math_expression
+    (12) expression -> . variable
+    (13) expression -> . constant
+    (14) math_expression -> . expression PLUS expression
+    (15) math_expression -> . expression MINUS expression
+    (16) math_expression -> . expression MATRIX_MUL expression
+    (17) math_expression -> . expression ELEMENTAL_MUL expression
+    (18) math_expression -> . expression LEFT_CYCLIC_SHIFT
+    (19) math_expression -> . expression RIGHT_CYCLIC_SHIFT
+    (20) math_expression -> . expression TRANSPOSITION
+    (21) math_expression -> . expression LESS expression
+    (22) math_expression -> . expression GREATER expression
+    (23) math_expression -> . NEGATIVE expression
+    (24) math_expression -> . expression AND expression
+    (25) variable -> . VARIABLE
+    (40) constant -> . INT_BINARY
+    (41) constant -> . INT_DECIMAL
+    (42) constant -> . TRUE
+    (43) constant -> . FALSE
 
-    NEW_LINE        reduce using rule 6 (declaration -> type VARIABLE EQUAL expression .)
-    PLUS            shift and go to state 39
-    MINUS           shift and go to state 40
-    MATRIX_MUL      shift and go to state 41
-    ELEMENTAL_MUL   shift and go to state 42
-    LEFT_CYCLIC_SHIFT shift and go to state 43
-    RIGHT_CYCLIC_SHIFT shift and go to state 44
-    TRANSPOSITION   shift and go to state 45
-    LESS            shift and go to state 46
-    GREATER         shift and go to state 47
-    AND             shift and go to state 48
+    NEGATIVE        shift and go to state 38
+    VARIABLE        shift and go to state 9
+    INT_BINARY      shift and go to state 39
+    INT_DECIMAL     shift and go to state 40
+    TRUE            shift and go to state 41
+    FALSE           shift and go to state 42
 
+    expression                     shift and go to state 57
+    math_expression                shift and go to state 35
+    variable                       shift and go to state 36
+    constant                       shift and go to state 37
 
 state 39
 
-    (11) math_expression -> expression PLUS . expression
-    (8) expression -> . math_expression
-    (9) expression -> . variable
-    (10) expression -> . constant
-    (11) math_expression -> . expression PLUS expression
-    (12) math_expression -> . expression MINUS expression
-    (13) math_expression -> . expression MATRIX_MUL expression
-    (14) math_expression -> . expression ELEMENTAL_MUL expression
-    (15) math_expression -> . expression LEFT_CYCLIC_SHIFT
-    (16) math_expression -> . expression RIGHT_CYCLIC_SHIFT
-    (17) math_expression -> . expression TRANSPOSITION
-    (18) math_expression -> . expression LESS expression
-    (19) math_expression -> . expression GREATER expression
-    (20) math_expression -> . NEGATIVE expression
-    (21) math_expression -> . expression AND expression
-    (22) variable -> . VARIABLE
-    (37) constant -> . INT_BINARY
-    (38) constant -> . INT_DECIMAL
-    (39) constant -> . TRUE
-    (40) constant -> . FALSE
+    (40) constant -> INT_BINARY .
 
-    NEGATIVE        shift and go to state 33
-    VARIABLE        shift and go to state 7
-    INT_BINARY      shift and go to state 34
-    INT_DECIMAL     shift and go to state 35
-    TRUE            shift and go to state 36
-    FALSE           shift and go to state 37
+    BEGINIF         reduce using rule 40 (constant -> INT_BINARY .)
+    PLUS            reduce using rule 40 (constant -> INT_BINARY .)
+    MINUS           reduce using rule 40 (constant -> INT_BINARY .)
+    MATRIX_MUL      reduce using rule 40 (constant -> INT_BINARY .)
+    ELEMENTAL_MUL   reduce using rule 40 (constant -> INT_BINARY .)
+    LEFT_CYCLIC_SHIFT reduce using rule 40 (constant -> INT_BINARY .)
+    RIGHT_CYCLIC_SHIFT reduce using rule 40 (constant -> INT_BINARY .)
+    TRANSPOSITION   reduce using rule 40 (constant -> INT_BINARY .)
+    LESS            reduce using rule 40 (constant -> INT_BINARY .)
+    GREATER         reduce using rule 40 (constant -> INT_BINARY .)
+    AND             reduce using rule 40 (constant -> INT_BINARY .)
+    NEW_LINE        reduce using rule 40 (constant -> INT_BINARY .)
+    DOUBLE_DOT      reduce using rule 40 (constant -> INT_BINARY .)
+    COMMA           reduce using rule 40 (constant -> INT_BINARY .)
+    RIGHT_FIGURE_BRACKET reduce using rule 40 (constant -> INT_BINARY .)
+    BEGINFOR        reduce using rule 40 (constant -> INT_BINARY .)
 
-    expression                     shift and go to state 50
-    math_expression                shift and go to state 31
-    variable                       shift and go to state 29
-    constant                       shift and go to state 32
 
 state 40
 
-    (12) math_expression -> expression MINUS . expression
-    (8) expression -> . math_expression
-    (9) expression -> . variable
-    (10) expression -> . constant
-    (11) math_expression -> . expression PLUS expression
-    (12) math_expression -> . expression MINUS expression
-    (13) math_expression -> . expression MATRIX_MUL expression
-    (14) math_expression -> . expression ELEMENTAL_MUL expression
-    (15) math_expression -> . expression LEFT_CYCLIC_SHIFT
-    (16) math_expression -> . expression RIGHT_CYCLIC_SHIFT
-    (17) math_expression -> . expression TRANSPOSITION
-    (18) math_expression -> . expression LESS expression
-    (19) math_expression -> . expression GREATER expression
-    (20) math_expression -> . NEGATIVE expression
-    (21) math_expression -> . expression AND expression
-    (22) variable -> . VARIABLE
-    (37) constant -> . INT_BINARY
-    (38) constant -> . INT_DECIMAL
-    (39) constant -> . TRUE
-    (40) constant -> . FALSE
+    (41) constant -> INT_DECIMAL .
 
-    NEGATIVE        shift and go to state 33
-    VARIABLE        shift and go to state 7
-    INT_BINARY      shift and go to state 34
-    INT_DECIMAL     shift and go to state 35
-    TRUE            shift and go to state 36
-    FALSE           shift and go to state 37
+    BEGINIF         reduce using rule 41 (constant -> INT_DECIMAL .)
+    PLUS            reduce using rule 41 (constant -> INT_DECIMAL .)
+    MINUS           reduce using rule 41 (constant -> INT_DECIMAL .)
+    MATRIX_MUL      reduce using rule 41 (constant -> INT_DECIMAL .)
+    ELEMENTAL_MUL   reduce using rule 41 (constant -> INT_DECIMAL .)
+    LEFT_CYCLIC_SHIFT reduce using rule 41 (constant -> INT_DECIMAL .)
+    RIGHT_CYCLIC_SHIFT reduce using rule 41 (constant -> INT_DECIMAL .)
+    TRANSPOSITION   reduce using rule 41 (constant -> INT_DECIMAL .)
+    LESS            reduce using rule 41 (constant -> INT_DECIMAL .)
+    GREATER         reduce using rule 41 (constant -> INT_DECIMAL .)
+    AND             reduce using rule 41 (constant -> INT_DECIMAL .)
+    NEW_LINE        reduce using rule 41 (constant -> INT_DECIMAL .)
+    DOUBLE_DOT      reduce using rule 41 (constant -> INT_DECIMAL .)
+    COMMA           reduce using rule 41 (constant -> INT_DECIMAL .)
+    RIGHT_FIGURE_BRACKET reduce using rule 41 (constant -> INT_DECIMAL .)
+    BEGINFOR        reduce using rule 41 (constant -> INT_DECIMAL .)
 
-    expression                     shift and go to state 51
-    math_expression                shift and go to state 31
-    variable                       shift and go to state 29
-    constant                       shift and go to state 32
 
 state 41
 
-    (13) math_expression -> expression MATRIX_MUL . expression
-    (8) expression -> . math_expression
-    (9) expression -> . variable
-    (10) expression -> . constant
-    (11) math_expression -> . expression PLUS expression
-    (12) math_expression -> . expression MINUS expression
-    (13) math_expression -> . expression MATRIX_MUL expression
-    (14) math_expression -> . expression ELEMENTAL_MUL expression
-    (15) math_expression -> . expression LEFT_CYCLIC_SHIFT
-    (16) math_expression -> . expression RIGHT_CYCLIC_SHIFT
-    (17) math_expression -> . expression TRANSPOSITION
-    (18) math_expression -> . expression LESS expression
-    (19) math_expression -> . expression GREATER expression
-    (20) math_expression -> . NEGATIVE expression
-    (21) math_expression -> . expression AND expression
-    (22) variable -> . VARIABLE
-    (37) constant -> . INT_BINARY
-    (38) constant -> . INT_DECIMAL
-    (39) constant -> . TRUE
-    (40) constant -> . FALSE
+    (42) constant -> TRUE .
 
-    NEGATIVE        shift and go to state 33
-    VARIABLE        shift and go to state 7
-    INT_BINARY      shift and go to state 34
-    INT_DECIMAL     shift and go to state 35
-    TRUE            shift and go to state 36
-    FALSE           shift and go to state 37
+    BEGINIF         reduce using rule 42 (constant -> TRUE .)
+    PLUS            reduce using rule 42 (constant -> TRUE .)
+    MINUS           reduce using rule 42 (constant -> TRUE .)
+    MATRIX_MUL      reduce using rule 42 (constant -> TRUE .)
+    ELEMENTAL_MUL   reduce using rule 42 (constant -> TRUE .)
+    LEFT_CYCLIC_SHIFT reduce using rule 42 (constant -> TRUE .)
+    RIGHT_CYCLIC_SHIFT reduce using rule 42 (constant -> TRUE .)
+    TRANSPOSITION   reduce using rule 42 (constant -> TRUE .)
+    LESS            reduce using rule 42 (constant -> TRUE .)
+    GREATER         reduce using rule 42 (constant -> TRUE .)
+    AND             reduce using rule 42 (constant -> TRUE .)
+    NEW_LINE        reduce using rule 42 (constant -> TRUE .)
+    DOUBLE_DOT      reduce using rule 42 (constant -> TRUE .)
+    COMMA           reduce using rule 42 (constant -> TRUE .)
+    RIGHT_FIGURE_BRACKET reduce using rule 42 (constant -> TRUE .)
+    BEGINFOR        reduce using rule 42 (constant -> TRUE .)
 
-    expression                     shift and go to state 52
-    math_expression                shift and go to state 31
-    variable                       shift and go to state 29
-    constant                       shift and go to state 32
 
 state 42
 
-    (14) math_expression -> expression ELEMENTAL_MUL . expression
-    (8) expression -> . math_expression
-    (9) expression -> . variable
-    (10) expression -> . constant
-    (11) math_expression -> . expression PLUS expression
-    (12) math_expression -> . expression MINUS expression
-    (13) math_expression -> . expression MATRIX_MUL expression
-    (14) math_expression -> . expression ELEMENTAL_MUL expression
-    (15) math_expression -> . expression LEFT_CYCLIC_SHIFT
-    (16) math_expression -> . expression RIGHT_CYCLIC_SHIFT
-    (17) math_expression -> . expression TRANSPOSITION
-    (18) math_expression -> . expression LESS expression
-    (19) math_expression -> . expression GREATER expression
-    (20) math_expression -> . NEGATIVE expression
-    (21) math_expression -> . expression AND expression
-    (22) variable -> . VARIABLE
-    (37) constant -> . INT_BINARY
-    (38) constant -> . INT_DECIMAL
-    (39) constant -> . TRUE
-    (40) constant -> . FALSE
+    (43) constant -> FALSE .
 
-    NEGATIVE        shift and go to state 33
-    VARIABLE        shift and go to state 7
-    INT_BINARY      shift and go to state 34
-    INT_DECIMAL     shift and go to state 35
-    TRUE            shift and go to state 36
-    FALSE           shift and go to state 37
+    BEGINIF         reduce using rule 43 (constant -> FALSE .)
+    PLUS            reduce using rule 43 (constant -> FALSE .)
+    MINUS           reduce using rule 43 (constant -> FALSE .)
+    MATRIX_MUL      reduce using rule 43 (constant -> FALSE .)
+    ELEMENTAL_MUL   reduce using rule 43 (constant -> FALSE .)
+    LEFT_CYCLIC_SHIFT reduce using rule 43 (constant -> FALSE .)
+    RIGHT_CYCLIC_SHIFT reduce using rule 43 (constant -> FALSE .)
+    TRANSPOSITION   reduce using rule 43 (constant -> FALSE .)
+    LESS            reduce using rule 43 (constant -> FALSE .)
+    GREATER         reduce using rule 43 (constant -> FALSE .)
+    AND             reduce using rule 43 (constant -> FALSE .)
+    NEW_LINE        reduce using rule 43 (constant -> FALSE .)
+    DOUBLE_DOT      reduce using rule 43 (constant -> FALSE .)
+    COMMA           reduce using rule 43 (constant -> FALSE .)
+    RIGHT_FIGURE_BRACKET reduce using rule 43 (constant -> FALSE .)
+    BEGINFOR        reduce using rule 43 (constant -> FALSE .)
 
-    expression                     shift and go to state 53
-    math_expression                shift and go to state 31
-    variable                       shift and go to state 29
-    constant                       shift and go to state 32
 
 state 43
 
-    (15) math_expression -> expression LEFT_CYCLIC_SHIFT .
+    (50) for -> FOR VARIABLE . EQUAL expression DOUBLE_DOT expression BEGINFOR NEW_LINE sentence_list ENDFOR
 
-    PLUS            reduce using rule 15 (math_expression -> expression LEFT_CYCLIC_SHIFT .)
-    MINUS           reduce using rule 15 (math_expression -> expression LEFT_CYCLIC_SHIFT .)
-    MATRIX_MUL      reduce using rule 15 (math_expression -> expression LEFT_CYCLIC_SHIFT .)
-    ELEMENTAL_MUL   reduce using rule 15 (math_expression -> expression LEFT_CYCLIC_SHIFT .)
-    LEFT_CYCLIC_SHIFT reduce using rule 15 (math_expression -> expression LEFT_CYCLIC_SHIFT .)
-    RIGHT_CYCLIC_SHIFT reduce using rule 15 (math_expression -> expression LEFT_CYCLIC_SHIFT .)
-    TRANSPOSITION   reduce using rule 15 (math_expression -> expression LEFT_CYCLIC_SHIFT .)
-    LESS            reduce using rule 15 (math_expression -> expression LEFT_CYCLIC_SHIFT .)
-    GREATER         reduce using rule 15 (math_expression -> expression LEFT_CYCLIC_SHIFT .)
-    AND             reduce using rule 15 (math_expression -> expression LEFT_CYCLIC_SHIFT .)
-    NEW_LINE        reduce using rule 15 (math_expression -> expression LEFT_CYCLIC_SHIFT .)
+    EQUAL           shift and go to state 58
 
 
 state 44
 
-    (16) math_expression -> expression RIGHT_CYCLIC_SHIFT .
+    (8) declaration -> type VARIABLE EQUAL . expression
+    (9) declaration -> type VARIABLE EQUAL . LEFT_FIGURE_BRACKET list_args RIGHT_FIGURE_BRACKET
+    (11) expression -> . math_expression
+    (12) expression -> . variable
+    (13) expression -> . constant
+    (14) math_expression -> . expression PLUS expression
+    (15) math_expression -> . expression MINUS expression
+    (16) math_expression -> . expression MATRIX_MUL expression
+    (17) math_expression -> . expression ELEMENTAL_MUL expression
+    (18) math_expression -> . expression LEFT_CYCLIC_SHIFT
+    (19) math_expression -> . expression RIGHT_CYCLIC_SHIFT
+    (20) math_expression -> . expression TRANSPOSITION
+    (21) math_expression -> . expression LESS expression
+    (22) math_expression -> . expression GREATER expression
+    (23) math_expression -> . NEGATIVE expression
+    (24) math_expression -> . expression AND expression
+    (25) variable -> . VARIABLE
+    (40) constant -> . INT_BINARY
+    (41) constant -> . INT_DECIMAL
+    (42) constant -> . TRUE
+    (43) constant -> . FALSE
 
-    PLUS            reduce using rule 16 (math_expression -> expression RIGHT_CYCLIC_SHIFT .)
-    MINUS           reduce using rule 16 (math_expression -> expression RIGHT_CYCLIC_SHIFT .)
-    MATRIX_MUL      reduce using rule 16 (math_expression -> expression RIGHT_CYCLIC_SHIFT .)
-    ELEMENTAL_MUL   reduce using rule 16 (math_expression -> expression RIGHT_CYCLIC_SHIFT .)
-    LEFT_CYCLIC_SHIFT reduce using rule 16 (math_expression -> expression RIGHT_CYCLIC_SHIFT .)
-    RIGHT_CYCLIC_SHIFT reduce using rule 16 (math_expression -> expression RIGHT_CYCLIC_SHIFT .)
-    TRANSPOSITION   reduce using rule 16 (math_expression -> expression RIGHT_CYCLIC_SHIFT .)
-    LESS            reduce using rule 16 (math_expression -> expression RIGHT_CYCLIC_SHIFT .)
-    GREATER         reduce using rule 16 (math_expression -> expression RIGHT_CYCLIC_SHIFT .)
-    AND             reduce using rule 16 (math_expression -> expression RIGHT_CYCLIC_SHIFT .)
-    NEW_LINE        reduce using rule 16 (math_expression -> expression RIGHT_CYCLIC_SHIFT .)
+    LEFT_FIGURE_BRACKET shift and go to state 60
+    NEGATIVE        shift and go to state 38
+    VARIABLE        shift and go to state 9
+    INT_BINARY      shift and go to state 39
+    INT_DECIMAL     shift and go to state 40
+    TRUE            shift and go to state 41
+    FALSE           shift and go to state 42
 
+    expression                     shift and go to state 59
+    math_expression                shift and go to state 35
+    variable                       shift and go to state 36
+    constant                       shift and go to state 37
 
 state 45
 
-    (17) math_expression -> expression TRANSPOSITION .
+    (10) assignment -> variable ASSIGN expression .
+    (14) math_expression -> expression . PLUS expression
+    (15) math_expression -> expression . MINUS expression
+    (16) math_expression -> expression . MATRIX_MUL expression
+    (17) math_expression -> expression . ELEMENTAL_MUL expression
+    (18) math_expression -> expression . LEFT_CYCLIC_SHIFT
+    (19) math_expression -> expression . RIGHT_CYCLIC_SHIFT
+    (20) math_expression -> expression . TRANSPOSITION
+    (21) math_expression -> expression . LESS expression
+    (22) math_expression -> expression . GREATER expression
+    (24) math_expression -> expression . AND expression
 
-    PLUS            reduce using rule 17 (math_expression -> expression TRANSPOSITION .)
-    MINUS           reduce using rule 17 (math_expression -> expression TRANSPOSITION .)
-    MATRIX_MUL      reduce using rule 17 (math_expression -> expression TRANSPOSITION .)
-    ELEMENTAL_MUL   reduce using rule 17 (math_expression -> expression TRANSPOSITION .)
-    LEFT_CYCLIC_SHIFT reduce using rule 17 (math_expression -> expression TRANSPOSITION .)
-    RIGHT_CYCLIC_SHIFT reduce using rule 17 (math_expression -> expression TRANSPOSITION .)
-    TRANSPOSITION   reduce using rule 17 (math_expression -> expression TRANSPOSITION .)
-    LESS            reduce using rule 17 (math_expression -> expression TRANSPOSITION .)
-    GREATER         reduce using rule 17 (math_expression -> expression TRANSPOSITION .)
-    AND             reduce using rule 17 (math_expression -> expression TRANSPOSITION .)
-    NEW_LINE        reduce using rule 17 (math_expression -> expression TRANSPOSITION .)
+    NEW_LINE        reduce using rule 10 (assignment -> variable ASSIGN expression .)
+    PLUS            shift and go to state 47
+    MINUS           shift and go to state 48
+    MATRIX_MUL      shift and go to state 49
+    ELEMENTAL_MUL   shift and go to state 50
+    LEFT_CYCLIC_SHIFT shift and go to state 51
+    RIGHT_CYCLIC_SHIFT shift and go to state 52
+    TRANSPOSITION   shift and go to state 53
+    LESS            shift and go to state 54
+    GREATER         shift and go to state 55
+    AND             shift and go to state 56
 
 
 state 46
 
-    (18) math_expression -> expression LESS . expression
-    (8) expression -> . math_expression
-    (9) expression -> . variable
-    (10) expression -> . constant
-    (11) math_expression -> . expression PLUS expression
-    (12) math_expression -> . expression MINUS expression
-    (13) math_expression -> . expression MATRIX_MUL expression
-    (14) math_expression -> . expression ELEMENTAL_MUL expression
-    (15) math_expression -> . expression LEFT_CYCLIC_SHIFT
-    (16) math_expression -> . expression RIGHT_CYCLIC_SHIFT
-    (17) math_expression -> . expression TRANSPOSITION
-    (18) math_expression -> . expression LESS expression
-    (19) math_expression -> . expression GREATER expression
-    (20) math_expression -> . NEGATIVE expression
-    (21) math_expression -> . expression AND expression
-    (22) variable -> . VARIABLE
-    (37) constant -> . INT_BINARY
-    (38) constant -> . INT_DECIMAL
-    (39) constant -> . TRUE
-    (40) constant -> . FALSE
+    (49) if -> IF expression BEGINIF . NEW_LINE sentence_list ENDIF
 
-    NEGATIVE        shift and go to state 33
-    VARIABLE        shift and go to state 7
-    INT_BINARY      shift and go to state 34
-    INT_DECIMAL     shift and go to state 35
-    TRUE            shift and go to state 36
-    FALSE           shift and go to state 37
+    NEW_LINE        shift and go to state 61
 
-    expression                     shift and go to state 54
-    math_expression                shift and go to state 31
-    variable                       shift and go to state 29
-    constant                       shift and go to state 32
 
 state 47
 
-    (19) math_expression -> expression GREATER . expression
-    (8) expression -> . math_expression
-    (9) expression -> . variable
-    (10) expression -> . constant
-    (11) math_expression -> . expression PLUS expression
-    (12) math_expression -> . expression MINUS expression
-    (13) math_expression -> . expression MATRIX_MUL expression
-    (14) math_expression -> . expression ELEMENTAL_MUL expression
-    (15) math_expression -> . expression LEFT_CYCLIC_SHIFT
-    (16) math_expression -> . expression RIGHT_CYCLIC_SHIFT
-    (17) math_expression -> . expression TRANSPOSITION
-    (18) math_expression -> . expression LESS expression
-    (19) math_expression -> . expression GREATER expression
-    (20) math_expression -> . NEGATIVE expression
-    (21) math_expression -> . expression AND expression
-    (22) variable -> . VARIABLE
-    (37) constant -> . INT_BINARY
-    (38) constant -> . INT_DECIMAL
-    (39) constant -> . TRUE
-    (40) constant -> . FALSE
+    (14) math_expression -> expression PLUS . expression
+    (11) expression -> . math_expression
+    (12) expression -> . variable
+    (13) expression -> . constant
+    (14) math_expression -> . expression PLUS expression
+    (15) math_expression -> . expression MINUS expression
+    (16) math_expression -> . expression MATRIX_MUL expression
+    (17) math_expression -> . expression ELEMENTAL_MUL expression
+    (18) math_expression -> . expression LEFT_CYCLIC_SHIFT
+    (19) math_expression -> . expression RIGHT_CYCLIC_SHIFT
+    (20) math_expression -> . expression TRANSPOSITION
+    (21) math_expression -> . expression LESS expression
+    (22) math_expression -> . expression GREATER expression
+    (23) math_expression -> . NEGATIVE expression
+    (24) math_expression -> . expression AND expression
+    (25) variable -> . VARIABLE
+    (40) constant -> . INT_BINARY
+    (41) constant -> . INT_DECIMAL
+    (42) constant -> . TRUE
+    (43) constant -> . FALSE
 
-    NEGATIVE        shift and go to state 33
-    VARIABLE        shift and go to state 7
-    INT_BINARY      shift and go to state 34
-    INT_DECIMAL     shift and go to state 35
-    TRUE            shift and go to state 36
-    FALSE           shift and go to state 37
+    NEGATIVE        shift and go to state 38
+    VARIABLE        shift and go to state 9
+    INT_BINARY      shift and go to state 39
+    INT_DECIMAL     shift and go to state 40
+    TRUE            shift and go to state 41
+    FALSE           shift and go to state 42
 
-    expression                     shift and go to state 55
-    math_expression                shift and go to state 31
-    variable                       shift and go to state 29
-    constant                       shift and go to state 32
+    expression                     shift and go to state 62
+    math_expression                shift and go to state 35
+    variable                       shift and go to state 36
+    constant                       shift and go to state 37
 
 state 48
 
-    (21) math_expression -> expression AND . expression
-    (8) expression -> . math_expression
-    (9) expression -> . variable
-    (10) expression -> . constant
-    (11) math_expression -> . expression PLUS expression
-    (12) math_expression -> . expression MINUS expression
-    (13) math_expression -> . expression MATRIX_MUL expression
-    (14) math_expression -> . expression ELEMENTAL_MUL expression
-    (15) math_expression -> . expression LEFT_CYCLIC_SHIFT
-    (16) math_expression -> . expression RIGHT_CYCLIC_SHIFT
-    (17) math_expression -> . expression TRANSPOSITION
-    (18) math_expression -> . expression LESS expression
-    (19) math_expression -> . expression GREATER expression
-    (20) math_expression -> . NEGATIVE expression
-    (21) math_expression -> . expression AND expression
-    (22) variable -> . VARIABLE
-    (37) constant -> . INT_BINARY
-    (38) constant -> . INT_DECIMAL
-    (39) constant -> . TRUE
-    (40) constant -> . FALSE
+    (15) math_expression -> expression MINUS . expression
+    (11) expression -> . math_expression
+    (12) expression -> . variable
+    (13) expression -> . constant
+    (14) math_expression -> . expression PLUS expression
+    (15) math_expression -> . expression MINUS expression
+    (16) math_expression -> . expression MATRIX_MUL expression
+    (17) math_expression -> . expression ELEMENTAL_MUL expression
+    (18) math_expression -> . expression LEFT_CYCLIC_SHIFT
+    (19) math_expression -> . expression RIGHT_CYCLIC_SHIFT
+    (20) math_expression -> . expression TRANSPOSITION
+    (21) math_expression -> . expression LESS expression
+    (22) math_expression -> . expression GREATER expression
+    (23) math_expression -> . NEGATIVE expression
+    (24) math_expression -> . expression AND expression
+    (25) variable -> . VARIABLE
+    (40) constant -> . INT_BINARY
+    (41) constant -> . INT_DECIMAL
+    (42) constant -> . TRUE
+    (43) constant -> . FALSE
 
-    NEGATIVE        shift and go to state 33
-    VARIABLE        shift and go to state 7
-    INT_BINARY      shift and go to state 34
-    INT_DECIMAL     shift and go to state 35
-    TRUE            shift and go to state 36
-    FALSE           shift and go to state 37
+    NEGATIVE        shift and go to state 38
+    VARIABLE        shift and go to state 9
+    INT_BINARY      shift and go to state 39
+    INT_DECIMAL     shift and go to state 40
+    TRUE            shift and go to state 41
+    FALSE           shift and go to state 42
 
-    expression                     shift and go to state 56
-    math_expression                shift and go to state 31
-    variable                       shift and go to state 29
-    constant                       shift and go to state 32
+    expression                     shift and go to state 63
+    math_expression                shift and go to state 35
+    variable                       shift and go to state 36
+    constant                       shift and go to state 37
 
 state 49
 
-    (20) math_expression -> NEGATIVE expression .
-    (11) math_expression -> expression . PLUS expression
-    (12) math_expression -> expression . MINUS expression
-    (13) math_expression -> expression . MATRIX_MUL expression
-    (14) math_expression -> expression . ELEMENTAL_MUL expression
-    (15) math_expression -> expression . LEFT_CYCLIC_SHIFT
-    (16) math_expression -> expression . RIGHT_CYCLIC_SHIFT
-    (17) math_expression -> expression . TRANSPOSITION
-    (18) math_expression -> expression . LESS expression
-    (19) math_expression -> expression . GREATER expression
-    (21) math_expression -> expression . AND expression
+    (16) math_expression -> expression MATRIX_MUL . expression
+    (11) expression -> . math_expression
+    (12) expression -> . variable
+    (13) expression -> . constant
+    (14) math_expression -> . expression PLUS expression
+    (15) math_expression -> . expression MINUS expression
+    (16) math_expression -> . expression MATRIX_MUL expression
+    (17) math_expression -> . expression ELEMENTAL_MUL expression
+    (18) math_expression -> . expression LEFT_CYCLIC_SHIFT
+    (19) math_expression -> . expression RIGHT_CYCLIC_SHIFT
+    (20) math_expression -> . expression TRANSPOSITION
+    (21) math_expression -> . expression LESS expression
+    (22) math_expression -> . expression GREATER expression
+    (23) math_expression -> . NEGATIVE expression
+    (24) math_expression -> . expression AND expression
+    (25) variable -> . VARIABLE
+    (40) constant -> . INT_BINARY
+    (41) constant -> . INT_DECIMAL
+    (42) constant -> . TRUE
+    (43) constant -> . FALSE
 
-  ! shift/reduce conflict for PLUS resolved as shift
-  ! shift/reduce conflict for MINUS resolved as shift
-  ! shift/reduce conflict for MATRIX_MUL resolved as shift
-  ! shift/reduce conflict for ELEMENTAL_MUL resolved as shift
-  ! shift/reduce conflict for LEFT_CYCLIC_SHIFT resolved as shift
-  ! shift/reduce conflict for RIGHT_CYCLIC_SHIFT resolved as shift
-  ! shift/reduce conflict for TRANSPOSITION resolved as shift
-  ! shift/reduce conflict for LESS resolved as shift
-  ! shift/reduce conflict for GREATER resolved as shift
-  ! shift/reduce conflict for AND resolved as shift
-    NEW_LINE        reduce using rule 20 (math_expression -> NEGATIVE expression .)
-    PLUS            shift and go to state 39
-    MINUS           shift and go to state 40
-    MATRIX_MUL      shift and go to state 41
-    ELEMENTAL_MUL   shift and go to state 42
-    LEFT_CYCLIC_SHIFT shift and go to state 43
-    RIGHT_CYCLIC_SHIFT shift and go to state 44
-    TRANSPOSITION   shift and go to state 45
-    LESS            shift and go to state 46
-    GREATER         shift and go to state 47
-    AND             shift and go to state 48
+    NEGATIVE        shift and go to state 38
+    VARIABLE        shift and go to state 9
+    INT_BINARY      shift and go to state 39
+    INT_DECIMAL     shift and go to state 40
+    TRUE            shift and go to state 41
+    FALSE           shift and go to state 42
 
-  ! PLUS            [ reduce using rule 20 (math_expression -> NEGATIVE expression .) ]
-  ! MINUS           [ reduce using rule 20 (math_expression -> NEGATIVE expression .) ]
-  ! MATRIX_MUL      [ reduce using rule 20 (math_expression -> NEGATIVE expression .) ]
-  ! ELEMENTAL_MUL   [ reduce using rule 20 (math_expression -> NEGATIVE expression .) ]
-  ! LEFT_CYCLIC_SHIFT [ reduce using rule 20 (math_expression -> NEGATIVE expression .) ]
-  ! RIGHT_CYCLIC_SHIFT [ reduce using rule 20 (math_expression -> NEGATIVE expression .) ]
-  ! TRANSPOSITION   [ reduce using rule 20 (math_expression -> NEGATIVE expression .) ]
-  ! LESS            [ reduce using rule 20 (math_expression -> NEGATIVE expression .) ]
-  ! GREATER         [ reduce using rule 20 (math_expression -> NEGATIVE expression .) ]
-  ! AND             [ reduce using rule 20 (math_expression -> NEGATIVE expression .) ]
-
+    expression                     shift and go to state 64
+    math_expression                shift and go to state 35
+    variable                       shift and go to state 36
+    constant                       shift and go to state 37
 
 state 50
 
-    (11) math_expression -> expression PLUS expression .
-    (11) math_expression -> expression . PLUS expression
-    (12) math_expression -> expression . MINUS expression
-    (13) math_expression -> expression . MATRIX_MUL expression
-    (14) math_expression -> expression . ELEMENTAL_MUL expression
-    (15) math_expression -> expression . LEFT_CYCLIC_SHIFT
-    (16) math_expression -> expression . RIGHT_CYCLIC_SHIFT
-    (17) math_expression -> expression . TRANSPOSITION
-    (18) math_expression -> expression . LESS expression
-    (19) math_expression -> expression . GREATER expression
-    (21) math_expression -> expression . AND expression
+    (17) math_expression -> expression ELEMENTAL_MUL . expression
+    (11) expression -> . math_expression
+    (12) expression -> . variable
+    (13) expression -> . constant
+    (14) math_expression -> . expression PLUS expression
+    (15) math_expression -> . expression MINUS expression
+    (16) math_expression -> . expression MATRIX_MUL expression
+    (17) math_expression -> . expression ELEMENTAL_MUL expression
+    (18) math_expression -> . expression LEFT_CYCLIC_SHIFT
+    (19) math_expression -> . expression RIGHT_CYCLIC_SHIFT
+    (20) math_expression -> . expression TRANSPOSITION
+    (21) math_expression -> . expression LESS expression
+    (22) math_expression -> . expression GREATER expression
+    (23) math_expression -> . NEGATIVE expression
+    (24) math_expression -> . expression AND expression
+    (25) variable -> . VARIABLE
+    (40) constant -> . INT_BINARY
+    (41) constant -> . INT_DECIMAL
+    (42) constant -> . TRUE
+    (43) constant -> . FALSE
 
-  ! shift/reduce conflict for PLUS resolved as shift
-  ! shift/reduce conflict for MINUS resolved as shift
-  ! shift/reduce conflict for MATRIX_MUL resolved as shift
-  ! shift/reduce conflict for ELEMENTAL_MUL resolved as shift
-  ! shift/reduce conflict for LEFT_CYCLIC_SHIFT resolved as shift
-  ! shift/reduce conflict for RIGHT_CYCLIC_SHIFT resolved as shift
-  ! shift/reduce conflict for TRANSPOSITION resolved as shift
-  ! shift/reduce conflict for LESS resolved as shift
-  ! shift/reduce conflict for GREATER resolved as shift
-  ! shift/reduce conflict for AND resolved as shift
-    NEW_LINE        reduce using rule 11 (math_expression -> expression PLUS expression .)
-    PLUS            shift and go to state 39
-    MINUS           shift and go to state 40
-    MATRIX_MUL      shift and go to state 41
-    ELEMENTAL_MUL   shift and go to state 42
-    LEFT_CYCLIC_SHIFT shift and go to state 43
-    RIGHT_CYCLIC_SHIFT shift and go to state 44
-    TRANSPOSITION   shift and go to state 45
-    LESS            shift and go to state 46
-    GREATER         shift and go to state 47
-    AND             shift and go to state 48
+    NEGATIVE        shift and go to state 38
+    VARIABLE        shift and go to state 9
+    INT_BINARY      shift and go to state 39
+    INT_DECIMAL     shift and go to state 40
+    TRUE            shift and go to state 41
+    FALSE           shift and go to state 42
 
-  ! PLUS            [ reduce using rule 11 (math_expression -> expression PLUS expression .) ]
-  ! MINUS           [ reduce using rule 11 (math_expression -> expression PLUS expression .) ]
-  ! MATRIX_MUL      [ reduce using rule 11 (math_expression -> expression PLUS expression .) ]
-  ! ELEMENTAL_MUL   [ reduce using rule 11 (math_expression -> expression PLUS expression .) ]
-  ! LEFT_CYCLIC_SHIFT [ reduce using rule 11 (math_expression -> expression PLUS expression .) ]
-  ! RIGHT_CYCLIC_SHIFT [ reduce using rule 11 (math_expression -> expression PLUS expression .) ]
-  ! TRANSPOSITION   [ reduce using rule 11 (math_expression -> expression PLUS expression .) ]
-  ! LESS            [ reduce using rule 11 (math_expression -> expression PLUS expression .) ]
-  ! GREATER         [ reduce using rule 11 (math_expression -> expression PLUS expression .) ]
-  ! AND             [ reduce using rule 11 (math_expression -> expression PLUS expression .) ]
-
+    expression                     shift and go to state 65
+    math_expression                shift and go to state 35
+    variable                       shift and go to state 36
+    constant                       shift and go to state 37
 
 state 51
 
-    (12) math_expression -> expression MINUS expression .
-    (11) math_expression -> expression . PLUS expression
-    (12) math_expression -> expression . MINUS expression
-    (13) math_expression -> expression . MATRIX_MUL expression
-    (14) math_expression -> expression . ELEMENTAL_MUL expression
-    (15) math_expression -> expression . LEFT_CYCLIC_SHIFT
-    (16) math_expression -> expression . RIGHT_CYCLIC_SHIFT
-    (17) math_expression -> expression . TRANSPOSITION
-    (18) math_expression -> expression . LESS expression
-    (19) math_expression -> expression . GREATER expression
-    (21) math_expression -> expression . AND expression
+    (18) math_expression -> expression LEFT_CYCLIC_SHIFT .
 
-  ! shift/reduce conflict for PLUS resolved as shift
-  ! shift/reduce conflict for MINUS resolved as shift
-  ! shift/reduce conflict for MATRIX_MUL resolved as shift
-  ! shift/reduce conflict for ELEMENTAL_MUL resolved as shift
-  ! shift/reduce conflict for LEFT_CYCLIC_SHIFT resolved as shift
-  ! shift/reduce conflict for RIGHT_CYCLIC_SHIFT resolved as shift
-  ! shift/reduce conflict for TRANSPOSITION resolved as shift
-  ! shift/reduce conflict for LESS resolved as shift
-  ! shift/reduce conflict for GREATER resolved as shift
-  ! shift/reduce conflict for AND resolved as shift
-    NEW_LINE        reduce using rule 12 (math_expression -> expression MINUS expression .)
-    PLUS            shift and go to state 39
-    MINUS           shift and go to state 40
-    MATRIX_MUL      shift and go to state 41
-    ELEMENTAL_MUL   shift and go to state 42
-    LEFT_CYCLIC_SHIFT shift and go to state 43
-    RIGHT_CYCLIC_SHIFT shift and go to state 44
-    TRANSPOSITION   shift and go to state 45
-    LESS            shift and go to state 46
-    GREATER         shift and go to state 47
-    AND             shift and go to state 48
-
-  ! PLUS            [ reduce using rule 12 (math_expression -> expression MINUS expression .) ]
-  ! MINUS           [ reduce using rule 12 (math_expression -> expression MINUS expression .) ]
-  ! MATRIX_MUL      [ reduce using rule 12 (math_expression -> expression MINUS expression .) ]
-  ! ELEMENTAL_MUL   [ reduce using rule 12 (math_expression -> expression MINUS expression .) ]
-  ! LEFT_CYCLIC_SHIFT [ reduce using rule 12 (math_expression -> expression MINUS expression .) ]
-  ! RIGHT_CYCLIC_SHIFT [ reduce using rule 12 (math_expression -> expression MINUS expression .) ]
-  ! TRANSPOSITION   [ reduce using rule 12 (math_expression -> expression MINUS expression .) ]
-  ! LESS            [ reduce using rule 12 (math_expression -> expression MINUS expression .) ]
-  ! GREATER         [ reduce using rule 12 (math_expression -> expression MINUS expression .) ]
-  ! AND             [ reduce using rule 12 (math_expression -> expression MINUS expression .) ]
+    BEGINIF         reduce using rule 18 (math_expression -> expression LEFT_CYCLIC_SHIFT .)
+    PLUS            reduce using rule 18 (math_expression -> expression LEFT_CYCLIC_SHIFT .)
+    MINUS           reduce using rule 18 (math_expression -> expression LEFT_CYCLIC_SHIFT .)
+    MATRIX_MUL      reduce using rule 18 (math_expression -> expression LEFT_CYCLIC_SHIFT .)
+    ELEMENTAL_MUL   reduce using rule 18 (math_expression -> expression LEFT_CYCLIC_SHIFT .)
+    LEFT_CYCLIC_SHIFT reduce using rule 18 (math_expression -> expression LEFT_CYCLIC_SHIFT .)
+    RIGHT_CYCLIC_SHIFT reduce using rule 18 (math_expression -> expression LEFT_CYCLIC_SHIFT .)
+    TRANSPOSITION   reduce using rule 18 (math_expression -> expression LEFT_CYCLIC_SHIFT .)
+    LESS            reduce using rule 18 (math_expression -> expression LEFT_CYCLIC_SHIFT .)
+    GREATER         reduce using rule 18 (math_expression -> expression LEFT_CYCLIC_SHIFT .)
+    AND             reduce using rule 18 (math_expression -> expression LEFT_CYCLIC_SHIFT .)
+    NEW_LINE        reduce using rule 18 (math_expression -> expression LEFT_CYCLIC_SHIFT .)
+    DOUBLE_DOT      reduce using rule 18 (math_expression -> expression LEFT_CYCLIC_SHIFT .)
+    COMMA           reduce using rule 18 (math_expression -> expression LEFT_CYCLIC_SHIFT .)
+    RIGHT_FIGURE_BRACKET reduce using rule 18 (math_expression -> expression LEFT_CYCLIC_SHIFT .)
+    BEGINFOR        reduce using rule 18 (math_expression -> expression LEFT_CYCLIC_SHIFT .)
 
 
 state 52
 
-    (13) math_expression -> expression MATRIX_MUL expression .
-    (11) math_expression -> expression . PLUS expression
-    (12) math_expression -> expression . MINUS expression
-    (13) math_expression -> expression . MATRIX_MUL expression
-    (14) math_expression -> expression . ELEMENTAL_MUL expression
-    (15) math_expression -> expression . LEFT_CYCLIC_SHIFT
-    (16) math_expression -> expression . RIGHT_CYCLIC_SHIFT
-    (17) math_expression -> expression . TRANSPOSITION
-    (18) math_expression -> expression . LESS expression
-    (19) math_expression -> expression . GREATER expression
-    (21) math_expression -> expression . AND expression
+    (19) math_expression -> expression RIGHT_CYCLIC_SHIFT .
 
-  ! shift/reduce conflict for PLUS resolved as shift
-  ! shift/reduce conflict for MINUS resolved as shift
-  ! shift/reduce conflict for MATRIX_MUL resolved as shift
-  ! shift/reduce conflict for ELEMENTAL_MUL resolved as shift
-  ! shift/reduce conflict for LEFT_CYCLIC_SHIFT resolved as shift
-  ! shift/reduce conflict for RIGHT_CYCLIC_SHIFT resolved as shift
-  ! shift/reduce conflict for TRANSPOSITION resolved as shift
-  ! shift/reduce conflict for LESS resolved as shift
-  ! shift/reduce conflict for GREATER resolved as shift
-  ! shift/reduce conflict for AND resolved as shift
-    NEW_LINE        reduce using rule 13 (math_expression -> expression MATRIX_MUL expression .)
-    PLUS            shift and go to state 39
-    MINUS           shift and go to state 40
-    MATRIX_MUL      shift and go to state 41
-    ELEMENTAL_MUL   shift and go to state 42
-    LEFT_CYCLIC_SHIFT shift and go to state 43
-    RIGHT_CYCLIC_SHIFT shift and go to state 44
-    TRANSPOSITION   shift and go to state 45
-    LESS            shift and go to state 46
-    GREATER         shift and go to state 47
-    AND             shift and go to state 48
-
-  ! PLUS            [ reduce using rule 13 (math_expression -> expression MATRIX_MUL expression .) ]
-  ! MINUS           [ reduce using rule 13 (math_expression -> expression MATRIX_MUL expression .) ]
-  ! MATRIX_MUL      [ reduce using rule 13 (math_expression -> expression MATRIX_MUL expression .) ]
-  ! ELEMENTAL_MUL   [ reduce using rule 13 (math_expression -> expression MATRIX_MUL expression .) ]
-  ! LEFT_CYCLIC_SHIFT [ reduce using rule 13 (math_expression -> expression MATRIX_MUL expression .) ]
-  ! RIGHT_CYCLIC_SHIFT [ reduce using rule 13 (math_expression -> expression MATRIX_MUL expression .) ]
-  ! TRANSPOSITION   [ reduce using rule 13 (math_expression -> expression MATRIX_MUL expression .) ]
-  ! LESS            [ reduce using rule 13 (math_expression -> expression MATRIX_MUL expression .) ]
-  ! GREATER         [ reduce using rule 13 (math_expression -> expression MATRIX_MUL expression .) ]
-  ! AND             [ reduce using rule 13 (math_expression -> expression MATRIX_MUL expression .) ]
+    BEGINIF         reduce using rule 19 (math_expression -> expression RIGHT_CYCLIC_SHIFT .)
+    PLUS            reduce using rule 19 (math_expression -> expression RIGHT_CYCLIC_SHIFT .)
+    MINUS           reduce using rule 19 (math_expression -> expression RIGHT_CYCLIC_SHIFT .)
+    MATRIX_MUL      reduce using rule 19 (math_expression -> expression RIGHT_CYCLIC_SHIFT .)
+    ELEMENTAL_MUL   reduce using rule 19 (math_expression -> expression RIGHT_CYCLIC_SHIFT .)
+    LEFT_CYCLIC_SHIFT reduce using rule 19 (math_expression -> expression RIGHT_CYCLIC_SHIFT .)
+    RIGHT_CYCLIC_SHIFT reduce using rule 19 (math_expression -> expression RIGHT_CYCLIC_SHIFT .)
+    TRANSPOSITION   reduce using rule 19 (math_expression -> expression RIGHT_CYCLIC_SHIFT .)
+    LESS            reduce using rule 19 (math_expression -> expression RIGHT_CYCLIC_SHIFT .)
+    GREATER         reduce using rule 19 (math_expression -> expression RIGHT_CYCLIC_SHIFT .)
+    AND             reduce using rule 19 (math_expression -> expression RIGHT_CYCLIC_SHIFT .)
+    NEW_LINE        reduce using rule 19 (math_expression -> expression RIGHT_CYCLIC_SHIFT .)
+    DOUBLE_DOT      reduce using rule 19 (math_expression -> expression RIGHT_CYCLIC_SHIFT .)
+    COMMA           reduce using rule 19 (math_expression -> expression RIGHT_CYCLIC_SHIFT .)
+    RIGHT_FIGURE_BRACKET reduce using rule 19 (math_expression -> expression RIGHT_CYCLIC_SHIFT .)
+    BEGINFOR        reduce using rule 19 (math_expression -> expression RIGHT_CYCLIC_SHIFT .)
 
 
 state 53
 
-    (14) math_expression -> expression ELEMENTAL_MUL expression .
-    (11) math_expression -> expression . PLUS expression
-    (12) math_expression -> expression . MINUS expression
-    (13) math_expression -> expression . MATRIX_MUL expression
-    (14) math_expression -> expression . ELEMENTAL_MUL expression
-    (15) math_expression -> expression . LEFT_CYCLIC_SHIFT
-    (16) math_expression -> expression . RIGHT_CYCLIC_SHIFT
-    (17) math_expression -> expression . TRANSPOSITION
-    (18) math_expression -> expression . LESS expression
-    (19) math_expression -> expression . GREATER expression
-    (21) math_expression -> expression . AND expression
+    (20) math_expression -> expression TRANSPOSITION .
 
-  ! shift/reduce conflict for PLUS resolved as shift
-  ! shift/reduce conflict for MINUS resolved as shift
-  ! shift/reduce conflict for MATRIX_MUL resolved as shift
-  ! shift/reduce conflict for ELEMENTAL_MUL resolved as shift
-  ! shift/reduce conflict for LEFT_CYCLIC_SHIFT resolved as shift
-  ! shift/reduce conflict for RIGHT_CYCLIC_SHIFT resolved as shift
-  ! shift/reduce conflict for TRANSPOSITION resolved as shift
-  ! shift/reduce conflict for LESS resolved as shift
-  ! shift/reduce conflict for GREATER resolved as shift
-  ! shift/reduce conflict for AND resolved as shift
-    NEW_LINE        reduce using rule 14 (math_expression -> expression ELEMENTAL_MUL expression .)
-    PLUS            shift and go to state 39
-    MINUS           shift and go to state 40
-    MATRIX_MUL      shift and go to state 41
-    ELEMENTAL_MUL   shift and go to state 42
-    LEFT_CYCLIC_SHIFT shift and go to state 43
-    RIGHT_CYCLIC_SHIFT shift and go to state 44
-    TRANSPOSITION   shift and go to state 45
-    LESS            shift and go to state 46
-    GREATER         shift and go to state 47
-    AND             shift and go to state 48
-
-  ! PLUS            [ reduce using rule 14 (math_expression -> expression ELEMENTAL_MUL expression .) ]
-  ! MINUS           [ reduce using rule 14 (math_expression -> expression ELEMENTAL_MUL expression .) ]
-  ! MATRIX_MUL      [ reduce using rule 14 (math_expression -> expression ELEMENTAL_MUL expression .) ]
-  ! ELEMENTAL_MUL   [ reduce using rule 14 (math_expression -> expression ELEMENTAL_MUL expression .) ]
-  ! LEFT_CYCLIC_SHIFT [ reduce using rule 14 (math_expression -> expression ELEMENTAL_MUL expression .) ]
-  ! RIGHT_CYCLIC_SHIFT [ reduce using rule 14 (math_expression -> expression ELEMENTAL_MUL expression .) ]
-  ! TRANSPOSITION   [ reduce using rule 14 (math_expression -> expression ELEMENTAL_MUL expression .) ]
-  ! LESS            [ reduce using rule 14 (math_expression -> expression ELEMENTAL_MUL expression .) ]
-  ! GREATER         [ reduce using rule 14 (math_expression -> expression ELEMENTAL_MUL expression .) ]
-  ! AND             [ reduce using rule 14 (math_expression -> expression ELEMENTAL_MUL expression .) ]
+    BEGINIF         reduce using rule 20 (math_expression -> expression TRANSPOSITION .)
+    PLUS            reduce using rule 20 (math_expression -> expression TRANSPOSITION .)
+    MINUS           reduce using rule 20 (math_expression -> expression TRANSPOSITION .)
+    MATRIX_MUL      reduce using rule 20 (math_expression -> expression TRANSPOSITION .)
+    ELEMENTAL_MUL   reduce using rule 20 (math_expression -> expression TRANSPOSITION .)
+    LEFT_CYCLIC_SHIFT reduce using rule 20 (math_expression -> expression TRANSPOSITION .)
+    RIGHT_CYCLIC_SHIFT reduce using rule 20 (math_expression -> expression TRANSPOSITION .)
+    TRANSPOSITION   reduce using rule 20 (math_expression -> expression TRANSPOSITION .)
+    LESS            reduce using rule 20 (math_expression -> expression TRANSPOSITION .)
+    GREATER         reduce using rule 20 (math_expression -> expression TRANSPOSITION .)
+    AND             reduce using rule 20 (math_expression -> expression TRANSPOSITION .)
+    NEW_LINE        reduce using rule 20 (math_expression -> expression TRANSPOSITION .)
+    DOUBLE_DOT      reduce using rule 20 (math_expression -> expression TRANSPOSITION .)
+    COMMA           reduce using rule 20 (math_expression -> expression TRANSPOSITION .)
+    RIGHT_FIGURE_BRACKET reduce using rule 20 (math_expression -> expression TRANSPOSITION .)
+    BEGINFOR        reduce using rule 20 (math_expression -> expression TRANSPOSITION .)
 
 
 state 54
 
-    (18) math_expression -> expression LESS expression .
-    (11) math_expression -> expression . PLUS expression
-    (12) math_expression -> expression . MINUS expression
-    (13) math_expression -> expression . MATRIX_MUL expression
-    (14) math_expression -> expression . ELEMENTAL_MUL expression
-    (15) math_expression -> expression . LEFT_CYCLIC_SHIFT
-    (16) math_expression -> expression . RIGHT_CYCLIC_SHIFT
-    (17) math_expression -> expression . TRANSPOSITION
-    (18) math_expression -> expression . LESS expression
-    (19) math_expression -> expression . GREATER expression
-    (21) math_expression -> expression . AND expression
+    (21) math_expression -> expression LESS . expression
+    (11) expression -> . math_expression
+    (12) expression -> . variable
+    (13) expression -> . constant
+    (14) math_expression -> . expression PLUS expression
+    (15) math_expression -> . expression MINUS expression
+    (16) math_expression -> . expression MATRIX_MUL expression
+    (17) math_expression -> . expression ELEMENTAL_MUL expression
+    (18) math_expression -> . expression LEFT_CYCLIC_SHIFT
+    (19) math_expression -> . expression RIGHT_CYCLIC_SHIFT
+    (20) math_expression -> . expression TRANSPOSITION
+    (21) math_expression -> . expression LESS expression
+    (22) math_expression -> . expression GREATER expression
+    (23) math_expression -> . NEGATIVE expression
+    (24) math_expression -> . expression AND expression
+    (25) variable -> . VARIABLE
+    (40) constant -> . INT_BINARY
+    (41) constant -> . INT_DECIMAL
+    (42) constant -> . TRUE
+    (43) constant -> . FALSE
 
-  ! shift/reduce conflict for PLUS resolved as shift
-  ! shift/reduce conflict for MINUS resolved as shift
-  ! shift/reduce conflict for MATRIX_MUL resolved as shift
-  ! shift/reduce conflict for ELEMENTAL_MUL resolved as shift
-  ! shift/reduce conflict for LEFT_CYCLIC_SHIFT resolved as shift
-  ! shift/reduce conflict for RIGHT_CYCLIC_SHIFT resolved as shift
-  ! shift/reduce conflict for TRANSPOSITION resolved as shift
-  ! shift/reduce conflict for LESS resolved as shift
-  ! shift/reduce conflict for GREATER resolved as shift
-  ! shift/reduce conflict for AND resolved as shift
-    NEW_LINE        reduce using rule 18 (math_expression -> expression LESS expression .)
-    PLUS            shift and go to state 39
-    MINUS           shift and go to state 40
-    MATRIX_MUL      shift and go to state 41
-    ELEMENTAL_MUL   shift and go to state 42
-    LEFT_CYCLIC_SHIFT shift and go to state 43
-    RIGHT_CYCLIC_SHIFT shift and go to state 44
-    TRANSPOSITION   shift and go to state 45
-    LESS            shift and go to state 46
-    GREATER         shift and go to state 47
-    AND             shift and go to state 48
+    NEGATIVE        shift and go to state 38
+    VARIABLE        shift and go to state 9
+    INT_BINARY      shift and go to state 39
+    INT_DECIMAL     shift and go to state 40
+    TRUE            shift and go to state 41
+    FALSE           shift and go to state 42
 
-  ! PLUS            [ reduce using rule 18 (math_expression -> expression LESS expression .) ]
-  ! MINUS           [ reduce using rule 18 (math_expression -> expression LESS expression .) ]
-  ! MATRIX_MUL      [ reduce using rule 18 (math_expression -> expression LESS expression .) ]
-  ! ELEMENTAL_MUL   [ reduce using rule 18 (math_expression -> expression LESS expression .) ]
-  ! LEFT_CYCLIC_SHIFT [ reduce using rule 18 (math_expression -> expression LESS expression .) ]
-  ! RIGHT_CYCLIC_SHIFT [ reduce using rule 18 (math_expression -> expression LESS expression .) ]
-  ! TRANSPOSITION   [ reduce using rule 18 (math_expression -> expression LESS expression .) ]
-  ! LESS            [ reduce using rule 18 (math_expression -> expression LESS expression .) ]
-  ! GREATER         [ reduce using rule 18 (math_expression -> expression LESS expression .) ]
-  ! AND             [ reduce using rule 18 (math_expression -> expression LESS expression .) ]
-
+    expression                     shift and go to state 66
+    math_expression                shift and go to state 35
+    variable                       shift and go to state 36
+    constant                       shift and go to state 37
 
 state 55
 
-    (19) math_expression -> expression GREATER expression .
-    (11) math_expression -> expression . PLUS expression
-    (12) math_expression -> expression . MINUS expression
-    (13) math_expression -> expression . MATRIX_MUL expression
-    (14) math_expression -> expression . ELEMENTAL_MUL expression
-    (15) math_expression -> expression . LEFT_CYCLIC_SHIFT
-    (16) math_expression -> expression . RIGHT_CYCLIC_SHIFT
-    (17) math_expression -> expression . TRANSPOSITION
-    (18) math_expression -> expression . LESS expression
-    (19) math_expression -> expression . GREATER expression
-    (21) math_expression -> expression . AND expression
+    (22) math_expression -> expression GREATER . expression
+    (11) expression -> . math_expression
+    (12) expression -> . variable
+    (13) expression -> . constant
+    (14) math_expression -> . expression PLUS expression
+    (15) math_expression -> . expression MINUS expression
+    (16) math_expression -> . expression MATRIX_MUL expression
+    (17) math_expression -> . expression ELEMENTAL_MUL expression
+    (18) math_expression -> . expression LEFT_CYCLIC_SHIFT
+    (19) math_expression -> . expression RIGHT_CYCLIC_SHIFT
+    (20) math_expression -> . expression TRANSPOSITION
+    (21) math_expression -> . expression LESS expression
+    (22) math_expression -> . expression GREATER expression
+    (23) math_expression -> . NEGATIVE expression
+    (24) math_expression -> . expression AND expression
+    (25) variable -> . VARIABLE
+    (40) constant -> . INT_BINARY
+    (41) constant -> . INT_DECIMAL
+    (42) constant -> . TRUE
+    (43) constant -> . FALSE
 
-  ! shift/reduce conflict for PLUS resolved as shift
-  ! shift/reduce conflict for MINUS resolved as shift
-  ! shift/reduce conflict for MATRIX_MUL resolved as shift
-  ! shift/reduce conflict for ELEMENTAL_MUL resolved as shift
-  ! shift/reduce conflict for LEFT_CYCLIC_SHIFT resolved as shift
-  ! shift/reduce conflict for RIGHT_CYCLIC_SHIFT resolved as shift
-  ! shift/reduce conflict for TRANSPOSITION resolved as shift
-  ! shift/reduce conflict for LESS resolved as shift
-  ! shift/reduce conflict for GREATER resolved as shift
-  ! shift/reduce conflict for AND resolved as shift
-    NEW_LINE        reduce using rule 19 (math_expression -> expression GREATER expression .)
-    PLUS            shift and go to state 39
-    MINUS           shift and go to state 40
-    MATRIX_MUL      shift and go to state 41
-    ELEMENTAL_MUL   shift and go to state 42
-    LEFT_CYCLIC_SHIFT shift and go to state 43
-    RIGHT_CYCLIC_SHIFT shift and go to state 44
-    TRANSPOSITION   shift and go to state 45
-    LESS            shift and go to state 46
-    GREATER         shift and go to state 47
-    AND             shift and go to state 48
+    NEGATIVE        shift and go to state 38
+    VARIABLE        shift and go to state 9
+    INT_BINARY      shift and go to state 39
+    INT_DECIMAL     shift and go to state 40
+    TRUE            shift and go to state 41
+    FALSE           shift and go to state 42
 
-  ! PLUS            [ reduce using rule 19 (math_expression -> expression GREATER expression .) ]
-  ! MINUS           [ reduce using rule 19 (math_expression -> expression GREATER expression .) ]
-  ! MATRIX_MUL      [ reduce using rule 19 (math_expression -> expression GREATER expression .) ]
-  ! ELEMENTAL_MUL   [ reduce using rule 19 (math_expression -> expression GREATER expression .) ]
-  ! LEFT_CYCLIC_SHIFT [ reduce using rule 19 (math_expression -> expression GREATER expression .) ]
-  ! RIGHT_CYCLIC_SHIFT [ reduce using rule 19 (math_expression -> expression GREATER expression .) ]
-  ! TRANSPOSITION   [ reduce using rule 19 (math_expression -> expression GREATER expression .) ]
-  ! LESS            [ reduce using rule 19 (math_expression -> expression GREATER expression .) ]
-  ! GREATER         [ reduce using rule 19 (math_expression -> expression GREATER expression .) ]
-  ! AND             [ reduce using rule 19 (math_expression -> expression GREATER expression .) ]
-
+    expression                     shift and go to state 67
+    math_expression                shift and go to state 35
+    variable                       shift and go to state 36
+    constant                       shift and go to state 37
 
 state 56
 
-    (21) math_expression -> expression AND expression .
-    (11) math_expression -> expression . PLUS expression
-    (12) math_expression -> expression . MINUS expression
-    (13) math_expression -> expression . MATRIX_MUL expression
-    (14) math_expression -> expression . ELEMENTAL_MUL expression
-    (15) math_expression -> expression . LEFT_CYCLIC_SHIFT
-    (16) math_expression -> expression . RIGHT_CYCLIC_SHIFT
-    (17) math_expression -> expression . TRANSPOSITION
-    (18) math_expression -> expression . LESS expression
-    (19) math_expression -> expression . GREATER expression
-    (21) math_expression -> expression . AND expression
+    (24) math_expression -> expression AND . expression
+    (11) expression -> . math_expression
+    (12) expression -> . variable
+    (13) expression -> . constant
+    (14) math_expression -> . expression PLUS expression
+    (15) math_expression -> . expression MINUS expression
+    (16) math_expression -> . expression MATRIX_MUL expression
+    (17) math_expression -> . expression ELEMENTAL_MUL expression
+    (18) math_expression -> . expression LEFT_CYCLIC_SHIFT
+    (19) math_expression -> . expression RIGHT_CYCLIC_SHIFT
+    (20) math_expression -> . expression TRANSPOSITION
+    (21) math_expression -> . expression LESS expression
+    (22) math_expression -> . expression GREATER expression
+    (23) math_expression -> . NEGATIVE expression
+    (24) math_expression -> . expression AND expression
+    (25) variable -> . VARIABLE
+    (40) constant -> . INT_BINARY
+    (41) constant -> . INT_DECIMAL
+    (42) constant -> . TRUE
+    (43) constant -> . FALSE
+
+    NEGATIVE        shift and go to state 38
+    VARIABLE        shift and go to state 9
+    INT_BINARY      shift and go to state 39
+    INT_DECIMAL     shift and go to state 40
+    TRUE            shift and go to state 41
+    FALSE           shift and go to state 42
+
+    expression                     shift and go to state 68
+    math_expression                shift and go to state 35
+    variable                       shift and go to state 36
+    constant                       shift and go to state 37
+
+state 57
+
+    (23) math_expression -> NEGATIVE expression .
+    (14) math_expression -> expression . PLUS expression
+    (15) math_expression -> expression . MINUS expression
+    (16) math_expression -> expression . MATRIX_MUL expression
+    (17) math_expression -> expression . ELEMENTAL_MUL expression
+    (18) math_expression -> expression . LEFT_CYCLIC_SHIFT
+    (19) math_expression -> expression . RIGHT_CYCLIC_SHIFT
+    (20) math_expression -> expression . TRANSPOSITION
+    (21) math_expression -> expression . LESS expression
+    (22) math_expression -> expression . GREATER expression
+    (24) math_expression -> expression . AND expression
 
   ! shift/reduce conflict for PLUS resolved as shift
   ! shift/reduce conflict for MINUS resolved as shift
@@ -1409,109 +1288,1168 @@ state 56
   ! shift/reduce conflict for LESS resolved as shift
   ! shift/reduce conflict for GREATER resolved as shift
   ! shift/reduce conflict for AND resolved as shift
-    NEW_LINE        reduce using rule 21 (math_expression -> expression AND expression .)
-    PLUS            shift and go to state 39
-    MINUS           shift and go to state 40
-    MATRIX_MUL      shift and go to state 41
-    ELEMENTAL_MUL   shift and go to state 42
-    LEFT_CYCLIC_SHIFT shift and go to state 43
-    RIGHT_CYCLIC_SHIFT shift and go to state 44
-    TRANSPOSITION   shift and go to state 45
-    LESS            shift and go to state 46
-    GREATER         shift and go to state 47
-    AND             shift and go to state 48
+    BEGINIF         reduce using rule 23 (math_expression -> NEGATIVE expression .)
+    NEW_LINE        reduce using rule 23 (math_expression -> NEGATIVE expression .)
+    DOUBLE_DOT      reduce using rule 23 (math_expression -> NEGATIVE expression .)
+    COMMA           reduce using rule 23 (math_expression -> NEGATIVE expression .)
+    RIGHT_FIGURE_BRACKET reduce using rule 23 (math_expression -> NEGATIVE expression .)
+    BEGINFOR        reduce using rule 23 (math_expression -> NEGATIVE expression .)
+    PLUS            shift and go to state 47
+    MINUS           shift and go to state 48
+    MATRIX_MUL      shift and go to state 49
+    ELEMENTAL_MUL   shift and go to state 50
+    LEFT_CYCLIC_SHIFT shift and go to state 51
+    RIGHT_CYCLIC_SHIFT shift and go to state 52
+    TRANSPOSITION   shift and go to state 53
+    LESS            shift and go to state 54
+    GREATER         shift and go to state 55
+    AND             shift and go to state 56
 
-  ! PLUS            [ reduce using rule 21 (math_expression -> expression AND expression .) ]
-  ! MINUS           [ reduce using rule 21 (math_expression -> expression AND expression .) ]
-  ! MATRIX_MUL      [ reduce using rule 21 (math_expression -> expression AND expression .) ]
-  ! ELEMENTAL_MUL   [ reduce using rule 21 (math_expression -> expression AND expression .) ]
-  ! LEFT_CYCLIC_SHIFT [ reduce using rule 21 (math_expression -> expression AND expression .) ]
-  ! RIGHT_CYCLIC_SHIFT [ reduce using rule 21 (math_expression -> expression AND expression .) ]
-  ! TRANSPOSITION   [ reduce using rule 21 (math_expression -> expression AND expression .) ]
-  ! LESS            [ reduce using rule 21 (math_expression -> expression AND expression .) ]
-  ! GREATER         [ reduce using rule 21 (math_expression -> expression AND expression .) ]
-  ! AND             [ reduce using rule 21 (math_expression -> expression AND expression .) ]
+  ! PLUS            [ reduce using rule 23 (math_expression -> NEGATIVE expression .) ]
+  ! MINUS           [ reduce using rule 23 (math_expression -> NEGATIVE expression .) ]
+  ! MATRIX_MUL      [ reduce using rule 23 (math_expression -> NEGATIVE expression .) ]
+  ! ELEMENTAL_MUL   [ reduce using rule 23 (math_expression -> NEGATIVE expression .) ]
+  ! LEFT_CYCLIC_SHIFT [ reduce using rule 23 (math_expression -> NEGATIVE expression .) ]
+  ! RIGHT_CYCLIC_SHIFT [ reduce using rule 23 (math_expression -> NEGATIVE expression .) ]
+  ! TRANSPOSITION   [ reduce using rule 23 (math_expression -> NEGATIVE expression .) ]
+  ! LESS            [ reduce using rule 23 (math_expression -> NEGATIVE expression .) ]
+  ! GREATER         [ reduce using rule 23 (math_expression -> NEGATIVE expression .) ]
+  ! AND             [ reduce using rule 23 (math_expression -> NEGATIVE expression .) ]
+
+
+state 58
+
+    (50) for -> FOR VARIABLE EQUAL . expression DOUBLE_DOT expression BEGINFOR NEW_LINE sentence_list ENDFOR
+    (11) expression -> . math_expression
+    (12) expression -> . variable
+    (13) expression -> . constant
+    (14) math_expression -> . expression PLUS expression
+    (15) math_expression -> . expression MINUS expression
+    (16) math_expression -> . expression MATRIX_MUL expression
+    (17) math_expression -> . expression ELEMENTAL_MUL expression
+    (18) math_expression -> . expression LEFT_CYCLIC_SHIFT
+    (19) math_expression -> . expression RIGHT_CYCLIC_SHIFT
+    (20) math_expression -> . expression TRANSPOSITION
+    (21) math_expression -> . expression LESS expression
+    (22) math_expression -> . expression GREATER expression
+    (23) math_expression -> . NEGATIVE expression
+    (24) math_expression -> . expression AND expression
+    (25) variable -> . VARIABLE
+    (40) constant -> . INT_BINARY
+    (41) constant -> . INT_DECIMAL
+    (42) constant -> . TRUE
+    (43) constant -> . FALSE
+
+    NEGATIVE        shift and go to state 38
+    VARIABLE        shift and go to state 9
+    INT_BINARY      shift and go to state 39
+    INT_DECIMAL     shift and go to state 40
+    TRUE            shift and go to state 41
+    FALSE           shift and go to state 42
+
+    expression                     shift and go to state 69
+    math_expression                shift and go to state 35
+    variable                       shift and go to state 36
+    constant                       shift and go to state 37
+
+state 59
+
+    (8) declaration -> type VARIABLE EQUAL expression .
+    (14) math_expression -> expression . PLUS expression
+    (15) math_expression -> expression . MINUS expression
+    (16) math_expression -> expression . MATRIX_MUL expression
+    (17) math_expression -> expression . ELEMENTAL_MUL expression
+    (18) math_expression -> expression . LEFT_CYCLIC_SHIFT
+    (19) math_expression -> expression . RIGHT_CYCLIC_SHIFT
+    (20) math_expression -> expression . TRANSPOSITION
+    (21) math_expression -> expression . LESS expression
+    (22) math_expression -> expression . GREATER expression
+    (24) math_expression -> expression . AND expression
+
+    NEW_LINE        reduce using rule 8 (declaration -> type VARIABLE EQUAL expression .)
+    PLUS            shift and go to state 47
+    MINUS           shift and go to state 48
+    MATRIX_MUL      shift and go to state 49
+    ELEMENTAL_MUL   shift and go to state 50
+    LEFT_CYCLIC_SHIFT shift and go to state 51
+    RIGHT_CYCLIC_SHIFT shift and go to state 52
+    TRANSPOSITION   shift and go to state 53
+    LESS            shift and go to state 54
+    GREATER         shift and go to state 55
+    AND             shift and go to state 56
+
+
+state 60
+
+    (9) declaration -> type VARIABLE EQUAL LEFT_FIGURE_BRACKET . list_args RIGHT_FIGURE_BRACKET
+    (44) list_args -> . LEFT_FIGURE_BRACKET list_expressions RIGHT_FIGURE_BRACKET
+    (45) list_args -> . list_args COMMA LEFT_FIGURE_BRACKET list_args RIGHT_FIGURE_BRACKET
+    (46) list_args -> . list_expressions
+    (47) list_expressions -> . list_expressions COMMA expression
+    (48) list_expressions -> . expression
+    (11) expression -> . math_expression
+    (12) expression -> . variable
+    (13) expression -> . constant
+    (14) math_expression -> . expression PLUS expression
+    (15) math_expression -> . expression MINUS expression
+    (16) math_expression -> . expression MATRIX_MUL expression
+    (17) math_expression -> . expression ELEMENTAL_MUL expression
+    (18) math_expression -> . expression LEFT_CYCLIC_SHIFT
+    (19) math_expression -> . expression RIGHT_CYCLIC_SHIFT
+    (20) math_expression -> . expression TRANSPOSITION
+    (21) math_expression -> . expression LESS expression
+    (22) math_expression -> . expression GREATER expression
+    (23) math_expression -> . NEGATIVE expression
+    (24) math_expression -> . expression AND expression
+    (25) variable -> . VARIABLE
+    (40) constant -> . INT_BINARY
+    (41) constant -> . INT_DECIMAL
+    (42) constant -> . TRUE
+    (43) constant -> . FALSE
+
+    LEFT_FIGURE_BRACKET shift and go to state 70
+    NEGATIVE        shift and go to state 38
+    VARIABLE        shift and go to state 9
+    INT_BINARY      shift and go to state 39
+    INT_DECIMAL     shift and go to state 40
+    TRUE            shift and go to state 41
+    FALSE           shift and go to state 42
+
+    list_args                      shift and go to state 71
+    list_expressions               shift and go to state 72
+    expression                     shift and go to state 73
+    math_expression                shift and go to state 35
+    variable                       shift and go to state 36
+    constant                       shift and go to state 37
+
+state 61
+
+    (49) if -> IF expression BEGINIF NEW_LINE . sentence_list ENDIF
+    (2) sentence_list -> . sentence_list single_sentence
+    (3) sentence_list -> . single_sentence
+    (4) single_sentence -> . declaration NEW_LINE
+    (5) single_sentence -> . assignment NEW_LINE
+    (6) single_sentence -> . if NEW_LINE
+    (7) single_sentence -> . for NEW_LINE
+    (8) declaration -> . type VARIABLE EQUAL expression
+    (9) declaration -> . type VARIABLE EQUAL LEFT_FIGURE_BRACKET list_args RIGHT_FIGURE_BRACKET
+    (10) assignment -> . variable ASSIGN expression
+    (49) if -> . IF expression BEGINIF NEW_LINE sentence_list ENDIF
+    (50) for -> . FOR VARIABLE EQUAL expression DOUBLE_DOT expression BEGINFOR NEW_LINE sentence_list ENDFOR
+    (26) type -> . int
+    (27) type -> . bool
+    (25) variable -> . VARIABLE
+    (28) int -> . INT
+    (29) int -> . CVINT
+    (30) int -> . VINT
+    (31) int -> . CMINT
+    (32) int -> . MINT
+    (33) int -> . CINT
+    (34) bool -> . BOOL
+    (35) bool -> . CMBOOL
+    (36) bool -> . MBOOL
+    (37) bool -> . CVBOOL
+    (38) bool -> . VBOOL
+    (39) bool -> . CBOOL
+
+    IF              shift and go to state 11
+    FOR             shift and go to state 12
+    VARIABLE        shift and go to state 9
+    INT             shift and go to state 15
+    CVINT           shift and go to state 16
+    VINT            shift and go to state 17
+    CMINT           shift and go to state 18
+    MINT            shift and go to state 19
+    CINT            shift and go to state 20
+    BOOL            shift and go to state 21
+    CMBOOL          shift and go to state 22
+    MBOOL           shift and go to state 23
+    CVBOOL          shift and go to state 24
+    VBOOL           shift and go to state 25
+    CBOOL           shift and go to state 26
+
+    sentence_list                  shift and go to state 74
+    single_sentence                shift and go to state 3
+    declaration                    shift and go to state 4
+    assignment                     shift and go to state 5
+    if                             shift and go to state 6
+    for                            shift and go to state 7
+    type                           shift and go to state 8
+    variable                       shift and go to state 10
+    int                            shift and go to state 13
+    bool                           shift and go to state 14
+
+state 62
+
+    (14) math_expression -> expression PLUS expression .
+    (14) math_expression -> expression . PLUS expression
+    (15) math_expression -> expression . MINUS expression
+    (16) math_expression -> expression . MATRIX_MUL expression
+    (17) math_expression -> expression . ELEMENTAL_MUL expression
+    (18) math_expression -> expression . LEFT_CYCLIC_SHIFT
+    (19) math_expression -> expression . RIGHT_CYCLIC_SHIFT
+    (20) math_expression -> expression . TRANSPOSITION
+    (21) math_expression -> expression . LESS expression
+    (22) math_expression -> expression . GREATER expression
+    (24) math_expression -> expression . AND expression
+
+  ! shift/reduce conflict for PLUS resolved as shift
+  ! shift/reduce conflict for MINUS resolved as shift
+  ! shift/reduce conflict for MATRIX_MUL resolved as shift
+  ! shift/reduce conflict for ELEMENTAL_MUL resolved as shift
+  ! shift/reduce conflict for LEFT_CYCLIC_SHIFT resolved as shift
+  ! shift/reduce conflict for RIGHT_CYCLIC_SHIFT resolved as shift
+  ! shift/reduce conflict for TRANSPOSITION resolved as shift
+  ! shift/reduce conflict for LESS resolved as shift
+  ! shift/reduce conflict for GREATER resolved as shift
+  ! shift/reduce conflict for AND resolved as shift
+    BEGINIF         reduce using rule 14 (math_expression -> expression PLUS expression .)
+    NEW_LINE        reduce using rule 14 (math_expression -> expression PLUS expression .)
+    DOUBLE_DOT      reduce using rule 14 (math_expression -> expression PLUS expression .)
+    COMMA           reduce using rule 14 (math_expression -> expression PLUS expression .)
+    RIGHT_FIGURE_BRACKET reduce using rule 14 (math_expression -> expression PLUS expression .)
+    BEGINFOR        reduce using rule 14 (math_expression -> expression PLUS expression .)
+    PLUS            shift and go to state 47
+    MINUS           shift and go to state 48
+    MATRIX_MUL      shift and go to state 49
+    ELEMENTAL_MUL   shift and go to state 50
+    LEFT_CYCLIC_SHIFT shift and go to state 51
+    RIGHT_CYCLIC_SHIFT shift and go to state 52
+    TRANSPOSITION   shift and go to state 53
+    LESS            shift and go to state 54
+    GREATER         shift and go to state 55
+    AND             shift and go to state 56
+
+  ! PLUS            [ reduce using rule 14 (math_expression -> expression PLUS expression .) ]
+  ! MINUS           [ reduce using rule 14 (math_expression -> expression PLUS expression .) ]
+  ! MATRIX_MUL      [ reduce using rule 14 (math_expression -> expression PLUS expression .) ]
+  ! ELEMENTAL_MUL   [ reduce using rule 14 (math_expression -> expression PLUS expression .) ]
+  ! LEFT_CYCLIC_SHIFT [ reduce using rule 14 (math_expression -> expression PLUS expression .) ]
+  ! RIGHT_CYCLIC_SHIFT [ reduce using rule 14 (math_expression -> expression PLUS expression .) ]
+  ! TRANSPOSITION   [ reduce using rule 14 (math_expression -> expression PLUS expression .) ]
+  ! LESS            [ reduce using rule 14 (math_expression -> expression PLUS expression .) ]
+  ! GREATER         [ reduce using rule 14 (math_expression -> expression PLUS expression .) ]
+  ! AND             [ reduce using rule 14 (math_expression -> expression PLUS expression .) ]
+
+
+state 63
+
+    (15) math_expression -> expression MINUS expression .
+    (14) math_expression -> expression . PLUS expression
+    (15) math_expression -> expression . MINUS expression
+    (16) math_expression -> expression . MATRIX_MUL expression
+    (17) math_expression -> expression . ELEMENTAL_MUL expression
+    (18) math_expression -> expression . LEFT_CYCLIC_SHIFT
+    (19) math_expression -> expression . RIGHT_CYCLIC_SHIFT
+    (20) math_expression -> expression . TRANSPOSITION
+    (21) math_expression -> expression . LESS expression
+    (22) math_expression -> expression . GREATER expression
+    (24) math_expression -> expression . AND expression
+
+  ! shift/reduce conflict for PLUS resolved as shift
+  ! shift/reduce conflict for MINUS resolved as shift
+  ! shift/reduce conflict for MATRIX_MUL resolved as shift
+  ! shift/reduce conflict for ELEMENTAL_MUL resolved as shift
+  ! shift/reduce conflict for LEFT_CYCLIC_SHIFT resolved as shift
+  ! shift/reduce conflict for RIGHT_CYCLIC_SHIFT resolved as shift
+  ! shift/reduce conflict for TRANSPOSITION resolved as shift
+  ! shift/reduce conflict for LESS resolved as shift
+  ! shift/reduce conflict for GREATER resolved as shift
+  ! shift/reduce conflict for AND resolved as shift
+    BEGINIF         reduce using rule 15 (math_expression -> expression MINUS expression .)
+    NEW_LINE        reduce using rule 15 (math_expression -> expression MINUS expression .)
+    DOUBLE_DOT      reduce using rule 15 (math_expression -> expression MINUS expression .)
+    COMMA           reduce using rule 15 (math_expression -> expression MINUS expression .)
+    RIGHT_FIGURE_BRACKET reduce using rule 15 (math_expression -> expression MINUS expression .)
+    BEGINFOR        reduce using rule 15 (math_expression -> expression MINUS expression .)
+    PLUS            shift and go to state 47
+    MINUS           shift and go to state 48
+    MATRIX_MUL      shift and go to state 49
+    ELEMENTAL_MUL   shift and go to state 50
+    LEFT_CYCLIC_SHIFT shift and go to state 51
+    RIGHT_CYCLIC_SHIFT shift and go to state 52
+    TRANSPOSITION   shift and go to state 53
+    LESS            shift and go to state 54
+    GREATER         shift and go to state 55
+    AND             shift and go to state 56
+
+  ! PLUS            [ reduce using rule 15 (math_expression -> expression MINUS expression .) ]
+  ! MINUS           [ reduce using rule 15 (math_expression -> expression MINUS expression .) ]
+  ! MATRIX_MUL      [ reduce using rule 15 (math_expression -> expression MINUS expression .) ]
+  ! ELEMENTAL_MUL   [ reduce using rule 15 (math_expression -> expression MINUS expression .) ]
+  ! LEFT_CYCLIC_SHIFT [ reduce using rule 15 (math_expression -> expression MINUS expression .) ]
+  ! RIGHT_CYCLIC_SHIFT [ reduce using rule 15 (math_expression -> expression MINUS expression .) ]
+  ! TRANSPOSITION   [ reduce using rule 15 (math_expression -> expression MINUS expression .) ]
+  ! LESS            [ reduce using rule 15 (math_expression -> expression MINUS expression .) ]
+  ! GREATER         [ reduce using rule 15 (math_expression -> expression MINUS expression .) ]
+  ! AND             [ reduce using rule 15 (math_expression -> expression MINUS expression .) ]
+
+
+state 64
+
+    (16) math_expression -> expression MATRIX_MUL expression .
+    (14) math_expression -> expression . PLUS expression
+    (15) math_expression -> expression . MINUS expression
+    (16) math_expression -> expression . MATRIX_MUL expression
+    (17) math_expression -> expression . ELEMENTAL_MUL expression
+    (18) math_expression -> expression . LEFT_CYCLIC_SHIFT
+    (19) math_expression -> expression . RIGHT_CYCLIC_SHIFT
+    (20) math_expression -> expression . TRANSPOSITION
+    (21) math_expression -> expression . LESS expression
+    (22) math_expression -> expression . GREATER expression
+    (24) math_expression -> expression . AND expression
+
+  ! shift/reduce conflict for PLUS resolved as shift
+  ! shift/reduce conflict for MINUS resolved as shift
+  ! shift/reduce conflict for MATRIX_MUL resolved as shift
+  ! shift/reduce conflict for ELEMENTAL_MUL resolved as shift
+  ! shift/reduce conflict for LEFT_CYCLIC_SHIFT resolved as shift
+  ! shift/reduce conflict for RIGHT_CYCLIC_SHIFT resolved as shift
+  ! shift/reduce conflict for TRANSPOSITION resolved as shift
+  ! shift/reduce conflict for LESS resolved as shift
+  ! shift/reduce conflict for GREATER resolved as shift
+  ! shift/reduce conflict for AND resolved as shift
+    BEGINIF         reduce using rule 16 (math_expression -> expression MATRIX_MUL expression .)
+    NEW_LINE        reduce using rule 16 (math_expression -> expression MATRIX_MUL expression .)
+    DOUBLE_DOT      reduce using rule 16 (math_expression -> expression MATRIX_MUL expression .)
+    COMMA           reduce using rule 16 (math_expression -> expression MATRIX_MUL expression .)
+    RIGHT_FIGURE_BRACKET reduce using rule 16 (math_expression -> expression MATRIX_MUL expression .)
+    BEGINFOR        reduce using rule 16 (math_expression -> expression MATRIX_MUL expression .)
+    PLUS            shift and go to state 47
+    MINUS           shift and go to state 48
+    MATRIX_MUL      shift and go to state 49
+    ELEMENTAL_MUL   shift and go to state 50
+    LEFT_CYCLIC_SHIFT shift and go to state 51
+    RIGHT_CYCLIC_SHIFT shift and go to state 52
+    TRANSPOSITION   shift and go to state 53
+    LESS            shift and go to state 54
+    GREATER         shift and go to state 55
+    AND             shift and go to state 56
+
+  ! PLUS            [ reduce using rule 16 (math_expression -> expression MATRIX_MUL expression .) ]
+  ! MINUS           [ reduce using rule 16 (math_expression -> expression MATRIX_MUL expression .) ]
+  ! MATRIX_MUL      [ reduce using rule 16 (math_expression -> expression MATRIX_MUL expression .) ]
+  ! ELEMENTAL_MUL   [ reduce using rule 16 (math_expression -> expression MATRIX_MUL expression .) ]
+  ! LEFT_CYCLIC_SHIFT [ reduce using rule 16 (math_expression -> expression MATRIX_MUL expression .) ]
+  ! RIGHT_CYCLIC_SHIFT [ reduce using rule 16 (math_expression -> expression MATRIX_MUL expression .) ]
+  ! TRANSPOSITION   [ reduce using rule 16 (math_expression -> expression MATRIX_MUL expression .) ]
+  ! LESS            [ reduce using rule 16 (math_expression -> expression MATRIX_MUL expression .) ]
+  ! GREATER         [ reduce using rule 16 (math_expression -> expression MATRIX_MUL expression .) ]
+  ! AND             [ reduce using rule 16 (math_expression -> expression MATRIX_MUL expression .) ]
+
+
+state 65
+
+    (17) math_expression -> expression ELEMENTAL_MUL expression .
+    (14) math_expression -> expression . PLUS expression
+    (15) math_expression -> expression . MINUS expression
+    (16) math_expression -> expression . MATRIX_MUL expression
+    (17) math_expression -> expression . ELEMENTAL_MUL expression
+    (18) math_expression -> expression . LEFT_CYCLIC_SHIFT
+    (19) math_expression -> expression . RIGHT_CYCLIC_SHIFT
+    (20) math_expression -> expression . TRANSPOSITION
+    (21) math_expression -> expression . LESS expression
+    (22) math_expression -> expression . GREATER expression
+    (24) math_expression -> expression . AND expression
+
+  ! shift/reduce conflict for PLUS resolved as shift
+  ! shift/reduce conflict for MINUS resolved as shift
+  ! shift/reduce conflict for MATRIX_MUL resolved as shift
+  ! shift/reduce conflict for ELEMENTAL_MUL resolved as shift
+  ! shift/reduce conflict for LEFT_CYCLIC_SHIFT resolved as shift
+  ! shift/reduce conflict for RIGHT_CYCLIC_SHIFT resolved as shift
+  ! shift/reduce conflict for TRANSPOSITION resolved as shift
+  ! shift/reduce conflict for LESS resolved as shift
+  ! shift/reduce conflict for GREATER resolved as shift
+  ! shift/reduce conflict for AND resolved as shift
+    BEGINIF         reduce using rule 17 (math_expression -> expression ELEMENTAL_MUL expression .)
+    NEW_LINE        reduce using rule 17 (math_expression -> expression ELEMENTAL_MUL expression .)
+    DOUBLE_DOT      reduce using rule 17 (math_expression -> expression ELEMENTAL_MUL expression .)
+    COMMA           reduce using rule 17 (math_expression -> expression ELEMENTAL_MUL expression .)
+    RIGHT_FIGURE_BRACKET reduce using rule 17 (math_expression -> expression ELEMENTAL_MUL expression .)
+    BEGINFOR        reduce using rule 17 (math_expression -> expression ELEMENTAL_MUL expression .)
+    PLUS            shift and go to state 47
+    MINUS           shift and go to state 48
+    MATRIX_MUL      shift and go to state 49
+    ELEMENTAL_MUL   shift and go to state 50
+    LEFT_CYCLIC_SHIFT shift and go to state 51
+    RIGHT_CYCLIC_SHIFT shift and go to state 52
+    TRANSPOSITION   shift and go to state 53
+    LESS            shift and go to state 54
+    GREATER         shift and go to state 55
+    AND             shift and go to state 56
+
+  ! PLUS            [ reduce using rule 17 (math_expression -> expression ELEMENTAL_MUL expression .) ]
+  ! MINUS           [ reduce using rule 17 (math_expression -> expression ELEMENTAL_MUL expression .) ]
+  ! MATRIX_MUL      [ reduce using rule 17 (math_expression -> expression ELEMENTAL_MUL expression .) ]
+  ! ELEMENTAL_MUL   [ reduce using rule 17 (math_expression -> expression ELEMENTAL_MUL expression .) ]
+  ! LEFT_CYCLIC_SHIFT [ reduce using rule 17 (math_expression -> expression ELEMENTAL_MUL expression .) ]
+  ! RIGHT_CYCLIC_SHIFT [ reduce using rule 17 (math_expression -> expression ELEMENTAL_MUL expression .) ]
+  ! TRANSPOSITION   [ reduce using rule 17 (math_expression -> expression ELEMENTAL_MUL expression .) ]
+  ! LESS            [ reduce using rule 17 (math_expression -> expression ELEMENTAL_MUL expression .) ]
+  ! GREATER         [ reduce using rule 17 (math_expression -> expression ELEMENTAL_MUL expression .) ]
+  ! AND             [ reduce using rule 17 (math_expression -> expression ELEMENTAL_MUL expression .) ]
+
+
+state 66
+
+    (21) math_expression -> expression LESS expression .
+    (14) math_expression -> expression . PLUS expression
+    (15) math_expression -> expression . MINUS expression
+    (16) math_expression -> expression . MATRIX_MUL expression
+    (17) math_expression -> expression . ELEMENTAL_MUL expression
+    (18) math_expression -> expression . LEFT_CYCLIC_SHIFT
+    (19) math_expression -> expression . RIGHT_CYCLIC_SHIFT
+    (20) math_expression -> expression . TRANSPOSITION
+    (21) math_expression -> expression . LESS expression
+    (22) math_expression -> expression . GREATER expression
+    (24) math_expression -> expression . AND expression
+
+  ! shift/reduce conflict for PLUS resolved as shift
+  ! shift/reduce conflict for MINUS resolved as shift
+  ! shift/reduce conflict for MATRIX_MUL resolved as shift
+  ! shift/reduce conflict for ELEMENTAL_MUL resolved as shift
+  ! shift/reduce conflict for LEFT_CYCLIC_SHIFT resolved as shift
+  ! shift/reduce conflict for RIGHT_CYCLIC_SHIFT resolved as shift
+  ! shift/reduce conflict for TRANSPOSITION resolved as shift
+  ! shift/reduce conflict for LESS resolved as shift
+  ! shift/reduce conflict for GREATER resolved as shift
+  ! shift/reduce conflict for AND resolved as shift
+    BEGINIF         reduce using rule 21 (math_expression -> expression LESS expression .)
+    NEW_LINE        reduce using rule 21 (math_expression -> expression LESS expression .)
+    DOUBLE_DOT      reduce using rule 21 (math_expression -> expression LESS expression .)
+    COMMA           reduce using rule 21 (math_expression -> expression LESS expression .)
+    RIGHT_FIGURE_BRACKET reduce using rule 21 (math_expression -> expression LESS expression .)
+    BEGINFOR        reduce using rule 21 (math_expression -> expression LESS expression .)
+    PLUS            shift and go to state 47
+    MINUS           shift and go to state 48
+    MATRIX_MUL      shift and go to state 49
+    ELEMENTAL_MUL   shift and go to state 50
+    LEFT_CYCLIC_SHIFT shift and go to state 51
+    RIGHT_CYCLIC_SHIFT shift and go to state 52
+    TRANSPOSITION   shift and go to state 53
+    LESS            shift and go to state 54
+    GREATER         shift and go to state 55
+    AND             shift and go to state 56
+
+  ! PLUS            [ reduce using rule 21 (math_expression -> expression LESS expression .) ]
+  ! MINUS           [ reduce using rule 21 (math_expression -> expression LESS expression .) ]
+  ! MATRIX_MUL      [ reduce using rule 21 (math_expression -> expression LESS expression .) ]
+  ! ELEMENTAL_MUL   [ reduce using rule 21 (math_expression -> expression LESS expression .) ]
+  ! LEFT_CYCLIC_SHIFT [ reduce using rule 21 (math_expression -> expression LESS expression .) ]
+  ! RIGHT_CYCLIC_SHIFT [ reduce using rule 21 (math_expression -> expression LESS expression .) ]
+  ! TRANSPOSITION   [ reduce using rule 21 (math_expression -> expression LESS expression .) ]
+  ! LESS            [ reduce using rule 21 (math_expression -> expression LESS expression .) ]
+  ! GREATER         [ reduce using rule 21 (math_expression -> expression LESS expression .) ]
+  ! AND             [ reduce using rule 21 (math_expression -> expression LESS expression .) ]
+
+
+state 67
+
+    (22) math_expression -> expression GREATER expression .
+    (14) math_expression -> expression . PLUS expression
+    (15) math_expression -> expression . MINUS expression
+    (16) math_expression -> expression . MATRIX_MUL expression
+    (17) math_expression -> expression . ELEMENTAL_MUL expression
+    (18) math_expression -> expression . LEFT_CYCLIC_SHIFT
+    (19) math_expression -> expression . RIGHT_CYCLIC_SHIFT
+    (20) math_expression -> expression . TRANSPOSITION
+    (21) math_expression -> expression . LESS expression
+    (22) math_expression -> expression . GREATER expression
+    (24) math_expression -> expression . AND expression
+
+  ! shift/reduce conflict for PLUS resolved as shift
+  ! shift/reduce conflict for MINUS resolved as shift
+  ! shift/reduce conflict for MATRIX_MUL resolved as shift
+  ! shift/reduce conflict for ELEMENTAL_MUL resolved as shift
+  ! shift/reduce conflict for LEFT_CYCLIC_SHIFT resolved as shift
+  ! shift/reduce conflict for RIGHT_CYCLIC_SHIFT resolved as shift
+  ! shift/reduce conflict for TRANSPOSITION resolved as shift
+  ! shift/reduce conflict for LESS resolved as shift
+  ! shift/reduce conflict for GREATER resolved as shift
+  ! shift/reduce conflict for AND resolved as shift
+    BEGINIF         reduce using rule 22 (math_expression -> expression GREATER expression .)
+    NEW_LINE        reduce using rule 22 (math_expression -> expression GREATER expression .)
+    DOUBLE_DOT      reduce using rule 22 (math_expression -> expression GREATER expression .)
+    COMMA           reduce using rule 22 (math_expression -> expression GREATER expression .)
+    RIGHT_FIGURE_BRACKET reduce using rule 22 (math_expression -> expression GREATER expression .)
+    BEGINFOR        reduce using rule 22 (math_expression -> expression GREATER expression .)
+    PLUS            shift and go to state 47
+    MINUS           shift and go to state 48
+    MATRIX_MUL      shift and go to state 49
+    ELEMENTAL_MUL   shift and go to state 50
+    LEFT_CYCLIC_SHIFT shift and go to state 51
+    RIGHT_CYCLIC_SHIFT shift and go to state 52
+    TRANSPOSITION   shift and go to state 53
+    LESS            shift and go to state 54
+    GREATER         shift and go to state 55
+    AND             shift and go to state 56
+
+  ! PLUS            [ reduce using rule 22 (math_expression -> expression GREATER expression .) ]
+  ! MINUS           [ reduce using rule 22 (math_expression -> expression GREATER expression .) ]
+  ! MATRIX_MUL      [ reduce using rule 22 (math_expression -> expression GREATER expression .) ]
+  ! ELEMENTAL_MUL   [ reduce using rule 22 (math_expression -> expression GREATER expression .) ]
+  ! LEFT_CYCLIC_SHIFT [ reduce using rule 22 (math_expression -> expression GREATER expression .) ]
+  ! RIGHT_CYCLIC_SHIFT [ reduce using rule 22 (math_expression -> expression GREATER expression .) ]
+  ! TRANSPOSITION   [ reduce using rule 22 (math_expression -> expression GREATER expression .) ]
+  ! LESS            [ reduce using rule 22 (math_expression -> expression GREATER expression .) ]
+  ! GREATER         [ reduce using rule 22 (math_expression -> expression GREATER expression .) ]
+  ! AND             [ reduce using rule 22 (math_expression -> expression GREATER expression .) ]
+
+
+state 68
+
+    (24) math_expression -> expression AND expression .
+    (14) math_expression -> expression . PLUS expression
+    (15) math_expression -> expression . MINUS expression
+    (16) math_expression -> expression . MATRIX_MUL expression
+    (17) math_expression -> expression . ELEMENTAL_MUL expression
+    (18) math_expression -> expression . LEFT_CYCLIC_SHIFT
+    (19) math_expression -> expression . RIGHT_CYCLIC_SHIFT
+    (20) math_expression -> expression . TRANSPOSITION
+    (21) math_expression -> expression . LESS expression
+    (22) math_expression -> expression . GREATER expression
+    (24) math_expression -> expression . AND expression
+
+  ! shift/reduce conflict for PLUS resolved as shift
+  ! shift/reduce conflict for MINUS resolved as shift
+  ! shift/reduce conflict for MATRIX_MUL resolved as shift
+  ! shift/reduce conflict for ELEMENTAL_MUL resolved as shift
+  ! shift/reduce conflict for LEFT_CYCLIC_SHIFT resolved as shift
+  ! shift/reduce conflict for RIGHT_CYCLIC_SHIFT resolved as shift
+  ! shift/reduce conflict for TRANSPOSITION resolved as shift
+  ! shift/reduce conflict for LESS resolved as shift
+  ! shift/reduce conflict for GREATER resolved as shift
+  ! shift/reduce conflict for AND resolved as shift
+    BEGINIF         reduce using rule 24 (math_expression -> expression AND expression .)
+    NEW_LINE        reduce using rule 24 (math_expression -> expression AND expression .)
+    DOUBLE_DOT      reduce using rule 24 (math_expression -> expression AND expression .)
+    COMMA           reduce using rule 24 (math_expression -> expression AND expression .)
+    RIGHT_FIGURE_BRACKET reduce using rule 24 (math_expression -> expression AND expression .)
+    BEGINFOR        reduce using rule 24 (math_expression -> expression AND expression .)
+    PLUS            shift and go to state 47
+    MINUS           shift and go to state 48
+    MATRIX_MUL      shift and go to state 49
+    ELEMENTAL_MUL   shift and go to state 50
+    LEFT_CYCLIC_SHIFT shift and go to state 51
+    RIGHT_CYCLIC_SHIFT shift and go to state 52
+    TRANSPOSITION   shift and go to state 53
+    LESS            shift and go to state 54
+    GREATER         shift and go to state 55
+    AND             shift and go to state 56
+
+  ! PLUS            [ reduce using rule 24 (math_expression -> expression AND expression .) ]
+  ! MINUS           [ reduce using rule 24 (math_expression -> expression AND expression .) ]
+  ! MATRIX_MUL      [ reduce using rule 24 (math_expression -> expression AND expression .) ]
+  ! ELEMENTAL_MUL   [ reduce using rule 24 (math_expression -> expression AND expression .) ]
+  ! LEFT_CYCLIC_SHIFT [ reduce using rule 24 (math_expression -> expression AND expression .) ]
+  ! RIGHT_CYCLIC_SHIFT [ reduce using rule 24 (math_expression -> expression AND expression .) ]
+  ! TRANSPOSITION   [ reduce using rule 24 (math_expression -> expression AND expression .) ]
+  ! LESS            [ reduce using rule 24 (math_expression -> expression AND expression .) ]
+  ! GREATER         [ reduce using rule 24 (math_expression -> expression AND expression .) ]
+  ! AND             [ reduce using rule 24 (math_expression -> expression AND expression .) ]
+
+
+state 69
+
+    (50) for -> FOR VARIABLE EQUAL expression . DOUBLE_DOT expression BEGINFOR NEW_LINE sentence_list ENDFOR
+    (14) math_expression -> expression . PLUS expression
+    (15) math_expression -> expression . MINUS expression
+    (16) math_expression -> expression . MATRIX_MUL expression
+    (17) math_expression -> expression . ELEMENTAL_MUL expression
+    (18) math_expression -> expression . LEFT_CYCLIC_SHIFT
+    (19) math_expression -> expression . RIGHT_CYCLIC_SHIFT
+    (20) math_expression -> expression . TRANSPOSITION
+    (21) math_expression -> expression . LESS expression
+    (22) math_expression -> expression . GREATER expression
+    (24) math_expression -> expression . AND expression
+
+    DOUBLE_DOT      shift and go to state 75
+    PLUS            shift and go to state 47
+    MINUS           shift and go to state 48
+    MATRIX_MUL      shift and go to state 49
+    ELEMENTAL_MUL   shift and go to state 50
+    LEFT_CYCLIC_SHIFT shift and go to state 51
+    RIGHT_CYCLIC_SHIFT shift and go to state 52
+    TRANSPOSITION   shift and go to state 53
+    LESS            shift and go to state 54
+    GREATER         shift and go to state 55
+    AND             shift and go to state 56
+
+
+state 70
+
+    (44) list_args -> LEFT_FIGURE_BRACKET . list_expressions RIGHT_FIGURE_BRACKET
+    (47) list_expressions -> . list_expressions COMMA expression
+    (48) list_expressions -> . expression
+    (11) expression -> . math_expression
+    (12) expression -> . variable
+    (13) expression -> . constant
+    (14) math_expression -> . expression PLUS expression
+    (15) math_expression -> . expression MINUS expression
+    (16) math_expression -> . expression MATRIX_MUL expression
+    (17) math_expression -> . expression ELEMENTAL_MUL expression
+    (18) math_expression -> . expression LEFT_CYCLIC_SHIFT
+    (19) math_expression -> . expression RIGHT_CYCLIC_SHIFT
+    (20) math_expression -> . expression TRANSPOSITION
+    (21) math_expression -> . expression LESS expression
+    (22) math_expression -> . expression GREATER expression
+    (23) math_expression -> . NEGATIVE expression
+    (24) math_expression -> . expression AND expression
+    (25) variable -> . VARIABLE
+    (40) constant -> . INT_BINARY
+    (41) constant -> . INT_DECIMAL
+    (42) constant -> . TRUE
+    (43) constant -> . FALSE
+
+    NEGATIVE        shift and go to state 38
+    VARIABLE        shift and go to state 9
+    INT_BINARY      shift and go to state 39
+    INT_DECIMAL     shift and go to state 40
+    TRUE            shift and go to state 41
+    FALSE           shift and go to state 42
+
+    list_expressions               shift and go to state 76
+    expression                     shift and go to state 73
+    math_expression                shift and go to state 35
+    variable                       shift and go to state 36
+    constant                       shift and go to state 37
+
+state 71
+
+    (9) declaration -> type VARIABLE EQUAL LEFT_FIGURE_BRACKET list_args . RIGHT_FIGURE_BRACKET
+    (45) list_args -> list_args . COMMA LEFT_FIGURE_BRACKET list_args RIGHT_FIGURE_BRACKET
+
+    RIGHT_FIGURE_BRACKET shift and go to state 77
+    COMMA           shift and go to state 78
+
+
+state 72
+
+    (46) list_args -> list_expressions .
+    (47) list_expressions -> list_expressions . COMMA expression
+
+  ! shift/reduce conflict for COMMA resolved as shift
+    RIGHT_FIGURE_BRACKET reduce using rule 46 (list_args -> list_expressions .)
+    COMMA           shift and go to state 79
+
+  ! COMMA           [ reduce using rule 46 (list_args -> list_expressions .) ]
+
+
+state 73
+
+    (48) list_expressions -> expression .
+    (14) math_expression -> expression . PLUS expression
+    (15) math_expression -> expression . MINUS expression
+    (16) math_expression -> expression . MATRIX_MUL expression
+    (17) math_expression -> expression . ELEMENTAL_MUL expression
+    (18) math_expression -> expression . LEFT_CYCLIC_SHIFT
+    (19) math_expression -> expression . RIGHT_CYCLIC_SHIFT
+    (20) math_expression -> expression . TRANSPOSITION
+    (21) math_expression -> expression . LESS expression
+    (22) math_expression -> expression . GREATER expression
+    (24) math_expression -> expression . AND expression
+
+    COMMA           reduce using rule 48 (list_expressions -> expression .)
+    RIGHT_FIGURE_BRACKET reduce using rule 48 (list_expressions -> expression .)
+    PLUS            shift and go to state 47
+    MINUS           shift and go to state 48
+    MATRIX_MUL      shift and go to state 49
+    ELEMENTAL_MUL   shift and go to state 50
+    LEFT_CYCLIC_SHIFT shift and go to state 51
+    RIGHT_CYCLIC_SHIFT shift and go to state 52
+    TRANSPOSITION   shift and go to state 53
+    LESS            shift and go to state 54
+    GREATER         shift and go to state 55
+    AND             shift and go to state 56
+
+
+state 74
+
+    (49) if -> IF expression BEGINIF NEW_LINE sentence_list . ENDIF
+    (2) sentence_list -> sentence_list . single_sentence
+    (4) single_sentence -> . declaration NEW_LINE
+    (5) single_sentence -> . assignment NEW_LINE
+    (6) single_sentence -> . if NEW_LINE
+    (7) single_sentence -> . for NEW_LINE
+    (8) declaration -> . type VARIABLE EQUAL expression
+    (9) declaration -> . type VARIABLE EQUAL LEFT_FIGURE_BRACKET list_args RIGHT_FIGURE_BRACKET
+    (10) assignment -> . variable ASSIGN expression
+    (49) if -> . IF expression BEGINIF NEW_LINE sentence_list ENDIF
+    (50) for -> . FOR VARIABLE EQUAL expression DOUBLE_DOT expression BEGINFOR NEW_LINE sentence_list ENDFOR
+    (26) type -> . int
+    (27) type -> . bool
+    (25) variable -> . VARIABLE
+    (28) int -> . INT
+    (29) int -> . CVINT
+    (30) int -> . VINT
+    (31) int -> . CMINT
+    (32) int -> . MINT
+    (33) int -> . CINT
+    (34) bool -> . BOOL
+    (35) bool -> . CMBOOL
+    (36) bool -> . MBOOL
+    (37) bool -> . CVBOOL
+    (38) bool -> . VBOOL
+    (39) bool -> . CBOOL
+
+    ENDIF           shift and go to state 80
+    IF              shift and go to state 11
+    FOR             shift and go to state 12
+    VARIABLE        shift and go to state 9
+    INT             shift and go to state 15
+    CVINT           shift and go to state 16
+    VINT            shift and go to state 17
+    CMINT           shift and go to state 18
+    MINT            shift and go to state 19
+    CINT            shift and go to state 20
+    BOOL            shift and go to state 21
+    CMBOOL          shift and go to state 22
+    MBOOL           shift and go to state 23
+    CVBOOL          shift and go to state 24
+    VBOOL           shift and go to state 25
+    CBOOL           shift and go to state 26
+
+    single_sentence                shift and go to state 27
+    declaration                    shift and go to state 4
+    assignment                     shift and go to state 5
+    if                             shift and go to state 6
+    for                            shift and go to state 7
+    type                           shift and go to state 8
+    variable                       shift and go to state 10
+    int                            shift and go to state 13
+    bool                           shift and go to state 14
+
+state 75
+
+    (50) for -> FOR VARIABLE EQUAL expression DOUBLE_DOT . expression BEGINFOR NEW_LINE sentence_list ENDFOR
+    (11) expression -> . math_expression
+    (12) expression -> . variable
+    (13) expression -> . constant
+    (14) math_expression -> . expression PLUS expression
+    (15) math_expression -> . expression MINUS expression
+    (16) math_expression -> . expression MATRIX_MUL expression
+    (17) math_expression -> . expression ELEMENTAL_MUL expression
+    (18) math_expression -> . expression LEFT_CYCLIC_SHIFT
+    (19) math_expression -> . expression RIGHT_CYCLIC_SHIFT
+    (20) math_expression -> . expression TRANSPOSITION
+    (21) math_expression -> . expression LESS expression
+    (22) math_expression -> . expression GREATER expression
+    (23) math_expression -> . NEGATIVE expression
+    (24) math_expression -> . expression AND expression
+    (25) variable -> . VARIABLE
+    (40) constant -> . INT_BINARY
+    (41) constant -> . INT_DECIMAL
+    (42) constant -> . TRUE
+    (43) constant -> . FALSE
+
+    NEGATIVE        shift and go to state 38
+    VARIABLE        shift and go to state 9
+    INT_BINARY      shift and go to state 39
+    INT_DECIMAL     shift and go to state 40
+    TRUE            shift and go to state 41
+    FALSE           shift and go to state 42
+
+    expression                     shift and go to state 81
+    math_expression                shift and go to state 35
+    variable                       shift and go to state 36
+    constant                       shift and go to state 37
+
+state 76
+
+    (44) list_args -> LEFT_FIGURE_BRACKET list_expressions . RIGHT_FIGURE_BRACKET
+    (47) list_expressions -> list_expressions . COMMA expression
+
+    RIGHT_FIGURE_BRACKET shift and go to state 82
+    COMMA           shift and go to state 79
+
+
+state 77
+
+    (9) declaration -> type VARIABLE EQUAL LEFT_FIGURE_BRACKET list_args RIGHT_FIGURE_BRACKET .
+
+    NEW_LINE        reduce using rule 9 (declaration -> type VARIABLE EQUAL LEFT_FIGURE_BRACKET list_args RIGHT_FIGURE_BRACKET .)
+
+
+state 78
+
+    (45) list_args -> list_args COMMA . LEFT_FIGURE_BRACKET list_args RIGHT_FIGURE_BRACKET
+
+    LEFT_FIGURE_BRACKET shift and go to state 83
+
+
+state 79
+
+    (47) list_expressions -> list_expressions COMMA . expression
+    (11) expression -> . math_expression
+    (12) expression -> . variable
+    (13) expression -> . constant
+    (14) math_expression -> . expression PLUS expression
+    (15) math_expression -> . expression MINUS expression
+    (16) math_expression -> . expression MATRIX_MUL expression
+    (17) math_expression -> . expression ELEMENTAL_MUL expression
+    (18) math_expression -> . expression LEFT_CYCLIC_SHIFT
+    (19) math_expression -> . expression RIGHT_CYCLIC_SHIFT
+    (20) math_expression -> . expression TRANSPOSITION
+    (21) math_expression -> . expression LESS expression
+    (22) math_expression -> . expression GREATER expression
+    (23) math_expression -> . NEGATIVE expression
+    (24) math_expression -> . expression AND expression
+    (25) variable -> . VARIABLE
+    (40) constant -> . INT_BINARY
+    (41) constant -> . INT_DECIMAL
+    (42) constant -> . TRUE
+    (43) constant -> . FALSE
+
+    NEGATIVE        shift and go to state 38
+    VARIABLE        shift and go to state 9
+    INT_BINARY      shift and go to state 39
+    INT_DECIMAL     shift and go to state 40
+    TRUE            shift and go to state 41
+    FALSE           shift and go to state 42
+
+    expression                     shift and go to state 84
+    math_expression                shift and go to state 35
+    variable                       shift and go to state 36
+    constant                       shift and go to state 37
+
+state 80
+
+    (49) if -> IF expression BEGINIF NEW_LINE sentence_list ENDIF .
+
+    NEW_LINE        reduce using rule 49 (if -> IF expression BEGINIF NEW_LINE sentence_list ENDIF .)
+
+
+state 81
+
+    (50) for -> FOR VARIABLE EQUAL expression DOUBLE_DOT expression . BEGINFOR NEW_LINE sentence_list ENDFOR
+    (14) math_expression -> expression . PLUS expression
+    (15) math_expression -> expression . MINUS expression
+    (16) math_expression -> expression . MATRIX_MUL expression
+    (17) math_expression -> expression . ELEMENTAL_MUL expression
+    (18) math_expression -> expression . LEFT_CYCLIC_SHIFT
+    (19) math_expression -> expression . RIGHT_CYCLIC_SHIFT
+    (20) math_expression -> expression . TRANSPOSITION
+    (21) math_expression -> expression . LESS expression
+    (22) math_expression -> expression . GREATER expression
+    (24) math_expression -> expression . AND expression
+
+    BEGINFOR        shift and go to state 85
+    PLUS            shift and go to state 47
+    MINUS           shift and go to state 48
+    MATRIX_MUL      shift and go to state 49
+    ELEMENTAL_MUL   shift and go to state 50
+    LEFT_CYCLIC_SHIFT shift and go to state 51
+    RIGHT_CYCLIC_SHIFT shift and go to state 52
+    TRANSPOSITION   shift and go to state 53
+    LESS            shift and go to state 54
+    GREATER         shift and go to state 55
+    AND             shift and go to state 56
+
+
+state 82
+
+    (44) list_args -> LEFT_FIGURE_BRACKET list_expressions RIGHT_FIGURE_BRACKET .
+
+    RIGHT_FIGURE_BRACKET reduce using rule 44 (list_args -> LEFT_FIGURE_BRACKET list_expressions RIGHT_FIGURE_BRACKET .)
+    COMMA           reduce using rule 44 (list_args -> LEFT_FIGURE_BRACKET list_expressions RIGHT_FIGURE_BRACKET .)
+
+
+state 83
+
+    (45) list_args -> list_args COMMA LEFT_FIGURE_BRACKET . list_args RIGHT_FIGURE_BRACKET
+    (44) list_args -> . LEFT_FIGURE_BRACKET list_expressions RIGHT_FIGURE_BRACKET
+    (45) list_args -> . list_args COMMA LEFT_FIGURE_BRACKET list_args RIGHT_FIGURE_BRACKET
+    (46) list_args -> . list_expressions
+    (47) list_expressions -> . list_expressions COMMA expression
+    (48) list_expressions -> . expression
+    (11) expression -> . math_expression
+    (12) expression -> . variable
+    (13) expression -> . constant
+    (14) math_expression -> . expression PLUS expression
+    (15) math_expression -> . expression MINUS expression
+    (16) math_expression -> . expression MATRIX_MUL expression
+    (17) math_expression -> . expression ELEMENTAL_MUL expression
+    (18) math_expression -> . expression LEFT_CYCLIC_SHIFT
+    (19) math_expression -> . expression RIGHT_CYCLIC_SHIFT
+    (20) math_expression -> . expression TRANSPOSITION
+    (21) math_expression -> . expression LESS expression
+    (22) math_expression -> . expression GREATER expression
+    (23) math_expression -> . NEGATIVE expression
+    (24) math_expression -> . expression AND expression
+    (25) variable -> . VARIABLE
+    (40) constant -> . INT_BINARY
+    (41) constant -> . INT_DECIMAL
+    (42) constant -> . TRUE
+    (43) constant -> . FALSE
+
+    LEFT_FIGURE_BRACKET shift and go to state 70
+    NEGATIVE        shift and go to state 38
+    VARIABLE        shift and go to state 9
+    INT_BINARY      shift and go to state 39
+    INT_DECIMAL     shift and go to state 40
+    TRUE            shift and go to state 41
+    FALSE           shift and go to state 42
+
+    list_args                      shift and go to state 86
+    list_expressions               shift and go to state 72
+    expression                     shift and go to state 73
+    math_expression                shift and go to state 35
+    variable                       shift and go to state 36
+    constant                       shift and go to state 37
+
+state 84
+
+    (47) list_expressions -> list_expressions COMMA expression .
+    (14) math_expression -> expression . PLUS expression
+    (15) math_expression -> expression . MINUS expression
+    (16) math_expression -> expression . MATRIX_MUL expression
+    (17) math_expression -> expression . ELEMENTAL_MUL expression
+    (18) math_expression -> expression . LEFT_CYCLIC_SHIFT
+    (19) math_expression -> expression . RIGHT_CYCLIC_SHIFT
+    (20) math_expression -> expression . TRANSPOSITION
+    (21) math_expression -> expression . LESS expression
+    (22) math_expression -> expression . GREATER expression
+    (24) math_expression -> expression . AND expression
+
+    COMMA           reduce using rule 47 (list_expressions -> list_expressions COMMA expression .)
+    RIGHT_FIGURE_BRACKET reduce using rule 47 (list_expressions -> list_expressions COMMA expression .)
+    PLUS            shift and go to state 47
+    MINUS           shift and go to state 48
+    MATRIX_MUL      shift and go to state 49
+    ELEMENTAL_MUL   shift and go to state 50
+    LEFT_CYCLIC_SHIFT shift and go to state 51
+    RIGHT_CYCLIC_SHIFT shift and go to state 52
+    TRANSPOSITION   shift and go to state 53
+    LESS            shift and go to state 54
+    GREATER         shift and go to state 55
+    AND             shift and go to state 56
+
+
+state 85
+
+    (50) for -> FOR VARIABLE EQUAL expression DOUBLE_DOT expression BEGINFOR . NEW_LINE sentence_list ENDFOR
+
+    NEW_LINE        shift and go to state 87
+
+
+state 86
+
+    (45) list_args -> list_args COMMA LEFT_FIGURE_BRACKET list_args . RIGHT_FIGURE_BRACKET
+    (45) list_args -> list_args . COMMA LEFT_FIGURE_BRACKET list_args RIGHT_FIGURE_BRACKET
+
+    RIGHT_FIGURE_BRACKET shift and go to state 88
+    COMMA           shift and go to state 78
+
+
+state 87
+
+    (50) for -> FOR VARIABLE EQUAL expression DOUBLE_DOT expression BEGINFOR NEW_LINE . sentence_list ENDFOR
+    (2) sentence_list -> . sentence_list single_sentence
+    (3) sentence_list -> . single_sentence
+    (4) single_sentence -> . declaration NEW_LINE
+    (5) single_sentence -> . assignment NEW_LINE
+    (6) single_sentence -> . if NEW_LINE
+    (7) single_sentence -> . for NEW_LINE
+    (8) declaration -> . type VARIABLE EQUAL expression
+    (9) declaration -> . type VARIABLE EQUAL LEFT_FIGURE_BRACKET list_args RIGHT_FIGURE_BRACKET
+    (10) assignment -> . variable ASSIGN expression
+    (49) if -> . IF expression BEGINIF NEW_LINE sentence_list ENDIF
+    (50) for -> . FOR VARIABLE EQUAL expression DOUBLE_DOT expression BEGINFOR NEW_LINE sentence_list ENDFOR
+    (26) type -> . int
+    (27) type -> . bool
+    (25) variable -> . VARIABLE
+    (28) int -> . INT
+    (29) int -> . CVINT
+    (30) int -> . VINT
+    (31) int -> . CMINT
+    (32) int -> . MINT
+    (33) int -> . CINT
+    (34) bool -> . BOOL
+    (35) bool -> . CMBOOL
+    (36) bool -> . MBOOL
+    (37) bool -> . CVBOOL
+    (38) bool -> . VBOOL
+    (39) bool -> . CBOOL
+
+    IF              shift and go to state 11
+    FOR             shift and go to state 12
+    VARIABLE        shift and go to state 9
+    INT             shift and go to state 15
+    CVINT           shift and go to state 16
+    VINT            shift and go to state 17
+    CMINT           shift and go to state 18
+    MINT            shift and go to state 19
+    CINT            shift and go to state 20
+    BOOL            shift and go to state 21
+    CMBOOL          shift and go to state 22
+    MBOOL           shift and go to state 23
+    CVBOOL          shift and go to state 24
+    VBOOL           shift and go to state 25
+    CBOOL           shift and go to state 26
+
+    sentence_list                  shift and go to state 89
+    single_sentence                shift and go to state 3
+    declaration                    shift and go to state 4
+    assignment                     shift and go to state 5
+    if                             shift and go to state 6
+    for                            shift and go to state 7
+    type                           shift and go to state 8
+    variable                       shift and go to state 10
+    int                            shift and go to state 13
+    bool                           shift and go to state 14
+
+state 88
+
+    (45) list_args -> list_args COMMA LEFT_FIGURE_BRACKET list_args RIGHT_FIGURE_BRACKET .
+
+    RIGHT_FIGURE_BRACKET reduce using rule 45 (list_args -> list_args COMMA LEFT_FIGURE_BRACKET list_args RIGHT_FIGURE_BRACKET .)
+    COMMA           reduce using rule 45 (list_args -> list_args COMMA LEFT_FIGURE_BRACKET list_args RIGHT_FIGURE_BRACKET .)
+
+
+state 89
+
+    (50) for -> FOR VARIABLE EQUAL expression DOUBLE_DOT expression BEGINFOR NEW_LINE sentence_list . ENDFOR
+    (2) sentence_list -> sentence_list . single_sentence
+    (4) single_sentence -> . declaration NEW_LINE
+    (5) single_sentence -> . assignment NEW_LINE
+    (6) single_sentence -> . if NEW_LINE
+    (7) single_sentence -> . for NEW_LINE
+    (8) declaration -> . type VARIABLE EQUAL expression
+    (9) declaration -> . type VARIABLE EQUAL LEFT_FIGURE_BRACKET list_args RIGHT_FIGURE_BRACKET
+    (10) assignment -> . variable ASSIGN expression
+    (49) if -> . IF expression BEGINIF NEW_LINE sentence_list ENDIF
+    (50) for -> . FOR VARIABLE EQUAL expression DOUBLE_DOT expression BEGINFOR NEW_LINE sentence_list ENDFOR
+    (26) type -> . int
+    (27) type -> . bool
+    (25) variable -> . VARIABLE
+    (28) int -> . INT
+    (29) int -> . CVINT
+    (30) int -> . VINT
+    (31) int -> . CMINT
+    (32) int -> . MINT
+    (33) int -> . CINT
+    (34) bool -> . BOOL
+    (35) bool -> . CMBOOL
+    (36) bool -> . MBOOL
+    (37) bool -> . CVBOOL
+    (38) bool -> . VBOOL
+    (39) bool -> . CBOOL
+
+    ENDFOR          shift and go to state 90
+    IF              shift and go to state 11
+    FOR             shift and go to state 12
+    VARIABLE        shift and go to state 9
+    INT             shift and go to state 15
+    CVINT           shift and go to state 16
+    VINT            shift and go to state 17
+    CMINT           shift and go to state 18
+    MINT            shift and go to state 19
+    CINT            shift and go to state 20
+    BOOL            shift and go to state 21
+    CMBOOL          shift and go to state 22
+    MBOOL           shift and go to state 23
+    CVBOOL          shift and go to state 24
+    VBOOL           shift and go to state 25
+    CBOOL           shift and go to state 26
+
+    single_sentence                shift and go to state 27
+    declaration                    shift and go to state 4
+    assignment                     shift and go to state 5
+    if                             shift and go to state 6
+    for                            shift and go to state 7
+    type                           shift and go to state 8
+    variable                       shift and go to state 10
+    int                            shift and go to state 13
+    bool                           shift and go to state 14
+
+state 90
+
+    (50) for -> FOR VARIABLE EQUAL expression DOUBLE_DOT expression BEGINFOR NEW_LINE sentence_list ENDFOR .
+
+    NEW_LINE        reduce using rule 50 (for -> FOR VARIABLE EQUAL expression DOUBLE_DOT expression BEGINFOR NEW_LINE sentence_list ENDFOR .)
 
 WARNING: 
 WARNING: Conflicts:
 WARNING: 
-WARNING: shift/reduce conflict for PLUS in state 49 resolved as shift
-WARNING: shift/reduce conflict for MINUS in state 49 resolved as shift
-WARNING: shift/reduce conflict for MATRIX_MUL in state 49 resolved as shift
-WARNING: shift/reduce conflict for ELEMENTAL_MUL in state 49 resolved as shift
-WARNING: shift/reduce conflict for LEFT_CYCLIC_SHIFT in state 49 resolved as shift
-WARNING: shift/reduce conflict for RIGHT_CYCLIC_SHIFT in state 49 resolved as shift
-WARNING: shift/reduce conflict for TRANSPOSITION in state 49 resolved as shift
-WARNING: shift/reduce conflict for LESS in state 49 resolved as shift
-WARNING: shift/reduce conflict for GREATER in state 49 resolved as shift
-WARNING: shift/reduce conflict for AND in state 49 resolved as shift
-WARNING: shift/reduce conflict for PLUS in state 50 resolved as shift
-WARNING: shift/reduce conflict for MINUS in state 50 resolved as shift
-WARNING: shift/reduce conflict for MATRIX_MUL in state 50 resolved as shift
-WARNING: shift/reduce conflict for ELEMENTAL_MUL in state 50 resolved as shift
-WARNING: shift/reduce conflict for LEFT_CYCLIC_SHIFT in state 50 resolved as shift
-WARNING: shift/reduce conflict for RIGHT_CYCLIC_SHIFT in state 50 resolved as shift
-WARNING: shift/reduce conflict for TRANSPOSITION in state 50 resolved as shift
-WARNING: shift/reduce conflict for LESS in state 50 resolved as shift
-WARNING: shift/reduce conflict for GREATER in state 50 resolved as shift
-WARNING: shift/reduce conflict for AND in state 50 resolved as shift
-WARNING: shift/reduce conflict for PLUS in state 51 resolved as shift
-WARNING: shift/reduce conflict for MINUS in state 51 resolved as shift
-WARNING: shift/reduce conflict for MATRIX_MUL in state 51 resolved as shift
-WARNING: shift/reduce conflict for ELEMENTAL_MUL in state 51 resolved as shift
-WARNING: shift/reduce conflict for LEFT_CYCLIC_SHIFT in state 51 resolved as shift
-WARNING: shift/reduce conflict for RIGHT_CYCLIC_SHIFT in state 51 resolved as shift
-WARNING: shift/reduce conflict for TRANSPOSITION in state 51 resolved as shift
-WARNING: shift/reduce conflict for LESS in state 51 resolved as shift
-WARNING: shift/reduce conflict for GREATER in state 51 resolved as shift
-WARNING: shift/reduce conflict for AND in state 51 resolved as shift
-WARNING: shift/reduce conflict for PLUS in state 52 resolved as shift
-WARNING: shift/reduce conflict for MINUS in state 52 resolved as shift
-WARNING: shift/reduce conflict for MATRIX_MUL in state 52 resolved as shift
-WARNING: shift/reduce conflict for ELEMENTAL_MUL in state 52 resolved as shift
-WARNING: shift/reduce conflict for LEFT_CYCLIC_SHIFT in state 52 resolved as shift
-WARNING: shift/reduce conflict for RIGHT_CYCLIC_SHIFT in state 52 resolved as shift
-WARNING: shift/reduce conflict for TRANSPOSITION in state 52 resolved as shift
-WARNING: shift/reduce conflict for LESS in state 52 resolved as shift
-WARNING: shift/reduce conflict for GREATER in state 52 resolved as shift
-WARNING: shift/reduce conflict for AND in state 52 resolved as shift
-WARNING: shift/reduce conflict for PLUS in state 53 resolved as shift
-WARNING: shift/reduce conflict for MINUS in state 53 resolved as shift
-WARNING: shift/reduce conflict for MATRIX_MUL in state 53 resolved as shift
-WARNING: shift/reduce conflict for ELEMENTAL_MUL in state 53 resolved as shift
-WARNING: shift/reduce conflict for LEFT_CYCLIC_SHIFT in state 53 resolved as shift
-WARNING: shift/reduce conflict for RIGHT_CYCLIC_SHIFT in state 53 resolved as shift
-WARNING: shift/reduce conflict for TRANSPOSITION in state 53 resolved as shift
-WARNING: shift/reduce conflict for LESS in state 53 resolved as shift
-WARNING: shift/reduce conflict for GREATER in state 53 resolved as shift
-WARNING: shift/reduce conflict for AND in state 53 resolved as shift
-WARNING: shift/reduce conflict for PLUS in state 54 resolved as shift
-WARNING: shift/reduce conflict for MINUS in state 54 resolved as shift
-WARNING: shift/reduce conflict for MATRIX_MUL in state 54 resolved as shift
-WARNING: shift/reduce conflict for ELEMENTAL_MUL in state 54 resolved as shift
-WARNING: shift/reduce conflict for LEFT_CYCLIC_SHIFT in state 54 resolved as shift
-WARNING: shift/reduce conflict for RIGHT_CYCLIC_SHIFT in state 54 resolved as shift
-WARNING: shift/reduce conflict for TRANSPOSITION in state 54 resolved as shift
-WARNING: shift/reduce conflict for LESS in state 54 resolved as shift
-WARNING: shift/reduce conflict for GREATER in state 54 resolved as shift
-WARNING: shift/reduce conflict for AND in state 54 resolved as shift
-WARNING: shift/reduce conflict for PLUS in state 55 resolved as shift
-WARNING: shift/reduce conflict for MINUS in state 55 resolved as shift
-WARNING: shift/reduce conflict for MATRIX_MUL in state 55 resolved as shift
-WARNING: shift/reduce conflict for ELEMENTAL_MUL in state 55 resolved as shift
-WARNING: shift/reduce conflict for LEFT_CYCLIC_SHIFT in state 55 resolved as shift
-WARNING: shift/reduce conflict for RIGHT_CYCLIC_SHIFT in state 55 resolved as shift
-WARNING: shift/reduce conflict for TRANSPOSITION in state 55 resolved as shift
-WARNING: shift/reduce conflict for LESS in state 55 resolved as shift
-WARNING: shift/reduce conflict for GREATER in state 55 resolved as shift
-WARNING: shift/reduce conflict for AND in state 55 resolved as shift
-WARNING: shift/reduce conflict for PLUS in state 56 resolved as shift
-WARNING: shift/reduce conflict for MINUS in state 56 resolved as shift
-WARNING: shift/reduce conflict for MATRIX_MUL in state 56 resolved as shift
-WARNING: shift/reduce conflict for ELEMENTAL_MUL in state 56 resolved as shift
-WARNING: shift/reduce conflict for LEFT_CYCLIC_SHIFT in state 56 resolved as shift
-WARNING: shift/reduce conflict for RIGHT_CYCLIC_SHIFT in state 56 resolved as shift
-WARNING: shift/reduce conflict for TRANSPOSITION in state 56 resolved as shift
-WARNING: shift/reduce conflict for LESS in state 56 resolved as shift
-WARNING: shift/reduce conflict for GREATER in state 56 resolved as shift
-WARNING: shift/reduce conflict for AND in state 56 resolved as shift
+WARNING: shift/reduce conflict for PLUS in state 57 resolved as shift
+WARNING: shift/reduce conflict for MINUS in state 57 resolved as shift
+WARNING: shift/reduce conflict for MATRIX_MUL in state 57 resolved as shift
+WARNING: shift/reduce conflict for ELEMENTAL_MUL in state 57 resolved as shift
+WARNING: shift/reduce conflict for LEFT_CYCLIC_SHIFT in state 57 resolved as shift
+WARNING: shift/reduce conflict for RIGHT_CYCLIC_SHIFT in state 57 resolved as shift
+WARNING: shift/reduce conflict for TRANSPOSITION in state 57 resolved as shift
+WARNING: shift/reduce conflict for LESS in state 57 resolved as shift
+WARNING: shift/reduce conflict for GREATER in state 57 resolved as shift
+WARNING: shift/reduce conflict for AND in state 57 resolved as shift
+WARNING: shift/reduce conflict for PLUS in state 62 resolved as shift
+WARNING: shift/reduce conflict for MINUS in state 62 resolved as shift
+WARNING: shift/reduce conflict for MATRIX_MUL in state 62 resolved as shift
+WARNING: shift/reduce conflict for ELEMENTAL_MUL in state 62 resolved as shift
+WARNING: shift/reduce conflict for LEFT_CYCLIC_SHIFT in state 62 resolved as shift
+WARNING: shift/reduce conflict for RIGHT_CYCLIC_SHIFT in state 62 resolved as shift
+WARNING: shift/reduce conflict for TRANSPOSITION in state 62 resolved as shift
+WARNING: shift/reduce conflict for LESS in state 62 resolved as shift
+WARNING: shift/reduce conflict for GREATER in state 62 resolved as shift
+WARNING: shift/reduce conflict for AND in state 62 resolved as shift
+WARNING: shift/reduce conflict for PLUS in state 63 resolved as shift
+WARNING: shift/reduce conflict for MINUS in state 63 resolved as shift
+WARNING: shift/reduce conflict for MATRIX_MUL in state 63 resolved as shift
+WARNING: shift/reduce conflict for ELEMENTAL_MUL in state 63 resolved as shift
+WARNING: shift/reduce conflict for LEFT_CYCLIC_SHIFT in state 63 resolved as shift
+WARNING: shift/reduce conflict for RIGHT_CYCLIC_SHIFT in state 63 resolved as shift
+WARNING: shift/reduce conflict for TRANSPOSITION in state 63 resolved as shift
+WARNING: shift/reduce conflict for LESS in state 63 resolved as shift
+WARNING: shift/reduce conflict for GREATER in state 63 resolved as shift
+WARNING: shift/reduce conflict for AND in state 63 resolved as shift
+WARNING: shift/reduce conflict for PLUS in state 64 resolved as shift
+WARNING: shift/reduce conflict for MINUS in state 64 resolved as shift
+WARNING: shift/reduce conflict for MATRIX_MUL in state 64 resolved as shift
+WARNING: shift/reduce conflict for ELEMENTAL_MUL in state 64 resolved as shift
+WARNING: shift/reduce conflict for LEFT_CYCLIC_SHIFT in state 64 resolved as shift
+WARNING: shift/reduce conflict for RIGHT_CYCLIC_SHIFT in state 64 resolved as shift
+WARNING: shift/reduce conflict for TRANSPOSITION in state 64 resolved as shift
+WARNING: shift/reduce conflict for LESS in state 64 resolved as shift
+WARNING: shift/reduce conflict for GREATER in state 64 resolved as shift
+WARNING: shift/reduce conflict for AND in state 64 resolved as shift
+WARNING: shift/reduce conflict for PLUS in state 65 resolved as shift
+WARNING: shift/reduce conflict for MINUS in state 65 resolved as shift
+WARNING: shift/reduce conflict for MATRIX_MUL in state 65 resolved as shift
+WARNING: shift/reduce conflict for ELEMENTAL_MUL in state 65 resolved as shift
+WARNING: shift/reduce conflict for LEFT_CYCLIC_SHIFT in state 65 resolved as shift
+WARNING: shift/reduce conflict for RIGHT_CYCLIC_SHIFT in state 65 resolved as shift
+WARNING: shift/reduce conflict for TRANSPOSITION in state 65 resolved as shift
+WARNING: shift/reduce conflict for LESS in state 65 resolved as shift
+WARNING: shift/reduce conflict for GREATER in state 65 resolved as shift
+WARNING: shift/reduce conflict for AND in state 65 resolved as shift
+WARNING: shift/reduce conflict for PLUS in state 66 resolved as shift
+WARNING: shift/reduce conflict for MINUS in state 66 resolved as shift
+WARNING: shift/reduce conflict for MATRIX_MUL in state 66 resolved as shift
+WARNING: shift/reduce conflict for ELEMENTAL_MUL in state 66 resolved as shift
+WARNING: shift/reduce conflict for LEFT_CYCLIC_SHIFT in state 66 resolved as shift
+WARNING: shift/reduce conflict for RIGHT_CYCLIC_SHIFT in state 66 resolved as shift
+WARNING: shift/reduce conflict for TRANSPOSITION in state 66 resolved as shift
+WARNING: shift/reduce conflict for LESS in state 66 resolved as shift
+WARNING: shift/reduce conflict for GREATER in state 66 resolved as shift
+WARNING: shift/reduce conflict for AND in state 66 resolved as shift
+WARNING: shift/reduce conflict for PLUS in state 67 resolved as shift
+WARNING: shift/reduce conflict for MINUS in state 67 resolved as shift
+WARNING: shift/reduce conflict for MATRIX_MUL in state 67 resolved as shift
+WARNING: shift/reduce conflict for ELEMENTAL_MUL in state 67 resolved as shift
+WARNING: shift/reduce conflict for LEFT_CYCLIC_SHIFT in state 67 resolved as shift
+WARNING: shift/reduce conflict for RIGHT_CYCLIC_SHIFT in state 67 resolved as shift
+WARNING: shift/reduce conflict for TRANSPOSITION in state 67 resolved as shift
+WARNING: shift/reduce conflict for LESS in state 67 resolved as shift
+WARNING: shift/reduce conflict for GREATER in state 67 resolved as shift
+WARNING: shift/reduce conflict for AND in state 67 resolved as shift
+WARNING: shift/reduce conflict for PLUS in state 68 resolved as shift
+WARNING: shift/reduce conflict for MINUS in state 68 resolved as shift
+WARNING: shift/reduce conflict for MATRIX_MUL in state 68 resolved as shift
+WARNING: shift/reduce conflict for ELEMENTAL_MUL in state 68 resolved as shift
+WARNING: shift/reduce conflict for LEFT_CYCLIC_SHIFT in state 68 resolved as shift
+WARNING: shift/reduce conflict for RIGHT_CYCLIC_SHIFT in state 68 resolved as shift
+WARNING: shift/reduce conflict for TRANSPOSITION in state 68 resolved as shift
+WARNING: shift/reduce conflict for LESS in state 68 resolved as shift
+WARNING: shift/reduce conflict for GREATER in state 68 resolved as shift
+WARNING: shift/reduce conflict for AND in state 68 resolved as shift
+WARNING: shift/reduce conflict for COMMA in state 72 resolved as shift
