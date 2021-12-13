@@ -2,6 +2,9 @@ from Lexer.JazzLexer import JazzLexer
 import ply.yacc as yacc
 from NodeSTBuilder import NodeSTBuilder
 
+# TODO make grammars for calling of functions
+# TODO make grammars for robot actions
+# TODO getting by index
 
 class JazzParser(object):
     tokens = JazzLexer.tokens
@@ -45,7 +48,8 @@ class JazzParser(object):
         self.node_builder.declaration(p)
 
     def p_assignment(self, p):
-        """assignment : variable ASSIGN expression"""
+        """assignment : variable ASSIGN expression
+                      | variable ASSIGN LEFT_FIGURE_BRACKET list_args RIGHT_FIGURE_BRACKET"""
         self.node_builder.assignment(p)
 
     def p_expression(self, p):
@@ -129,8 +133,9 @@ class JazzParser(object):
         self.node_builder.function(p, self.funcTable)
 
     def p_return_spec(self, p):
-        """return_spec : return_spec COMMA type VARIABLE
-                       | type VARIABLE EQUAL"""
+        """return_spec : return_spec COMMA type VARIABLE EQUAL
+                       | type VARIABLE EQUAL
+                       | type VARIABLE"""
         self.node_builder.return_spec(p)
 
     def p_parameters(self, p):

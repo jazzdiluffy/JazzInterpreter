@@ -23,8 +23,12 @@ class NodeSTBuilder:
             p[0] = NodeOfST(node_type="declaration", value=p[1], children=[child])
 
     def assignment(self, p):
-        child = NodeOfST(node_type="id", value="", children=[p[3]])
-        p[0] = NodeOfST(node_type="assignment", value=p[1], children=[child])
+        if len(p) == 4:
+            child = NodeOfST(node_type="id", value="", children=[p[3]])
+            p[0] = NodeOfST(node_type="assignment", value=p[1], children=[child])
+        else:
+            child = NodeOfST(node_type="id", value="", children=[p[4]])
+            p[0] = NodeOfST(node_type="assignment", value=p[1], children=[child])
 
     def expression(self, p):
         p[0] = NodeOfST(node_type="expression", value="", children=[p[1]])
@@ -75,14 +79,8 @@ class NodeSTBuilder:
         p[0] = NodeOfST(node_type="for", value="", children=[variableChild, startChild, stopChild, ifbodyChild])
 
 
-        """function : return_spec FUNCTION VARIABLE LEFT_BRACKET parameters RIGHT_BRACKET BEGIN NEW_LINE sentence_list END
-                    | return_spec FUNCTION VARIABLE LEFT_BRACKET RIGHT_BRACKET BEGIN NEW_LINE sentence_list END
-                    | FUNCTION VARIABLE LEFT_BRACKET parameters RIGHT_BRACKET BEGIN NEW_LINE sentence_list END
-                    | FUNCTION VARIABLE LEFT_BRACKET RIGHT_BRACKET BEGIN NEW_LINE sentence_list END"""
-                    #
     def function(self, p, funcTable):
         if len(p) == 11:
-            print("DEBUG I AM HERE1")
             func_key = p[3]
             returnSpecChild = p[1]
             parametersChild = p[5]
@@ -92,7 +90,6 @@ class NodeSTBuilder:
                                                 children=[returnSpecChild, parametersChild, funcBodyChild])
             p[0] = NodeOfST(node_type="function", value=p[3])
         elif len(p) == 10 and p[1] != "function":
-            print("DEBUG I AM HERE2")
             func_key = p[3]
             returnSpecChild = p[1]
             funcBodyChild = p[8]
@@ -100,8 +97,7 @@ class NodeSTBuilder:
                                                 value="",
                                                 children=[returnSpecChild, funcBodyChild])
             p[0] = NodeOfST(node_type="function", value=p[3])
-        elif len(p) == 10 and p[1] == "FUNCTION":
-            print("DEBUG I AM HERE3")
+        elif len(p) == 10 and p[1] == "function":
             func_key = p[2]
             parametersChild = p[4]
             funcBodyChild = p[8]
@@ -110,7 +106,6 @@ class NodeSTBuilder:
                                                 children=[parametersChild, funcBodyChild])
             p[0] = NodeOfST(node_type="function", value=p[2])
         else:
-            print("DEBUG I AM HERE4")
             func_key = p[2]
             funcBodyChild = p[8]
             funcTable[func_key] = NodeOfST(node_type="func_declaration",
@@ -119,7 +114,7 @@ class NodeSTBuilder:
             p[0] = NodeOfST(node_type="function", value=p[2])
 
     def return_spec(self, p):
-        if len(p) == 4:
+        if len(p) == 3 or len(p) == 4:
             p[0] = NodeOfST(node_type="return_spec", value="", children=[p[1], p[2]])
         else:
             p[0] = NodeOfST(node_type="return_spec", value="", children=[p[1], p[3], p[4]])

@@ -10,3 +10,7 @@ int result3 = 123 + b
 result1 <- a + b
 result2 <- 123 + 321
 result3 <- 123 + b
+result4 <- {1, 2, 3}
+result5 <- {a, b, false}
+result6 <- {{a, b, false}, {1, 2, 3}}
+

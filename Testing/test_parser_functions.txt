@@ -38,3 +38,11 @@ end
 function function10(vint matrixParam = {{false, lol, 1+1}, {1, 2, 3}}) begin
     int a = 10
 end
+
+function function11() begin
+    int a = 10
+end
+
+int val, bool val2 = function function12(vint vectParam = {false, lol, 1+1}) begin
+    int a = 5
+end
