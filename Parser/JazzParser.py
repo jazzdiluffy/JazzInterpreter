@@ -1,55 +1,58 @@
 from Lexer.JazzLexer import JazzLexer
 import ply.yacc as yacc
-from NodeOfST import NodeOfST
+from NodeSTBuilder import NodeSTBuilder
 
 
 class JazzParser(object):
     tokens = JazzLexer.tokens
+    node_builder = NodeSTBuilder()
+    precedence = (
+        ('right', 'NEGATIVE'),
+        ('left', 'AND'),
+        ('nonassoc', 'LESS', 'GREATER')
+    )
 
     def __init__(self):
         self.lexer = JazzLexer()
         self.parser = yacc.yacc(module=self)
+        self.funcTable = dict()
         self.hasSyntaxErrors = False
+
+    def parse(self, input_data, debug=False):
+        parse_result = self.parser.parse(input_data, debug=debug)
+        return parse_result, self.funcTable
 
     def p_program(self, p):
         """program : sentence_list"""
-        p[0] = NodeOfST(node_type="program", value="prog", children=[p[1]])
+        self.node_builder.program(p)
 
     def p_sentence_list(self, p):
         """sentence_list : sentence_list single_sentence
                          | single_sentence"""
-        if len(p) == 2:
-            p[0] = NodeOfST(node_type="sentence_list", value="", children=[p[1]])
-        elif len(p) == 3:
-            p[0] = NodeOfST(node_type="sentence_list", value="", children=[p[1], p[2]])
+        self.node_builder.sentence_list(p)
 
     def p_single_sentence(self, p):
         """single_sentence : declaration NEW_LINE
                            | assignment NEW_LINE
                            | if NEW_LINE
-                           | for NEW_LINE"""
-        p[0] = p[1]
+                           | for NEW_LINE
+                           | function NEW_LINE"""
+        self.node_builder.single_sentence(p)
 
     def p_declaration(self, p):
         """declaration : type VARIABLE EQUAL expression
                        | type VARIABLE EQUAL LEFT_FIGURE_BRACKET list_args RIGHT_FIGURE_BRACKET"""
-        if len(p) == 5:
-            child = NodeOfST(node_type="id", value=p[2], children=[p[4]])
-            p[0] = NodeOfST(node_type="declaration", value=p[1], children=[child])
-        else:
-            child = NodeOfST(node_type="id", value=p[2], children=[p[5]])
-            p[0] = NodeOfST(node_type="declaration", value=p[1], children=[child])
+        self.node_builder.declaration(p)
 
     def p_assignment(self, p):
         """assignment : variable ASSIGN expression"""
-        child = NodeOfST(node_type="id", value="", children=[p[3]])
-        p[0] = NodeOfST(node_type="assignment", value=p[1], children=[child])
+        self.node_builder.assignment(p)
 
     def p_expression(self, p):
         """expression : math_expression
                       | variable
                       | constant"""
-        p[0] = NodeOfST(node_type="expression", value="", children=[p[1]])
+        self.node_builder.expression(p)
 
     def p_math_expression(self, p):
         """math_expression : expression PLUS expression
@@ -63,17 +66,16 @@ class JazzParser(object):
                            | expression GREATER expression
                            | NEGATIVE expression
                            | expression AND expression"""
-        if len(p) == 4:
-            p[0] = NodeOfST(node_type="binary_operator", value=p[2], children=[p[1], p[3]])
+        self.node_builder.math_expression(p)
 
     def p_variable(self, p):
         """variable : VARIABLE"""
-        p[0] = NodeOfST(node_type="variable", value=p[1], children=[])
+        self.node_builder.variable(p)
 
     def p_type(self, p):
         """type : int
                 | bool"""
-        p[0] = NodeOfST(node_type="type", value="", children=[p[1]])
+        self.node_builder.type(p)
 
     def p_int(self, p):
         """int : INT
@@ -82,7 +84,7 @@ class JazzParser(object):
                | CMINT
                | MINT
                | CINT"""
-        p[0] = NodeOfST(node_type="int", value=p[1])
+        self.node_builder.int(p)
 
     def p_bool(self, p):
         """bool : BOOL
@@ -91,48 +93,57 @@ class JazzParser(object):
                 | CVBOOL
                 | VBOOL
                 | CBOOL"""
-        p[0] = NodeOfST(node_type="bool", value=p[1])
+        self.node_builder.bool(p)
 
     def p_constant(self, p):
         """constant : INT_BINARY
                     | INT_DECIMAL
                     | TRUE
                     | FALSE"""
-        p[0] = NodeOfST(node_type="constant", value=p[1])
+        self.node_builder.constant(p)
 
     def p_list_args(self, p):
         """list_args : LEFT_FIGURE_BRACKET list_expressions RIGHT_FIGURE_BRACKET
                      | list_args COMMA LEFT_FIGURE_BRACKET list_args RIGHT_FIGURE_BRACKET
                      | list_expressions"""
-        if len(p) == 2:
-            p[0] = NodeOfST(node_type="list_args", value="", children=[p[1]])
-        elif len(p) == 4:
-            p[0] = NodeOfST(node_type="list_args", value="", children=[p[2]])
-        else:
-            p[0] = NodeOfST(node_type="list_args", value="", children=[p[1], p[4]])
+        self.node_builder.list_args(p)
 
     def p_list_expressions(self, p):
         """list_expressions : list_expressions COMMA expression
                             | expression"""
-        if len(p) == 2:
-            p[0] = NodeOfST(node_type="list_expressions", value="", children=[p[1]])
-        else:
-            p[0] = NodeOfST(node_type="list_expressions", value="", children=[p[1], p[3]])
+        self.node_builder.list_expressions(p)
 
     def p_if(self, p):
         """if : IF expression BEGINIF NEW_LINE sentence_list ENDIF"""
-        conditionChild = p[2]
-        bodyChild = p[5]
-        p[0] = NodeOfST(node_type="if", value="", children=[conditionChild, bodyChild])
+        self.node_builder.if_build(p)
 
     def p_for(self, p):
         """for : FOR VARIABLE EQUAL expression DOUBLE_DOT expression BEGINFOR NEW_LINE sentence_list ENDFOR"""
-        variableChild = NodeOfST(node_type="variable", value=p[2], children=[])
-        startChild = p[4]
-        stopChild = p[6]
-        ifbodyChild = p[9]
-        p[0] = NodeOfST(node_type="for", value="", children=[variableChild, startChild, stopChild, ifbodyChild])
+        self.node_builder.for_build(p)
 
+    def p_function(self, p):
+        """function : return_spec FUNCTION VARIABLE LEFT_BRACKET parameters RIGHT_BRACKET BEGIN NEW_LINE sentence_list END
+                    | return_spec FUNCTION VARIABLE LEFT_BRACKET RIGHT_BRACKET BEGIN NEW_LINE sentence_list END
+                    | FUNCTION VARIABLE LEFT_BRACKET parameters RIGHT_BRACKET BEGIN NEW_LINE sentence_list END
+                    | FUNCTION VARIABLE LEFT_BRACKET RIGHT_BRACKET BEGIN NEW_LINE sentence_list END"""
+        self.node_builder.function(p, self.funcTable)
+
+    def p_return_spec(self, p):
+        """return_spec : return_spec COMMA type VARIABLE
+                       | type VARIABLE EQUAL"""
+        self.node_builder.return_spec(p)
+
+    def p_parameters(self, p):
+        """parameters : parameters COMMA parameter
+                      | parameter"""
+        self.node_builder.parameters(p)
+
+
+    def p_parameter(self, p):
+        """parameter : type VARIABLE
+                     | type VARIABLE EQUAL list_args
+                     | type VARIABLE EQUAL LEFT_FIGURE_BRACKET list_args RIGHT_FIGURE_BRACKET"""
+        self.node_builder.parameter(p)
 
     def p_error(self, p):
         try:
@@ -151,5 +162,5 @@ if __name__ == '__main__':
     data = f.read()
     f.close()
 
-    syntax_tree = parser.parser.parse(data, debug=False)
+    syntax_tree, func_table = parser.parse(data, debug=False)
     print(syntax_tree)

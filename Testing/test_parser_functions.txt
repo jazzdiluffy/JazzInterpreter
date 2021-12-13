@@ -1,0 +1,40 @@
+bool flag = function function1(int param1) begin
+    int a = 1
+end
+
+bool flag = function function2(int param1, bool param2 = false) begin
+    int a = 2
+end
+
+int val = function function3(vint vectorParam = {1, 2, 3}) begin
+    int a = 3
+end
+
+int val = function function4(vint vectorParam = {false, lol, 1+1}) begin
+    int a = 4
+end
+
+int val = function function5(vint matrixParam = {{false, lol, 1+1}, {1, 2, 3}}) begin
+    int a = 5
+end
+
+
+function function6(int param1) begin
+    int a = 6
+end
+
+function function7(int param1, bool param2 = false) begin
+    int a = 7
+end
+
+function function8(vint vectorParam = {1, 2, 3}) begin
+    int a = 8
+end
+
+function function9(vint vectorParam = {false, lol, 1+1}) begin
+    int a = 9
+end
+
+function function10(vint matrixParam = {{false, lol, 1+1}, {1, 2, 3}}) begin
+    int a = 10
+end
