@@ -1,6 +1,6 @@
 from Lexer.JazzLexer import JazzLexer
 import ply.yacc as yacc
-from NodeSTBuilder import NodeSTBuilder
+from Parser.NodeSTBuilder import NodeSTBuilder
 
 # TODO make grammars for calling of functions
 # TODO make grammars for robot actions
@@ -23,7 +23,7 @@ class JazzParser(object):
 
     def parse(self, input_data, debug=False):
         parse_result = self.parser.parse(input_data, debug=debug)
-        return parse_result, self.funcTable
+        return parse_result, self.funcTable, self.hasSyntaxErrors
 
     def p_program(self, p):
         """program : sentence_list"""

@@ -1,4 +1,4 @@
-from NodeOfST import NodeOfST
+from Parser.NodeOfST import NodeOfST
 
 
 class NodeSTBuilder:
