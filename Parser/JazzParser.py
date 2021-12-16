@@ -167,5 +167,5 @@ if __name__ == '__main__':
     data = f.read()
     f.close()
 
-    syntax_tree, func_table = parser.parse(data, debug=False)
+    syntax_tree, func_table, hasErrors = parser.parse(data, debug=False)
     print(syntax_tree)

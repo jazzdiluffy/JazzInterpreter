@@ -22,7 +22,8 @@ class ErrorHandler:
             -1: f"[ERROR]: Got unexpected error {self.linenumber_placeholder}",
             1: f"[ERROR]: Missing 'main()' function in program!"
         }
-        if code == 1:
-            yellAboutError(errors_description[1])
-        else:
-            print("[DEBUG]: Got incorrect code for raising error")
+        match code:
+            case 1:
+                yellAboutError(errors_description[1])
+            case _:
+                print("[DEBUG]: Got incorrect code for raising error")

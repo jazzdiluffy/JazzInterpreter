@@ -28,13 +28,15 @@ class JazzInterpreter:
             return "None Node"
         node_type = node.type
 
-        if node_type ==  "program":
-            self.handleNode(node.children)
-        elif node_type == "sentence_list":
-            for child in node.children:
-                self.handleNode(child)
-        else:
-            print("[DEBUG]: Errors in grammar and syntax tree building")
+        match node_type:
+            case "program":
+                self.handleNode(node.children)
+            case "sentence_list":
+                for child in node.children:
+                    self.handleNode(child)
+            case _:
+                print("[DEBUG]: Errors in grammar and syntax tree building")
+
 
 
 
