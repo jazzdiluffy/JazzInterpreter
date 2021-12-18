@@ -2,6 +2,7 @@ from Lexer.JazzLexer import JazzLexer
 import ply.yacc as yacc
 from Parser.NodeSTBuilder import NodeSTBuilder
 
+
 # TODO make grammars for calling of functions
 # TODO make grammars for robot actions
 # TODO getting by index
@@ -142,7 +143,6 @@ class JazzParser(object):
         """parameters : parameters COMMA parameter
                       | parameter"""
         self.node_builder.parameters(p)
-
 
     def p_parameter(self, p):
         """parameter : type VARIABLE

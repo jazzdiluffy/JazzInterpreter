@@ -1,0 +1,17 @@
+function main() begin
+    int a = 2
+    bool a = false
+    int b = false
+    int c = true
+    bool d = false
+    bool e = true
+    bool f = 0
+    bool g = 228
+    cint h = 1000
+    cint i = false
+    cint j = true
+    cbool k = false
+    cbool l = true
+    cbool m = 32
+    cbool n = 0
+end
