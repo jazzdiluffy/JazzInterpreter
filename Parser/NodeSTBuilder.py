@@ -57,7 +57,7 @@ class NodeSTBuilder:
             p[0] = NodeOfST(node_type=NodeType.Assignment.value, value=p[1], children=[child])
 
     def expression(self, p):
-        p[0] = NodeOfST(node_type=NodeType.Expression.value, value="", children=[p[1]])
+        p[0] = NodeOfST(node_type=NodeType.Expression.value, value="", children=p[1])
 
     def math_expression(self, p):
         if len(p) == 4:

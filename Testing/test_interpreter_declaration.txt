@@ -8,10 +8,17 @@ function main() begin
     bool f = 0
     bool g = 228
     cint h = 1000
+
     cint i = false
     cint j = true
-    cbool k = false
-    cbool l = true
     cbool m = 32
     cbool n = 0
+
+    cbool k = false
+    cbool l = true
+    int o = 2 + 3
+    cint p = 5 - 3
+    cbool r = 5 > 2
+    bool s = 5 < 2
+    bool t = true > false
 end

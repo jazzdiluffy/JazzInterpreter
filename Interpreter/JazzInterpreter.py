@@ -3,6 +3,7 @@ from Parser.NodeSTBuilder import NodeType
 from ErrorHandler import *
 from TypeConverter import TypeConverter
 from Variable import Variable
+from Parser.NodeOfST import NodeOfST
 
 
 
@@ -61,15 +62,19 @@ class JazzInterpreter:
             case NodeType.Assignment.value:
                 pass
             case NodeType.Expression.value:
-                return self.handleNode(node.children[0])
+                return self.handleNode(node.children)
             case NodeType.ListExpressions.value:
-                pass
+                return self.configure_expression_list(node)[::-1]
+            case NodeType.ListArgs.value:
+                if len(node.children) == 1:
+                    return self.configure_list(node)
+                return self.configure_list(node)[::-1]
             case NodeType.Variable.value:
                 pass
             case NodeType.Constant.value:
                 return Variable("bool", node.value) if node.value == "true" or node.value == "false" else Variable("int", node.value)
             case NodeType.BinaryOperator.value:
-                pass
+                return self.handle_binary_operator(node)
             case NodeType.UnaryOperator.value:
                 pass
             case NodeType.If.value:
@@ -95,8 +100,8 @@ class JazzInterpreter:
                 expression = self.handleNode(declaration_value)
                 self.add_to_declare_table(decl_type, declaration_name, expression)
             case NodeType.ListArgs.value:
-                args_list = self.configure_list(self.handleNode(declaration_value))
-                self.add_to_declare_table(decl_type, declaration_name, args_list)
+                args_list = self.handleNode(declaration_value)
+                self.add_to_declare_table(decl_type, declaration_name, self.make_variable_instance(args_list))
 
     def add_to_declare_table(self, decl_type, decl_name, value):
         expression = self.configure_declaration(decl_type, value)
@@ -125,10 +130,11 @@ class JazzInterpreter:
         converted_vector_values = [TypeConverter().convert_type(elems_type, elem) for elem in value.value]
         return Variable(type, converted_vector_values)
 
-    def configure_matrix(self, type, value):
+    def configure_matrix(self, type, decl_value):
+        value = decl_value.value
         elems_type = type[1:]
         rectangular_matrix_length = len(value[0])
-        converted_matrix_elems = value.value
+        converted_matrix_elems = value
         # check is matrix rectangular
         for i in range(len(value)):
             if len(value[i]) != rectangular_matrix_length:
@@ -137,13 +143,94 @@ class JazzInterpreter:
             converted_matrix_elems[i] = [TypeConverter().convert_type(elems_type, elem) for elem in converted_matrix_elems[i]]
         return Variable(type, converted_matrix_elems)
 
-    def configure_list(self, value):
-        pass
+    # [i[::-1] for i in numbers[::-1]]
+    # returns reversed in all dimensions list
+    # TODO: {{1,2,3}} case should handle correctly
+    def configure_list(self, node):
+        result = []
+
+        if len(node.children) == 2:
+
+            tmp_right = self.configure_list(node.children[1])
+            result.append(tmp_right)
+            tmp_left = self.configure_list(node.children[0])
+            if isinstance(tmp_left[0], list):
+                result += tmp_left
+            else:
+                result.append(tmp_left)
+        else:
+            return self.configure_expression_list(node.children[0])[::-1]
+        return result
+
+    def make_variable_instance(self, value):
+        if isinstance(value[0], list):
+            if type(value[0][0].value) is int:
+                return Variable("mint", value)
+            else:
+                return Variable("mbool", value)
+        else:
+            if type(value[0].value) is int:
+                return Variable('vint', value)
+            else:
+                return Variable('vbool', value)
+
+
+    # returns reversed list of expressions
+    def configure_expression_list(self, node):
+        result = []
+        # expression_list: expression_list expression | expression
+        # so we add handled expression and dive into next expression list
+        # it will continue until there are no more expressions_list in grammar
+        # so there will be only one child
+        if len(node.children) == 2:
+            result.append(self.handleNode(node.children[1]))
+            add = self.configure_expression_list(node.children[0])
+            result += add
+        else:
+            result.append(self.handleNode(node.children[0]))
+        return result
+
+    def handle_binary_operator(self, node):
+        first_operand = node.children[0]
+        second_operand = node.children[1]
+        match node.value:
+            case "+":
+                return self.handle_binary_plus(first_operand, second_operand)
+            case "-":
+                return self.handle_binary_minus(first_operand, second_operand)
+            case "*":
+                pass
+            case ".*":
+                pass
+            case ">":
+                return self.handle_greater_operator(first_operand, second_operand)
+            case "<":
+                return self.handle_less_operator(first_operand, second_operand)
+
+    def handle_binary_plus(self, first_operand, second_operand):
+        lhs = TypeConverter().convert_type("int", self.handleNode(first_operand))
+        rhs = TypeConverter().convert_type("int", self.handleNode(second_operand))
+        return Variable("int", lhs.value + rhs.value)
+
+    def handle_binary_minus(self, first_operand, second_operand):
+        lhs = TypeConverter().convert_type("int", self.handleNode(first_operand))
+        rhs = TypeConverter().convert_type("int", self.handleNode(second_operand))
+        return Variable("int", lhs.value - rhs.value)
+
+    def handle_greater_operator(self, first_operand, second_operand):
+        lhs = TypeConverter().convert_type("int", self.handleNode(first_operand))
+        rhs = TypeConverter().convert_type("int", self.handleNode(second_operand))
+        return Variable("bool", lhs.value > rhs.value)
+
+    def handle_less_operator(self, first_operand, second_operand):
+        lhs = TypeConverter().convert_type("int", self.handleNode(first_operand))
+        rhs = TypeConverter().convert_type("int", self.handleNode(second_operand))
+        return Variable("bool", lhs.value < rhs.value)
 
 
 if __name__ == '__main__':
     interpreter = JazzInterpreter()
-    s = f'/Users/jazzdiluffy/Desktop/JazzInterpreter/Testing/test_interpreter_declaration.txt'
+    s = f'/Users/jazzdiluffy/Desktop/JazzInterpreter/Testing/test_interpreter_sth.txt'
     f = open(s, "r")
     program = f.read()
     f.close()

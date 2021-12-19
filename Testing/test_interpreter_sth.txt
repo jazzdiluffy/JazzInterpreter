@@ -1,0 +1,4 @@
+function main() begin
+    mint a = { {true, true+true, true+true+true}, {4, 5+false, 5+true}, {7, 8, 9} }
+    vint b = {true, 2, true+true+true}
+end

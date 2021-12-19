@@ -162,7 +162,7 @@ if __name__ == '__main__':
     parser = JazzParser()
     print("Enter filename: ", end="")
     filename = input()
-    s = f'/Users/jazzdiluffy/Desktop/JazzInterpreter/Testing/test_parser_{filename}.txt'
+    s = f'/Users/jazzdiluffy/Desktop/JazzInterpreter/Testing/test_interpreter_{filename}.txt'
     f = open(s, 'r')
     data = f.read()
     f.close()
