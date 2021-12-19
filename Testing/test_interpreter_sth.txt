@@ -1,3 +1,5 @@
 function main() begin
-    
+    cint a = 2
+    int b = 202
+    cint c = a.*b
 end

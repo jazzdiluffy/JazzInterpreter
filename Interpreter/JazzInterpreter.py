@@ -276,33 +276,96 @@ class JazzInterpreter:
     def handle_elemental_multiplication(self, first_operand, second_operand):
         lhs = self.handleNode(first_operand)
         rhs = self.handleNode(second_operand)
+        # V.*V
         if "v" in lhs.type and "v" in rhs.type:
-            lhs = self.configure_vector("vint", lhs)
-            rhs = self.configure_vector("vint", rhs)
-            # check if lhs and rhs dimensions are equal
-            if len(lhs.value) != len(rhs.value):
-                raise ValueException
-            result_vector = []
-            for i in range(len(lhs.value)):
-                result_vector.append(Variable("int", 0))
-            for i in range(len(lhs.value)):
-                result_vector[i].value = lhs.value[i].value * rhs.value[i].value
-            return Variable("vint", result_vector)
+            return self.elem_mul_VV(lhs, rhs)
+        # M.*M
         elif "m" in lhs.type and "m" in rhs.type:
-            lhs = self.configure_matrix("mint", lhs)
-            rhs = self.configure_matrix("mint", rhs)
-            # check if lhs and rhs dimensions are equal
-            if len(lhs.value) != len(rhs.value) or len(lhs.value[0]) != len(rhs.value[0]):
-                raise ValueException
-            result_matrix = []
-            for i in range(len(lhs.value)):
-                result_matrix.append([Variable("int", 0) for j in lhs.value[0]])
-            for i in range(len(lhs.value)):
-                for j in range(len(lhs.value[0])):
-                    result_matrix[i][j].value = lhs.value[i][j].value * rhs.value[i][j].value
-            return Variable("mint", result_matrix)
-        return Variable("int", 0)
+            return self.elem_mul_MM(lhs, rhs)
+        # V.*x {1, 2, 3}.*2 = {2, 4, 6}
+        elif "v" in lhs.type and "v" not in rhs.type and "m" not in rhs.type:
+            return self.elem_mul_Vx(lhs, rhs)
+        # x.*V 2.*{1, 2, 3} = {{1, 2, 3}, {1, 2, 3}}
+        elif "v" not in lhs.type and "m" not in lhs.type and "v" in rhs.type:
+            return self.elem_mul_xV(lhs, rhs)
+        # M.*x {{1, 2}, {3, 4}}*2 = {{2, 4}, {6, 8}}
+        elif "m" in lhs.type and "v" not in rhs.type and "m" not in rhs.type:
+            return self.elem_mul_Mx(lhs, rhs)
+        # x.*M 2*{{1, 2}, {3, 4}} = {{2, 4}, {6, 8}}
+        elif "v" not in lhs.type and "m" not in lhs.type and "m" in rhs.type:
+            return self.elem_mul_xM(lhs, rhs)
+        else:
+            return self.elem_mul_xx(lhs, rhs)
 
+    def elem_mul_VV(self, first_operand, second_operand):
+        lhs = self.configure_vector("vint", first_operand)
+        rhs = self.configure_vector("vint", second_operand)
+        # check if lhs and rhs dimensions are equal
+        if len(lhs.value) != len(rhs.value):
+            raise ValueException
+        result_vector = []
+        for i in range(len(lhs.value)):
+            result_vector.append(Variable("int", 0))
+        for i in range(len(lhs.value)):
+            result_vector[i].value = lhs.value[i].value * rhs.value[i].value
+        return Variable("vint", result_vector)
+
+    def elem_mul_MM(self, first_operand, second_operand):
+        lhs = self.configure_matrix("mint", first_operand)
+        rhs = self.configure_matrix("mint", second_operand)
+        # check if lhs and rhs dimensions are equal
+        if len(lhs.value) != len(rhs.value) or len(lhs.value[0]) != len(rhs.value[0]):
+            raise ValueException
+        result_matrix = []
+        for i in range(len(lhs.value)):
+            result_matrix.append([Variable("int", 0) for j in lhs.value[0]])
+        for i in range(len(lhs.value)):
+            for j in range(len(lhs.value[0])):
+                result_matrix[i][j].value = lhs.value[i][j].value * rhs.value[i][j].value
+        return Variable("mint", result_matrix)
+
+    def elem_mul_Vx(self, first_operand, second_operand):
+        lhs = self.configure_vector("vint", first_operand)
+        rhs = self.configure_variable("int", second_operand)
+        result_vector = []
+        for i in range(len(lhs.value)):
+            result_vector.append(Variable("int", 0))
+        for i in range(len(lhs.value)):
+            result_vector[i].value = lhs.value[i].value * rhs.value
+        return Variable("vint", result_vector)
+
+    def elem_mul_xV(self, first_operand, second_operand):
+        lhs = self.configure_variable("int", first_operand)
+        rhs = self.configure_vector("vint", second_operand)
+        result_matrix = []
+        for i in range(lhs.value):
+            result_matrix.append(rhs.value)
+        return Variable("mint", result_matrix)
+
+    def elem_mul_Mx(self, first_operand, second_operand):
+        lhs = self.configure_matrix("mint", first_operand)
+        rhs = self.configure_variable("int", second_operand)
+        result_matrix = []
+        for i in range(len(lhs.value)):
+            result_matrix.append([Variable("int", 0) for j in lhs.value[0]])
+        for i in range(len(lhs.value)):
+            for j in range(len(lhs.value[0])):
+                result_matrix[i][j].value = lhs.value[i][j].value * rhs.value
+        return Variable("mint", result_matrix)
+
+    def elem_mul_xM(self, first_operand, second_operand):
+        lhs = self.configure_variable("int", first_operand)
+        rhs = self.configure_matrix("mint", second_operand)
+        result_matrix = []
+        for i in range(len(rhs.value)):
+            result_matrix.append([Variable("int", 0) for j in rhs.value[0]])
+        for i in range(len(rhs.value)):
+            for j in range(len(rhs.value[0])):
+                result_matrix[i][j].value = lhs.value * rhs.value[i][j].value
+        return Variable("mint", result_matrix)
+
+    def elem_mul_xx(self, first_operand, second_operand):
+        return Variable("int", first_operand.value * second_operand.value)
 
 if __name__ == '__main__':
     interpreter = JazzInterpreter()

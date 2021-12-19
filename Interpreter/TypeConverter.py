@@ -15,6 +15,7 @@ class TypeConverter:
         elif value.type in declared_type:
             return Variable(declared_type, value.value)
 
+
     def convert_bool_to_int(self, value):
         if not value.value:
             return Variable("int", 0)

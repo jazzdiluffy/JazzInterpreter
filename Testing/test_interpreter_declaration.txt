@@ -25,6 +25,7 @@ end
 
 
 
+
     mint a = { {true, true+true, true+true+true}, {4, 5+false, 5+true}, {7, 8, 9} }
     vint b = {true, 2, true+true+true}
     mint first = {{true+false, 2, 3}, {4-false, 5, 7-1}}
@@ -38,3 +39,15 @@ end
     mint firstM = {{1, 2, 3}, {false, false+false, false-false}}
     cmint secondM = {{1, 2, 3}, {228, 229, 2210}}
     cmint resM = firstM .* secondM
+
+    cvint a = {1, 2, 3, 4, 5}
+    int b = 2
+    cmint d = b.*a
+
+    mint a = {{1, 2, 3}, {4, 5, 6}}
+    int b = 2
+    cmint d = a.*b
+
+    mint a = {{1, 2, 3}, {4, 5, 6}}
+    int b = 2
+    mint d = b.*a
