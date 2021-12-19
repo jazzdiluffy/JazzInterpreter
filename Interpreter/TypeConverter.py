@@ -24,3 +24,12 @@ class TypeConverter:
         if value.value == 0:
             return Variable("bool", False)
         return Variable("bool", True)
+
+    def convert_to_matrix(self, value, size):
+        return_var_value = []
+        for i in range(size):
+            return_var_value.append([Variable("int", 0) for j in range(size)])
+        elem_value = self.convert_type("int", value)
+        for i in range(size):
+            return_var_value[i][i] = elem_value
+        return Variable("mint", return_var_value)

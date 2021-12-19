@@ -10,6 +10,7 @@ class ErrorType(enum.Enum):
     UnexpectedError = -1
     MissingProgramStartPoint = 1
     RedeclarationError = 2
+    UndeclaredError = 3
 
 
 class ErrorHandler:
@@ -20,13 +21,16 @@ class ErrorHandler:
         errors_description = {
             -1: f"[ERROR]: Got unexpected error {self.linenumber_placeholder}",
             1: f"[ERROR]: Missing 'main()' function in program!",
-            2: f"[ERROR]: You have variables with same names "
+            2: f"[ERROR]: You have variables with same names ",
+            3: f"[ERROR]: Trying to use undeclared variable/constant/function"
         }
         match code:
             case ErrorType.MissingProgramStartPoint.value:
                 yellAboutError(errors_description[1])
             case ErrorType.RedeclarationError.value:
                 yellAboutError(errors_description[2])
+            case ErrorType.UndeclaredError.value:
+                yellAboutError(errors_description[3])
             case _:
                 print("[DEBUG]: Got incorrect code for raising error")
 
@@ -40,4 +44,7 @@ class ValueException(Exception):
 
 
 class UnexpectedTypeException(Exception):
+    pass
+
+class UndeclaredException(Exception):
     pass

@@ -6,7 +6,6 @@ from Variable import Variable
 from Parser.NodeOfST import NodeOfST
 
 
-
 class JazzInterpreter:
     def __init__(self):
         self.parser = JazzParser()
@@ -33,7 +32,6 @@ class JazzInterpreter:
             ErrorHandler().raise_error(code=ErrorType.MissingProgramStartPoint.value)
             return
 
-
     def handleNode(self, node):
         if node is None:
             return "None Node"
@@ -56,23 +54,29 @@ class JazzInterpreter:
                 except RedeclarationException:
                     ErrorHandler().raise_error(ErrorType.RedeclarationError.value)
                 except ValueException:
+                    print("[DEBUG]: Value Exception")
                     pass
                 except UnexpectedTypeException:
+                    print("[DEBUG]: Unexpected Type Exception")
                     pass
             case NodeType.Assignment.value:
                 pass
             case NodeType.Expression.value:
                 return self.handleNode(node.children)
             case NodeType.ListExpressions.value:
-                return self.configure_expression_list(node)[::-1]
+                pass
             case NodeType.ListArgs.value:
                 if len(node.children) == 1:
                     return self.configure_list(node)
                 return self.configure_list(node)[::-1]
             case NodeType.Variable.value:
-                pass
+                try:
+                    return self.extract_variable_value(node)
+                except UndeclaredException:
+                    ErrorHandler().raise_error(ErrorType.UndeclaredError.value)
             case NodeType.Constant.value:
-                return Variable("bool", node.value) if node.value == "true" or node.value == "false" else Variable("int", node.value)
+                return Variable("bool", node.value) if node.value == "true" or node.value == "false" else Variable(
+                    "int", node.value)
             case NodeType.BinaryOperator.value:
                 return self.handle_binary_operator(node)
             case NodeType.UnaryOperator.value:
@@ -116,7 +120,8 @@ class JazzInterpreter:
         if type in types_without_vm_modifiers and value.type in types_without_vm_modifiers:
             return self.configure_variable(type, value)
         elif "v" in type and "v" in value.type:
-            return self.configure_vector(type, value)
+            a = self.configure_vector(type, value)
+            return a
         elif "m" in type and "m" in value.type:
             return self.configure_matrix(type, value)
         else:
@@ -126,13 +131,19 @@ class JazzInterpreter:
         return TypeConverter().convert_type(type, value)
 
     def configure_vector(self, type, value):
-        elems_type = type[1:]
+        if "c" in type:
+            elems_type = type[2:]
+        else:
+            elems_type = type[1:]
         converted_vector_values = [TypeConverter().convert_type(elems_type, elem) for elem in value.value]
         return Variable(type, converted_vector_values)
 
     def configure_matrix(self, type, decl_value):
         value = decl_value.value
-        elems_type = type[1:]
+        if "c" in type:
+            elems_type = type[2:]
+        else:
+            elems_type = type[1:]
         rectangular_matrix_length = len(value[0])
         converted_matrix_elems = value
         # check is matrix rectangular
@@ -141,6 +152,7 @@ class JazzInterpreter:
                 raise ValueException
         for i in range(len(value)):
             converted_matrix_elems[i] = [TypeConverter().convert_type(elems_type, elem) for elem in converted_matrix_elems[i]]
+            a = converted_matrix_elems[i]
         return Variable(type, converted_matrix_elems)
 
     # [i[::-1] for i in numbers[::-1]]
@@ -174,7 +186,6 @@ class JazzInterpreter:
             else:
                 return Variable('vbool', value)
 
-
     # returns reversed list of expressions
     def configure_expression_list(self, node):
         result = []
@@ -190,6 +201,11 @@ class JazzInterpreter:
             result.append(self.handleNode(node.children[0]))
         return result
 
+    def extract_variable_value(self, node):
+        if node.value in self.declaration_table[self.visibility_scope].keys():
+            return self.declaration_table[self.visibility_scope][node.value]
+        else:
+            raise UndeclaredException
     def handle_binary_operator(self, node):
         first_operand = node.children[0]
         second_operand = node.children[1]
@@ -199,9 +215,9 @@ class JazzInterpreter:
             case "-":
                 return self.handle_binary_minus(first_operand, second_operand)
             case "*":
-                pass
+                return self.handle_matrix_multiplication(first_operand, second_operand)
             case ".*":
-                pass
+                return self.handle_elemental_multiplication(first_operand, second_operand)
             case ">":
                 return self.handle_greater_operator(first_operand, second_operand)
             case "<":
@@ -226,6 +242,66 @@ class JazzInterpreter:
         lhs = TypeConverter().convert_type("int", self.handleNode(first_operand))
         rhs = TypeConverter().convert_type("int", self.handleNode(second_operand))
         return Variable("bool", lhs.value < rhs.value)
+
+    def handle_matrix_multiplication(self, first_operand, second_operand):
+        lhs = self.handleNode(first_operand)
+        rhs = self.handleNode(second_operand)
+        if "m" in lhs.type:
+            lhs = self.configure_matrix("mint", lhs)
+        else:
+            print("[DEBUG]: trying to use matrix multiplication operator fot non-matrix operand")
+            pass
+        if "m" in rhs.type:
+            rhs = self.configure_matrix("mint", rhs)
+        else:
+            print("[DEBUG]: trying to use matrix multiplication operator fot non-matrix operand")
+            pass
+        # check if matrices could me multiplied
+        # condition: number of colons of first operand == number of rows of second operand
+        if len(lhs.value[0]) != len(rhs.value):
+            raise ValueException
+        result_matrix = []
+        # fill by zeros
+        for i in range(len(rhs.value[0])):
+            result_matrix.append([Variable("int", 0) for j in range(len(lhs.value))])
+        print(len(lhs.value))
+        print(len(rhs.value[0]))
+        print(len(rhs.value))
+        for i in range(len(lhs.value)):
+            for j in range(len(rhs.value[0])):
+                for k in range(len(rhs.value)):
+                    result_matrix[i][j].value += lhs.value[i][k].value * rhs.value[k][j].value
+        return Variable("mint", result_matrix)
+
+    def handle_elemental_multiplication(self, first_operand, second_operand):
+        lhs = self.handleNode(first_operand)
+        rhs = self.handleNode(second_operand)
+        if "v" in lhs.type and "v" in rhs.type:
+            lhs = self.configure_vector("vint", lhs)
+            rhs = self.configure_vector("vint", rhs)
+            # check if lhs and rhs dimensions are equal
+            if len(lhs.value) != len(rhs.value):
+                raise ValueException
+            result_vector = []
+            for i in range(len(lhs.value)):
+                result_vector.append(Variable("int", 0))
+            for i in range(len(lhs.value)):
+                result_vector[i].value = lhs.value[i].value * rhs.value[i].value
+            return Variable("vint", result_vector)
+        elif "m" in lhs.type and "m" in rhs.type:
+            lhs = self.configure_matrix("mint", lhs)
+            rhs = self.configure_matrix("mint", rhs)
+            # check if lhs and rhs dimensions are equal
+            if len(lhs.value) != len(rhs.value) or len(lhs.value[0]) != len(rhs.value[0]):
+                raise ValueException
+            result_matrix = []
+            for i in range(len(lhs.value)):
+                result_matrix.append([Variable("int", 0) for j in lhs.value[0]])
+            for i in range(len(lhs.value)):
+                for j in range(len(lhs.value[0])):
+                    result_matrix[i][j].value = lhs.value[i][j].value * rhs.value[i][j].value
+            return Variable("mint", result_matrix)
+        return Variable("int", 0)
 
 
 if __name__ == '__main__':
