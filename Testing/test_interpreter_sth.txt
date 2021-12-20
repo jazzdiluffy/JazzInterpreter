@@ -1,5 +1,9 @@
 function main() begin
-    cint a = 2
-    int b = 202
-    cint c = a.*b
+    cmint a = {{1, 2}, {3, 4}, {5, 6}}
+    cmint b = a'
+    int c = 2
+    bool d = !c
+    cint e = 6
+    int r = e>>
+    int p = e<<
 end

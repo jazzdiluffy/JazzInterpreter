@@ -4,6 +4,7 @@ from ErrorHandler import *
 from TypeConverter import TypeConverter
 from Variable import Variable
 from Parser.NodeOfST import NodeOfST
+from collections import deque
 
 
 class JazzInterpreter:
@@ -80,7 +81,7 @@ class JazzInterpreter:
             case NodeType.BinaryOperator.value:
                 return self.handle_binary_operator(node)
             case NodeType.UnaryOperator.value:
-                pass
+                return self.handle_unary_operator(node)
             case NodeType.If.value:
                 pass
             case NodeType.For.value:
@@ -162,7 +163,6 @@ class JazzInterpreter:
         result = []
 
         if len(node.children) == 2:
-
             tmp_right = self.configure_list(node.children[1])
             result.append(tmp_right)
             tmp_left = self.configure_list(node.children[0])
@@ -206,6 +206,7 @@ class JazzInterpreter:
             return self.declaration_table[self.visibility_scope][node.value]
         else:
             raise UndeclaredException
+
     def handle_binary_operator(self, node):
         first_operand = node.children[0]
         second_operand = node.children[1]
@@ -366,6 +367,54 @@ class JazzInterpreter:
 
     def elem_mul_xx(self, first_operand, second_operand):
         return Variable("int", first_operand.value * second_operand.value)
+    # TODO: add MV and VM
+
+    def handle_unary_operator(self, node):
+        child = node.children[0]
+        match node.value:
+            case "'":
+                return self.handle_matrix_transposition(child)
+            case "!":
+                return self.handle_negative(child)
+            case ">>":
+                return self.handle_cyclic_shift(child, is_left=False)
+            case "<<":
+                return self.handle_cyclic_shift(child)
+
+    def handle_matrix_transposition(self, operand):
+        op = self.handleNode(operand)
+        if "m" not in op.type:
+            raise ValueException
+        result_matrix = []
+        for i in range(len(op.value[0])):
+            result_matrix.append([Variable("int", 0) for j in range(len(op.value))])
+        result_matrix = [[Variable("int", op.value[j][i].value) for j in range(len(op.value))] for i in range(len(op.value[0]))]
+        return Variable("mint", result_matrix)
+
+    def handle_negative(self, operand):
+        op = self.handleNode(operand)
+        op = TypeConverter().convert_type("bool", op)
+        op.value = not op.value
+        return op
+
+    def handle_cyclic_shift(self, operand, is_left = True):
+        op = self.handleNode(operand)
+        arr_of_bin = deque([int(d) for d in str(bin(op.value))[2:]])
+        if not is_left:
+            arr_of_bin.rotate(1)
+        else:
+            arr_of_bin.rotate(-1)
+        arr_of_bin = list(arr_of_bin)
+        s = [str(i) for i in arr_of_bin]
+        res = int("".join(s), 2)
+        return Variable("int", res)
+
+
+
+
+
+
+
 
 if __name__ == '__main__':
     interpreter = JazzInterpreter()

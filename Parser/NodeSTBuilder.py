@@ -62,6 +62,10 @@ class NodeSTBuilder:
     def math_expression(self, p):
         if len(p) == 4:
             p[0] = NodeOfST(node_type=NodeType.BinaryOperator.value, value=p[2], children=[p[1], p[3]])
+        if len(p) == 3 and p[1] != "!":
+            p[0] = NodeOfST(node_type=NodeType.UnaryOperator.value, value=p[2], children=[p[1]])
+        elif len(p) == 3 and p[1] == "!":
+            p[0] = NodeOfST(node_type=NodeType.UnaryOperator.value, value=p[1], children=[p[2]])
 
     def variable(self, p):
         p[0] = NodeOfST(node_type=NodeType.Variable.value, value=p[1], children=[])
