@@ -113,6 +113,7 @@ class JazzLexer(object):
 
     def t_comment(self, t):
         r"""//.*\n+"""
+        t.lexer.lineno += len(t.value) - len(t.value.replace("\n", ""))
         pass
 
     def token(self):
