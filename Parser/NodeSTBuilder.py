@@ -103,9 +103,9 @@ class NodeSTBuilder:
         variableChild = NodeOfST(node_type=NodeType.Variable.value, value=p[2], children=[])
         startChild = p[4]
         stopChild = p[6]
-        ifbodyChild = p[9]
+        forbodyChild = p[9]
         p[0] = NodeOfST(node_type=NodeType.For.value, value="",
-                        children=[variableChild, startChild, stopChild, ifbodyChild])
+                        children=[variableChild, startChild, stopChild, forbodyChild])
 
     def function(self, p, funcTable):
         if len(p) == 11:

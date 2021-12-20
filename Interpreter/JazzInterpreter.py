@@ -87,9 +87,9 @@ class JazzInterpreter:
             case NodeType.UnaryOperator.value:
                 return self.handle_unary_operator(node)
             case NodeType.If.value:
-                pass
+                self.handle_if(node)
             case NodeType.For.value:
-                pass
+                self.handle_for(node)
             case NodeType.FuncDeclaration.value:
                 pass
             case NodeType.Function.value:
@@ -353,7 +353,8 @@ class JazzInterpreter:
 
     def elem_mul_Mx(self, first_operand, second_operand):
         lhs = self.configure_matrix("mint", first_operand)
-        rhs = self.configure_variable("int", second_operand)
+        # rhs = self.configure_variable("int", second_operand)
+        rhs = second_operand
         result_matrix = []
         for i in range(len(lhs.value)):
             result_matrix.append([Variable("int", 0) for j in lhs.value[0]])
@@ -458,12 +459,65 @@ class JazzInterpreter:
         else:
             raise TypeException
 
+    def handle_if(self, node):
+        # if-node has children = [conditionChild, bodyChild]
+        condition = self.handleNode(node.children[0])
+        condition = TypeConverter().convert_type("bool", condition).value
+        if condition:
+            new_interpreter = JazzInterpreter()
+            for key in self.declaration_table[self.visibility_scope].keys():
+                new_interpreter.declaration_table[self.visibility_scope][key] = self.declaration_table[self.visibility_scope][key]
+            new_interpreter.handleNode(node.children[1])
+            try:
+                for key in new_interpreter.declaration_table[self.visibility_scope].keys():
+                    if key in self.declaration_table[self.visibility_scope]:
+                        self.declaration_table[self.visibility_scope][key] = new_interpreter.declaration_table[self.visibility_scope][key]
+            except Exception:
+                pass
+
+    def handle_for(self, node):
+        # p[0] = NodeOfST(node_type=NodeType.For.value, value="",
+        #              children=[variableChild, startChild, stopChild, ifbodyChild])
+
+        var_name = node.children[0].value
+        start = self.handleNode(node.children[1]).value
+        stop = self.handleNode(node.children[2]).value
+        flag = False
+        if var_name in self.declaration_table[self.visibility_scope].keys():
+            flag = True
+        try:
+            var_copy = 0
+            if flag:
+                var_copy = self.declaration_table[self.visibility_scope][var_name]
+            self.declaration_table[self.visibility_scope][var_name] = Variable("int", start)
+            while self.declaration_table[self.visibility_scope][var_name].value < stop:
+                new_interpreter = JazzInterpreter()
+                for key in self.declaration_table[self.visibility_scope].keys():
+                    new_interpreter.declaration_table[self.visibility_scope][key] = self.declaration_table[self.visibility_scope][key]
+
+                new_interpreter.handleNode(node.children[3])
+                try:
+                    for key in new_interpreter.declaration_table[self.visibility_scope].keys():
+                        if key in self.declaration_table[self.visibility_scope]:
+                            self.declaration_table[self.visibility_scope][key] = \
+                            new_interpreter.declaration_table[self.visibility_scope][key]
+                except Exception:
+                    pass
+                self.declaration_table[self.visibility_scope][var_name].value += 1
+            if flag:
+                self.declaration_table[self.visibility_scope][var_name] = var_copy
+            else:
+                del self.declaration_table[self.visibility_scope][var_name]
+        except Exception:
+            pass
+
+
 
 
 
 if __name__ == '__main__':
     interpreter = JazzInterpreter()
-    s = f'/Users/jazzdiluffy/Desktop/JazzInterpreter/Testing/test_interpreter_assignment.txt'
+    s = f'/Users/jazzdiluffy/Desktop/JazzInterpreter/Testing/test_interpreter_smth.txt'
     f = open(s, "r")
     program = f.read()
     f.close()
