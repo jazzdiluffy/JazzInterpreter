@@ -50,11 +50,9 @@ class NodeSTBuilder:
 
     def assignment(self, p):
         if len(p) == 4:
-            child = NodeOfST(node_type=NodeType.ID.value, value="", children=[p[3]])
-            p[0] = NodeOfST(node_type=NodeType.Assignment.value, value=p[1], children=[child])
+            p[0] = NodeOfST(node_type=NodeType.Assignment.value, value=p[1], children=[p[3]])
         else:
-            child = NodeOfST(node_type=NodeType.ID.value, value="", children=[p[4]])
-            p[0] = NodeOfST(node_type=NodeType.Assignment.value, value=p[1], children=[child])
+            p[0] = NodeOfST(node_type=NodeType.Assignment.value, value=p[1], children=[p[4]])
 
     def expression(self, p):
         p[0] = NodeOfST(node_type=NodeType.Expression.value, value="", children=p[1])

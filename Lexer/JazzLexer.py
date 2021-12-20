@@ -111,6 +111,10 @@ class JazzLexer(object):
         print("[ERROR_HANDLER] Line: '%d'\n" % t.lexer.lineno)
         t.lexer.skip(1)
 
+    def t_comment(self, t):
+        r"""//.*\n+"""
+        pass
+
     def token(self):
         return self.lexer.token()
 
@@ -121,7 +125,7 @@ class JazzLexer(object):
 if __name__ == '__main__':
     print("Test filename: ", end="")
     filename = input()
-    filepath = '/Users/jazzdiluffy/Desktop/JazzInterpreter/Testing/test_lexer_' + filename + '.txt'
+    filepath = '/Users/jazzdiluffy/Desktop/JazzInterpreter/Testing/test_interpreter_' + filename + '.txt'
 
     f = open(filepath, 'r+')
     data = f.read()

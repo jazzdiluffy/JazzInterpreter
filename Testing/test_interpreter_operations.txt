@@ -1,0 +1,38 @@
+function main() begin
+    mint test11 = {{true+false, 2, 3}, {4-false, 5, 7-1}}
+    mint test12 = {{7, 8}, {9, 1}, {2, 3}}
+    mint result1 = test11 * test12
+
+    cvint test21 = {1, 2, 3}
+    vint test22 = {4, 5, 6}
+    cvint result2 = test21 .* test22
+
+    mint test31 = {{1, 2, 3}, {false, false+false, false-false}}
+    cmint test32 = {{1, 2, 3}, {228, 229, 2210}}
+    cmint result3 = test31 .* test32
+
+    cvint test41 = {1, 2, 3, 4, 5}
+    int test42 = 2
+    cvint result4_1 = test41 .* test42
+    cmint result4_2 = test42 .* test41
+
+    mint test51 = {{1, 2, 3}, {4, 5, 6}}
+    int test52 = 2
+    cmint result5 = test51 .* test52
+
+    mint test61 = {{1, 2, 3}, {4, 5, 6}}
+    int test62 = 2
+    mint result6 = test61 .* test62
+
+    cmint test7 = {{1, 2}, {3, 4}, {5, 6}}
+    cmint result7 = test7'
+
+    int test8 = 2
+    bool result8 = !test8
+
+    cint test9 = 256
+    int result9 = test9>>
+
+    cint test10 = 6
+    int result10 = test10<<
+end

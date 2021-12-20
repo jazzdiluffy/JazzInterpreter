@@ -27,7 +27,8 @@ class JazzInterpreter:
             self.handleNode(start_node)
             for d in self.declaration_table:
                 for key in d.keys():
-                    print(f"{key}: {d[key]}")
+                    # if "result" in key:
+                        print(f"{key}: {d[key]}")
                 print()
         else:
             ErrorHandler().raise_error(code=ErrorType.MissingProgramStartPoint.value)
@@ -61,7 +62,10 @@ class JazzInterpreter:
                     print("[DEBUG]: Unexpected Type Exception")
                     pass
             case NodeType.Assignment.value:
-                pass
+                try:
+                    return self.handle_assignment(node)
+                except UndeclaredException:
+                    ErrorHandler().raise_error(ErrorType.UndeclaredError.value)
             case NodeType.Expression.value:
                 return self.handleNode(node.children)
             case NodeType.ListExpressions.value:
@@ -119,12 +123,17 @@ class JazzInterpreter:
     def configure_declaration(self, type, value):
         types_without_vm_modifiers = ["int", "cint", "bool", "cbool"]
         if type in types_without_vm_modifiers and value.type in types_without_vm_modifiers:
+            if type == "cbool" and isinstance(value.value, int):
+                return Variable("cbool", bool(value.value))
+            elif type == "cint" and isinstance(value.value, bool):
+                return Variable("cint", int(value.value))
             return self.configure_variable(type, value)
         elif "v" in type and "v" in value.type:
             a = self.configure_vector(type, value)
             return a
         elif "m" in type and "m" in value.type:
             return self.configure_matrix(type, value)
+
         else:
             raise UnexpectedTypeException
 
@@ -223,6 +232,8 @@ class JazzInterpreter:
                 return self.handle_greater_operator(first_operand, second_operand)
             case "<":
                 return self.handle_less_operator(first_operand, second_operand)
+            case ("and"|"&&"):
+                return self.handle_and_operator(first_operand, second_operand)
 
     def handle_binary_plus(self, first_operand, second_operand):
         lhs = TypeConverter().convert_type("int", self.handleNode(first_operand))
@@ -265,9 +276,6 @@ class JazzInterpreter:
         # fill by zeros
         for i in range(len(rhs.value[0])):
             result_matrix.append([Variable("int", 0) for j in range(len(lhs.value))])
-        print(len(lhs.value))
-        print(len(rhs.value[0]))
-        print(len(rhs.value))
         for i in range(len(lhs.value)):
             for j in range(len(rhs.value[0])):
                 for k in range(len(rhs.value)):
@@ -369,6 +377,11 @@ class JazzInterpreter:
         return Variable("int", first_operand.value * second_operand.value)
     # TODO: add MV and VM
 
+    def handle_and_operator(self, first_operand, second_operand):
+        lhs = self.handleNode(first_operand)
+        rhs = self.handleNode(second_operand)
+        return Variable("bool", lhs.value and rhs.value)
+
     def handle_unary_operator(self, node):
         child = node.children[0]
         match node.value:
@@ -409,16 +422,48 @@ class JazzInterpreter:
         res = int("".join(s), 2)
         return Variable("int", res)
 
+    def handle_assignment(self, node):
+        # met something like a <- 5
+        # a is decl_name
+        decl_name = node.value.value
+        if decl_name not in self.declaration_table[self.visibility_scope].keys():
+            raise UndeclaredException
+        try:
+            # getting instance of class Variable using decl_name: var is Variable("type", value)
+            var = self.declaration_table[self.visibility_scope][decl_name]
+            new_value = node.children[0]
+            match new_value.type:
+                case NodeType.Expression.value:
+                    new_value = self.handleNode(new_value)
+                case NodeType.ListArgs.value:
+                    new_value = self.handleNode(new_value)
+                    new_value = self.make_variable_instance(new_value)
+            self.assign_to_var(var, decl_name, new_value)
+        except TypeException:
+            ErrorHandler().raise_error(ErrorType.TypeError.value)
+        pass
 
+    def assign_to_var(self, var_instance, decl_name, new_value):
+        var_type = var_instance.type
+        new_value_type = new_value.type
 
-
+        if "c" in var_type:
+            raise TypeException
+        if var_type == new_value_type.replace("c", ""):
+            self.declaration_table[self.visibility_scope][decl_name] = Variable(var_type, new_value.value)
+        elif var_type == "int" and new_value_type.replace("c", "") == "bool":
+            self.declaration_table[self.visibility_scope][decl_name] = Variable(var_type, int(new_value.value))
+        elif var_type == "bool" and new_value_type.replace("c", "") == "int":
+            self.declaration_table[self.visibility_scope][decl_name] = Variable(var_type, bool(new_value.value))
+        else:
+            raise TypeException
 
 
 
 
 if __name__ == '__main__':
     interpreter = JazzInterpreter()
-    s = f'/Users/jazzdiluffy/Desktop/JazzInterpreter/Testing/test_interpreter_sth.txt'
+    s = f'/Users/jazzdiluffy/Desktop/JazzInterpreter/Testing/test_interpreter_assignment.txt'
     f = open(s, "r")
     program = f.read()
     f.close()
