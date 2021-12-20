@@ -28,7 +28,7 @@ class JazzInterpreter:
             for d in self.declaration_table:
                 for key in d.keys():
                     # if "result" in key:
-                        print(f"{key}: {d[key]}")
+                    print(f"{key}: {d[key]}")
                 print()
         else:
             ErrorHandler().raise_error(code=ErrorType.MissingProgramStartPoint.value)
@@ -161,7 +161,8 @@ class JazzInterpreter:
             if len(value[i]) != rectangular_matrix_length:
                 raise ValueException
         for i in range(len(value)):
-            converted_matrix_elems[i] = [TypeConverter().convert_type(elems_type, elem) for elem in converted_matrix_elems[i]]
+            converted_matrix_elems[i] = [TypeConverter().convert_type(elems_type, elem) for elem in
+                                         converted_matrix_elems[i]]
             a = converted_matrix_elems[i]
         return Variable(type, converted_matrix_elems)
 
@@ -232,7 +233,7 @@ class JazzInterpreter:
                 return self.handle_greater_operator(first_operand, second_operand)
             case "<":
                 return self.handle_less_operator(first_operand, second_operand)
-            case ("and"|"&&"):
+            case ("and" | "&&"):
                 return self.handle_and_operator(first_operand, second_operand)
 
     def handle_binary_plus(self, first_operand, second_operand):
@@ -376,6 +377,7 @@ class JazzInterpreter:
 
     def elem_mul_xx(self, first_operand, second_operand):
         return Variable("int", first_operand.value * second_operand.value)
+
     # TODO: add MV and VM
 
     def handle_and_operator(self, first_operand, second_operand):
@@ -402,7 +404,8 @@ class JazzInterpreter:
         result_matrix = []
         for i in range(len(op.value[0])):
             result_matrix.append([Variable("int", 0) for j in range(len(op.value))])
-        result_matrix = [[Variable("int", op.value[j][i].value) for j in range(len(op.value))] for i in range(len(op.value[0]))]
+        result_matrix = [[Variable("int", op.value[j][i].value) for j in range(len(op.value))] for i in
+                         range(len(op.value[0]))]
         return Variable("mint", result_matrix)
 
     def handle_negative(self, operand):
@@ -411,7 +414,7 @@ class JazzInterpreter:
         op.value = not op.value
         return op
 
-    def handle_cyclic_shift(self, operand, is_left = True):
+    def handle_cyclic_shift(self, operand, is_left=True):
         op = self.handleNode(operand)
         arr_of_bin = deque([int(d) for d in str(bin(op.value))[2:]])
         if not is_left:
@@ -466,23 +469,26 @@ class JazzInterpreter:
         if condition:
             new_interpreter = JazzInterpreter()
             for key in self.declaration_table[self.visibility_scope].keys():
-                new_interpreter.declaration_table[self.visibility_scope][key] = self.declaration_table[self.visibility_scope][key]
+                new_interpreter.declaration_table[self.visibility_scope][key] = \
+                self.declaration_table[self.visibility_scope][key]
             new_interpreter.handleNode(node.children[1])
             try:
                 for key in new_interpreter.declaration_table[self.visibility_scope].keys():
                     if key in self.declaration_table[self.visibility_scope]:
-                        self.declaration_table[self.visibility_scope][key] = new_interpreter.declaration_table[self.visibility_scope][key]
+                        self.declaration_table[self.visibility_scope][key] = \
+                        new_interpreter.declaration_table[self.visibility_scope][key]
             except Exception:
                 pass
 
     def handle_for(self, node):
-        # p[0] = NodeOfST(node_type=NodeType.For.value, value="",
-        #              children=[variableChild, startChild, stopChild, ifbodyChild])
+        # for-node has children: [variableChild, startChild, stopChild, forbodyChild]
 
         var_name = node.children[0].value
         start = self.handleNode(node.children[1]).value
         stop = self.handleNode(node.children[2]).value
         flag = False
+        # check if iterate variable name from for-loop in declaration table
+        # if it is, we will replace this var to Variable("int", value) until for-loop finish his work
         if var_name in self.declaration_table[self.visibility_scope].keys():
             flag = True
         try:
@@ -490,29 +496,33 @@ class JazzInterpreter:
             if flag:
                 var_copy = self.declaration_table[self.visibility_scope][var_name]
             self.declaration_table[self.visibility_scope][var_name] = Variable("int", start)
+            # directly for-loop
             while self.declaration_table[self.visibility_scope][var_name].value < stop:
+                # create new interpreter and copy by value vars from declaration table
                 new_interpreter = JazzInterpreter()
                 for key in self.declaration_table[self.visibility_scope].keys():
-                    new_interpreter.declaration_table[self.visibility_scope][key] = self.declaration_table[self.visibility_scope][key]
-
+                    new_interpreter.declaration_table[self.visibility_scope][key] = \
+                    self.declaration_table[self.visibility_scope][key]
                 new_interpreter.handleNode(node.children[3])
+                # if values from MAIN declaration table have changed while working of NEW interpreter,
+                # we have to change them in MAIN declaration table: loop through key in NEW interpreter declaration
+                # table and look if key(var_name) is in MAIN declaration table
+                # if it is not^ it means that current var_name was declared in inner scope, we skip it
                 try:
                     for key in new_interpreter.declaration_table[self.visibility_scope].keys():
                         if key in self.declaration_table[self.visibility_scope]:
                             self.declaration_table[self.visibility_scope][key] = \
-                            new_interpreter.declaration_table[self.visibility_scope][key]
+                                new_interpreter.declaration_table[self.visibility_scope][key]
                 except Exception:
                     pass
                 self.declaration_table[self.visibility_scope][var_name].value += 1
+            # replace saved var back if needed
             if flag:
                 self.declaration_table[self.visibility_scope][var_name] = var_copy
             else:
                 del self.declaration_table[self.visibility_scope][var_name]
         except Exception:
             pass
-
-
-
 
 
 if __name__ == '__main__':
