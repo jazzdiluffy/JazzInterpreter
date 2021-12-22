@@ -25,6 +25,9 @@ class NodeType(enum.Enum):
     ReturnSpecification = "return_spec"
     Parameters = "parameters"
     Parameter = "parameter"
+    CallFunction = "func_call"
+    ReturnList = "return_list"
+    CallList = "call_list"
 
 
 class NodeSTBuilder:
@@ -115,7 +118,7 @@ class NodeSTBuilder:
             parametersChild = p[5]
             funcBodyChild = p[9]
             funcTable[func_key] = NodeOfST(node_type=NodeType.FuncDeclaration.value,
-                                           value="",
+                                           value=func_key,
                                            children={"return_spec": returnSpecChild,
                                                      "params": parametersChild,
                                                      "body": funcBodyChild})
@@ -126,7 +129,7 @@ class NodeSTBuilder:
             returnSpecChild = p[1]
             funcBodyChild = p[8]
             funcTable[func_key] = NodeOfST(node_type=NodeType.FuncDeclaration.value,
-                                           value="",
+                                           value=func_key,
                                            children={"return_spec": returnSpecChild,
                                                      "body": funcBodyChild})
             p[0] = NodeOfST(node_type=NodeType.Function.value, value=p[3])
@@ -136,7 +139,7 @@ class NodeSTBuilder:
             parametersChild = p[4]
             funcBodyChild = p[8]
             funcTable[func_key] = NodeOfST(node_type=NodeType.FuncDeclaration.value,
-                                           value="",
+                                           value=func_key,
                                            children={"params": parametersChild,
                                                      "body": funcBodyChild})
             p[0] = NodeOfST(node_type=NodeType.Function.value, value=p[2])
@@ -145,7 +148,7 @@ class NodeSTBuilder:
             func_key = p[2]
             funcBodyChild = p[7]
             funcTable[func_key] = NodeOfST(node_type=NodeType.FuncDeclaration.value,
-                                           value="",
+                                           value=func_key,
                                            children={"body": funcBodyChild})
             p[0] = NodeOfST(node_type=NodeType.Function.value, value=p[2])
 
@@ -168,3 +171,45 @@ class NodeSTBuilder:
             p[0] = NodeOfST(node_type=NodeType.Parameter.value, value="", children=[p[1], p[2], p[4]])
         elif len(p) == 7:
             p[0] = NodeOfST(node_type=NodeType.Parameter.value, value="", children=[p[1], p[2], p[5]])
+
+    def func_call(self, p):
+        if len(p) == 2:
+            p[0] = NodeOfST(NodeType.CallFunction.value, value=p[1], children={})
+        elif len(p) == 3:
+            p[0] = NodeOfST(NodeType.CallFunction.value, value=p[1], children={'call': p[2]})
+        elif len(p) == 4:
+            p[0] = NodeOfST(NodeType.CallFunction.value, value=p[3], children={'return': p[1]})
+        elif len(p) == 5:
+            p[0] = NodeOfST(NodeType.CallFunction.value, value=p[3], children={'return': p[1], 'call': p[4]})
+        elif len(p) == 6:
+            p[0] = NodeOfST(NodeType.CallFunction.value, value=p[4], children={'return': [p[1], p[2]], 'call': p[5]})
+
+    def ret_list(self, p):
+        if len(p) == 2:
+            p[0] = NodeOfST(NodeType.ReturnList.value, value="", children=p[1])
+        elif len(p) == 4:
+            p[0] = NodeOfST(NodeType.ReturnList.value, value="", children=[p[1], p[3]])
+
+    def call_list(self, p):
+        if len(p) == 2:
+            p[0] = NodeOfST(NodeType.CallList.value, value="", children=[p[1]])
+        else:
+            p[0] = NodeOfST(NodeType.CallList.value, value="", children=[p[1], p[3]])
+
+    def ind_exp(self, p):
+        if len(p) == 3 and p[1] == ':':
+            p[0] = NodeOfST('colon', value=p[1])
+        elif len(p) == 3 and p[2] == ':':
+            p[0] = NodeOfST('colon', value=p[2])
+        else:
+            p[0] = NodeOfST('comma', value=p[1])
+
+    def ind(self, p):
+        if len(p) == 2:
+            p[0] = NodeOfST('index', value="", children=p[1])
+        elif len(p) == 3 and (p[2].type == 'colon' or p[2].type == 'comma'):
+            p[0] = NodeOfST('index', value="", children=[p[1]])
+        elif len(p) == 3 and (p[1].type == 'colon' or p[1].type == 'comma'):
+            p[0] = NodeOfST('index', value="", children=[p[1], p[2]])
+        elif len(p) == 4:
+            p[0] = NodeOfST('index', value="", children=p[2])

@@ -3,7 +3,6 @@ from Parser.NodeSTBuilder import NodeType
 from ErrorHandler import *
 from TypeConverter import TypeConverter
 from Variable import Variable
-from Parser.NodeOfST import NodeOfST
 from collections import deque
 
 
@@ -95,6 +94,14 @@ class JazzInterpreter:
             case NodeType.Function.value:
                 pass
             case NodeType.ReturnSpecification.value:
+                pass
+            case NodeType.Parameters.value:
+                pass
+            case NodeType.Parameter.value:
+                pass
+            case NodeType.CallFunction.value:
+                # node: type: func_call, value: name of calling function
+                returned_values = self.handle_function_call(node)
                 pass
             case _:
                 print("[DEBUG]: Errors in grammar and syntax tree building")
@@ -470,13 +477,13 @@ class JazzInterpreter:
             new_interpreter = JazzInterpreter()
             for key in self.declaration_table[self.visibility_scope].keys():
                 new_interpreter.declaration_table[self.visibility_scope][key] = \
-                self.declaration_table[self.visibility_scope][key]
+                    self.declaration_table[self.visibility_scope][key]
             new_interpreter.handleNode(node.children[1])
             try:
                 for key in new_interpreter.declaration_table[self.visibility_scope].keys():
                     if key in self.declaration_table[self.visibility_scope]:
                         self.declaration_table[self.visibility_scope][key] = \
-                        new_interpreter.declaration_table[self.visibility_scope][key]
+                            new_interpreter.declaration_table[self.visibility_scope][key]
             except Exception:
                 pass
 
@@ -502,7 +509,7 @@ class JazzInterpreter:
                 new_interpreter = JazzInterpreter()
                 for key in self.declaration_table[self.visibility_scope].keys():
                     new_interpreter.declaration_table[self.visibility_scope][key] = \
-                    self.declaration_table[self.visibility_scope][key]
+                        self.declaration_table[self.visibility_scope][key]
                 new_interpreter.handleNode(node.children[3])
                 # if values from MAIN declaration table have changed while working of NEW interpreter,
                 # we have to change them in MAIN declaration table: loop through key in NEW interpreter declaration
@@ -523,6 +530,142 @@ class JazzInterpreter:
                 del self.declaration_table[self.visibility_scope][var_name]
         except Exception:
             pass
+
+    def handle_function_call(self, node):
+        # node: • [Type: func_call - Value: calling function name]
+        # self.func_table["calling function name"].children:
+        # {'return_spec': • [Type: return_spec - Value: ], 'params': • [Type: parameters - Value: ], 'body': • [Type: sentence_list - Value: ]}
+        # return specification and parameters dict keys are optional
+
+        # firstly check was function declared or not and pull out needed info
+        function_name = node.value
+        if function_name not in self.func_table.keys():
+            raise UndeclaredException
+        func_declaration_node = self.func_table[function_name]
+        return_specification_node = func_declaration_node.children.get("return_spec", None)
+        parameters_node = func_declaration_node.children.get("params", None)
+        body_node = func_declaration_node.children.get("body", None)
+
+        # these var names of related type should be declared in func body
+        # and vars to which to will assign also must have same type
+        return_specification = dict()
+        if return_specification_node is not None:
+            help_arr = []
+            self.extract_return_spec(return_specification_node, return_specification, help_arr)
+            del help_arr
+
+        # parameters that were declared
+        declared_func_parameters = dict()
+        if parameters_node is not None:
+            self.extract_parameters(parameters_node, declared_func_parameters)
+        # simple dictionary: if has no default parameter, value by key is None
+        func_assigned_params = dict()
+        for key in declared_func_parameters.keys():
+            if isinstance(declared_func_parameters[key], Variable):
+                _type = declared_func_parameters[key].type
+                _val = _type = declared_func_parameters[key].value
+                func_assigned_params[key] = Variable(_type, _val)
+            else:
+                func_assigned_params[key] = None
+
+        # values, that we pass to the func
+        passed_values = node.children.get("call", None)
+
+        # parameters with values that will be used inside function body
+        # elements from dict will be overridden if it needed
+        if passed_values is not None:
+            self.assign_passed_values(func_assigned_params, passed_values)
+        if self.has_missing_arguments(func_assigned_params):
+            print("[DEBUG] Missing args error")
+
+
+        # pass this new params with passed values into new declaration table
+        # start new sub-interpreter for func body
+
+        # our return specifications were saved before
+        # loop through keys of sub-interpreter declaration table and check if return-values are contained
+
+        # assign
+
+        pass
+
+    # transforms info about return specification from syntax tree into dict: {"name1": "type1", ...}
+    def extract_return_spec(self, node, result_dict, flag):
+        # node: Type: return_spec
+        # Children: [• [Type: return_spec - Value: ], • [Type: type - Value: int], 'res2'] or just [• [Type: type - Value: int], 'res2']
+        children = node.children
+        # flag here is array because i had difficulties with implementing this algorithms on python
+        # if it was bool, then during coming back after diving maximum deep of recursion, this flag doesnt change
+
+        # one moment it will be 2 elements in children
+        # or we are coming back after diving in recursion
+        while len(children) != 2 and len(flag) == 0:
+            return_var_type = children[1].value
+            return_var_name = children[2]
+            if result_dict.get(return_var_name):
+                raise RedeclarationException
+            result_dict[return_var_name] = return_var_type
+            self.extract_return_spec(children[0], result_dict, flag)
+        # finish if all elements are collected
+        if len(flag) != 0:
+            return
+        # when first condition about consisting of 2 elements worked, we have to add sth in list
+        # to check a moment that our algo should finish
+        result_dict[children[1]] = children[0].value
+        flag.append(0)
+
+    def extract_parameters(self, node, result_dict):
+        a = 5
+        # """parameters : parameters COMMA parameter
+        #               | parameter"""
+        # so we add handled expression and dive into next expression list
+        # it will continue until there are no more expressions_list in grammar
+        # so there will be only one child
+        if len(node.children) == 2:
+            self.add_parameter_info(node.children[1], result_dict)
+            self.extract_parameters(node.children[0], result_dict)
+        else:
+            self.add_parameter_info(node.children[0], result_dict)
+
+    def add_parameter_info(self, node, result_dict):
+        # possible parameter's node children
+        # [• (Type: type - Value: vint), 'par2']
+        # [• (Type: type - Value: int), 'par1', • (Type: constant - Value: 0)]
+        param_var_name = node.children[1]
+        param_var_declared_type = node.children[0].value
+        if len(node.children) == 2:
+            result_dict[param_var_name] = param_var_declared_type
+        else:
+            val = self.handleNode(node.children[2])
+            result_dict[param_var_name] = self.configure_declaration(param_var_declared_type, val)
+
+    def has_missing_arguments(self, dict_assigned):
+        for key in dict_assigned.keys():
+            if key is None:
+                return True
+        return False
+
+    def assign_passed_values(self, assign_dict, node):
+        configured_values = self.get_configured_values_from_call_list(node)[::-1]
+
+        # for elem in elems in arr assign to params
+        # (need mb array for numeration of params)
+        pass
+
+    # returns reversed array of passed values
+    def get_configured_values_from_call_list(self, node):
+        # """call_list : call_list COMMA expression
+        #                     | expression"""
+        result = []
+        if len(node.children) == 2:
+            result.append(self.handleNode(node.children[1]))
+            add = self.get_configured_values_from_call_list(node.children[0])
+            result += add
+        else:
+            result.append(self.handleNode(node.children[0]))
+        return result
+
+
 
 
 if __name__ == '__main__':

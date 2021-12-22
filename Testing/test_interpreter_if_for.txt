@@ -1,0 +1,13 @@
+function main() begin
+    int a = 7
+    mint matrix = {{1, 2, 3}, {1, 2, 3}}
+    cint multiplier = 2
+    int b = 5
+    for i = 0: b beginfor
+        if !i<3 beginif
+            if !i>3 beginif
+                matrix <- matrix'
+            endif
+        endif
+    endfor
+end

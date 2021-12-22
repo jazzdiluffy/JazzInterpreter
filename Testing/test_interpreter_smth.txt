@@ -1,13 +1,15 @@
-function main() begin
-    int a = 7
-    mint matrix = {{1, 2, 3}, {1, 2, 3}}
-    cint multiplier = 2
-    int b = 5
-    for i = 0: b beginfor
-        if !i<3 beginif
-            if !i>3 beginif
-                matrix <- matrix .* multiplier
-            endif
-        endif
-    endfor
+// int res = function add_2 (int n = 0) begin
+//    res <- n + 2
+// end
+
+vint res1, mint res2 = function lol(int par1 = 0, int par2) begin
+    int a = 5
 end
+
+function main() begin
+    int x = 0
+    int y = 0
+    mint hi = {{1, 2, 3}, {1, 2, 3}}
+    x, y <- lol 3, hi'
+end
+
