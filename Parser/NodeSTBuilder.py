@@ -186,7 +186,7 @@ class NodeSTBuilder:
 
     def ret_list(self, p):
         if len(p) == 2:
-            p[0] = NodeOfST(NodeType.ReturnList.value, value="", children=p[1])
+            p[0] = NodeOfST(NodeType.ReturnList.value, value="", children=[p[1]])
         elif len(p) == 4:
             p[0] = NodeOfST(NodeType.ReturnList.value, value="", children=[p[1], p[3]])
 

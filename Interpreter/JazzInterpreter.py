@@ -1,3 +1,5 @@
+import copy
+
 from Parser.JazzParser import *
 from Parser.NodeSTBuilder import NodeType
 from ErrorHandler import *
@@ -10,12 +12,15 @@ class JazzInterpreter:
     def __init__(self):
         self.parser = JazzParser()
         self.syntax_tree = None
-        self.func_table = None
+        self.func_table = dict()
         self.declaration_table = [dict()]
         self.visibility_scope = 0
+        self.recursion_depth = dict()
 
     def start(self, prog=None):
         self.syntax_tree, self.func_table, has_syntax_errors = self.parser.parse(prog)
+        for key in self.func_table.keys():
+            self.recursion_depth[key] = 0
         if not has_syntax_errors:
             self.handleCaseWithoutSyntaxErrors()
 
@@ -100,9 +105,17 @@ class JazzInterpreter:
             case NodeType.Parameter.value:
                 pass
             case NodeType.CallFunction.value:
+                a = 5
                 # node: type: func_call, value: name of calling function
-                returned_values = self.handle_function_call(node)
-                pass
+                try:
+                    returned_values = self.handle_function_call(node)
+                except RecursionException:
+                    ErrorHandler().raise_error(ErrorType.RecursionError.value)
+                except ReturnSpecificationException:
+                    ErrorHandler().raise_error(ErrorType.ReturnSpecificationError.value)
+                except FunctionReturnAssignmentException:
+                    ErrorHandler().raise_error(ErrorType.FunctionReturnAssignmentError.value)
+
             case _:
                 print("[DEBUG]: Errors in grammar and syntax tree building")
 
@@ -244,8 +257,8 @@ class JazzInterpreter:
                 return self.handle_and_operator(first_operand, second_operand)
 
     def handle_binary_plus(self, first_operand, second_operand):
-        lhs = TypeConverter().convert_type("int", self.handleNode(first_operand))
-        rhs = TypeConverter().convert_type("int", self.handleNode(second_operand))
+        lhs = self.handleNode(first_operand)
+        rhs = self.handleNode(second_operand)
         return Variable("int", lhs.value + rhs.value)
 
     def handle_binary_minus(self, first_operand, second_operand):
@@ -546,18 +559,31 @@ class JazzInterpreter:
         parameters_node = func_declaration_node.children.get("params", None)
         body_node = func_declaration_node.children.get("body", None)
 
+        self.recursion_depth[node.value] += 1
+        if self.recursion_depth[node.value] >= 50:
+            raise RecursionException
+
         # these var names of related type should be declared in func body
         # and vars to which to will assign also must have same type
         return_specification = dict()
+        return_specification_sequence = []
         if return_specification_node is not None:
             help_arr = []
-            self.extract_return_spec(return_specification_node, return_specification, help_arr)
+            self.extract_return_spec(return_specification_node,
+                                     return_specification,
+                                     help_arr,
+                                     return_specification_sequence)
             del help_arr
+        return_specification_sequence.reverse()
 
         # parameters that were declared
         declared_func_parameters = dict()
+        # nedeed to check in which sequence parameters were declared
+        func_assigned_params_sequence = []
         if parameters_node is not None:
-            self.extract_parameters(parameters_node, declared_func_parameters)
+            self.extract_parameters(parameters_node, declared_func_parameters, func_assigned_params_sequence)
+        # function that configured sequence returned it reversed, so we have to fix it
+        func_assigned_params_sequence.reverse()
         # simple dictionary: if has no default parameter, value by key is None
         func_assigned_params = dict()
         for key in declared_func_parameters.keys():
@@ -574,23 +600,61 @@ class JazzInterpreter:
         # parameters with values that will be used inside function body
         # elements from dict will be overridden if it needed
         if passed_values is not None:
-            self.assign_passed_values(func_assigned_params, passed_values)
-        if self.has_missing_arguments(func_assigned_params):
-            print("[DEBUG] Missing args error")
-
+            try:
+                self.assign_passed_values(func_assigned_params, func_assigned_params_sequence, passed_values)
+            except MissingParameterException:
+                ErrorHandler().raise_error(ErrorType.MissingParameterError.value)
+        if not self.check_params_relation_types(declared_func_parameters, func_assigned_params):
+            print("[DEBUG] Unrelated type in parameters")
 
         # pass this new params with passed values into new declaration table
+        # configure parameters to constant type, we don't allow them to change
         # start new sub-interpreter for func body
+        sub_interpreter = JazzInterpreter()
+        for key in func_assigned_params.keys():
+            param = func_assigned_params[key]
+            _type = "c" + param.type.replace("c", "")
+            val = self.configure_declaration(_type, param)
+            sub_interpreter.declaration_table[sub_interpreter.visibility_scope][key] = val
+        for func_name in self.func_table.keys():
+            if func_name != "main":
+                sub_interpreter.func_table[func_name] = self.func_table[func_name]
+        sub_interpreter.recursion_depth = self.recursion_depth
+        # TODO: main in recursion - remove it
+        sub_interpreter.handleNode(body_node)
+        sub_decl_table = sub_interpreter.declaration_table
+
+        var_will_change_node = node.children.get("return", None)
+        if var_will_change_node is None and len(return_specification.keys()) != 0:
+            raise FunctionReturnAssignmentException
+        if var_will_change_node is None:
+            return
+        var_names_will_change = []
+        self.extract_var_names_that_will_change(var_names_will_change, var_will_change_node)
+        var_names_will_change.reverse()
+        for return_needed_var_name in return_specification.keys():
+            if return_needed_var_name not in sub_decl_table[self.visibility_scope].keys():
+                raise ReturnSpecificationException
+        for i in range(len(var_names_will_change)):
+            var_name = var_names_will_change[i]
+            ret_spec_name = return_specification_sequence[i]
+            self.declaration_table[self.visibility_scope][var_name] = sub_decl_table[self.visibility_scope][ret_spec_name]
+        a = 5
+
+
+
+
 
         # our return specifications were saved before
         # loop through keys of sub-interpreter declaration table and check if return-values are contained
 
         # assign
+        self.recursion_depth[node.value] -= 1
 
         pass
 
     # transforms info about return specification from syntax tree into dict: {"name1": "type1", ...}
-    def extract_return_spec(self, node, result_dict, flag):
+    def extract_return_spec(self, node, result_dict, flag, sequence):
         # node: Type: return_spec
         # Children: [• [Type: return_spec - Value: ], • [Type: type - Value: int], 'res2'] or just [• [Type: type - Value: int], 'res2']
         children = node.children
@@ -605,29 +669,30 @@ class JazzInterpreter:
             if result_dict.get(return_var_name):
                 raise RedeclarationException
             result_dict[return_var_name] = return_var_type
-            self.extract_return_spec(children[0], result_dict, flag)
+            sequence.append(return_var_name)
+            self.extract_return_spec(children[0], result_dict, flag, sequence)
         # finish if all elements are collected
         if len(flag) != 0:
             return
         # when first condition about consisting of 2 elements worked, we have to add sth in list
         # to check a moment that our algo should finish
         result_dict[children[1]] = children[0].value
+        sequence.append(children[1])
         flag.append(0)
 
-    def extract_parameters(self, node, result_dict):
-        a = 5
+    def extract_parameters(self, node, result_dict, sequence):
         # """parameters : parameters COMMA parameter
         #               | parameter"""
         # so we add handled expression and dive into next expression list
         # it will continue until there are no more expressions_list in grammar
         # so there will be only one child
         if len(node.children) == 2:
-            self.add_parameter_info(node.children[1], result_dict)
-            self.extract_parameters(node.children[0], result_dict)
+            self.add_parameter_info(node.children[1], result_dict, sequence)
+            self.extract_parameters(node.children[0], result_dict, sequence)
         else:
-            self.add_parameter_info(node.children[0], result_dict)
+            self.add_parameter_info(node.children[0], result_dict, sequence)
 
-    def add_parameter_info(self, node, result_dict):
+    def add_parameter_info(self, node, result_dict, sequence):
         # possible parameter's node children
         # [• (Type: type - Value: vint), 'par2']
         # [• (Type: type - Value: int), 'par1', • (Type: constant - Value: 0)]
@@ -635,9 +700,11 @@ class JazzInterpreter:
         param_var_declared_type = node.children[0].value
         if len(node.children) == 2:
             result_dict[param_var_name] = param_var_declared_type
+            sequence.append(param_var_name)
         else:
             val = self.handleNode(node.children[2])
             result_dict[param_var_name] = self.configure_declaration(param_var_declared_type, val)
+            sequence.append(param_var_name)
 
     def has_missing_arguments(self, dict_assigned):
         for key in dict_assigned.keys():
@@ -645,13 +712,15 @@ class JazzInterpreter:
                 return True
         return False
 
-    def assign_passed_values(self, assign_dict, node):
+    def assign_passed_values(self, assign_dict, assign_sequence, node):
         configured_values = self.get_configured_values_from_call_list(node)[::-1]
 
-        # for elem in elems in arr assign to params
-        # (need mb array for numeration of params)
-        pass
-
+        for i in range(len(assign_sequence)):
+            param_var_name = assign_sequence[i]
+            try:
+                assign_dict[param_var_name] = configured_values[i]
+            except Exception:
+                raise MissingParameterException
     # returns reversed array of passed values
     def get_configured_values_from_call_list(self, node):
         # """call_list : call_list COMMA expression
@@ -664,6 +733,25 @@ class JazzInterpreter:
         else:
             result.append(self.handleNode(node.children[0]))
         return result
+
+    def check_params_relation_types(self, declaration_dict, assigned_dict):
+        for key in declaration_dict.keys():
+            if isinstance(declaration_dict[key], Variable):
+                if declaration_dict[key].type != assigned_dict[key].type:
+                    return False
+            else:
+                if declaration_dict[key] != assigned_dict[key].type:
+                    return False
+        return True
+
+    def extract_var_names_that_will_change(self, var_names_list, node):
+        # """ret_list : variable
+        #             | ret_list COMMA variable"""
+        if len(node.children) == 2:
+            var_names_list.append(node.children[1].value)
+            self.extract_var_names_that_will_change(var_names_list, node.children[0])
+        else:
+            var_names_list.append(node.children[0].value)
 
 
 

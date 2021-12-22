@@ -2,14 +2,15 @@
 //    res <- n + 2
 // end
 
-vint res1, mint res2 = function lol(int par1 = 0, int par2) begin
-    int a = 5
+int res1, int res2 = function lol(int par1 = 100, int par2) begin
+    int res1 = par1 + 100
+    int res2 = par2 + 1000
 end
 
 function main() begin
     int x = 0
-    int y = 0
-    mint hi = {{1, 2, 3}, {1, 2, 3}}
-    x, y <- lol 3, hi'
+    int y = 228
+    cint foo = 2
+    int swag = foo + 5
+    x, y <- lol 3, y
 end
-
