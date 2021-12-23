@@ -1,16 +1,8 @@
-// int res = function add_2 (int n = 0) begin
-//    res <- n + 2
-// end
-
-int res1, int res2 = function lol(int par1 = 100, int par2) begin
-    int res1 = par1 + 100
-    int res2 = par2 + 1000
-end
-
 function main() begin
-    int x = 0
-    int y = 228
-    cint foo = 2
-    int swag = foo + 5
-    x, y <- lol 3, y
+    vint v = {1, 2, 3}
+    mint m = {{1, 2, 3}, {4, 5,6}, {7, 8, 9}}
+
+    mint m1 = m({0,2},)
+
+    mint m3 = m({true, false, true},)
 end

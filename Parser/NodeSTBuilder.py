@@ -69,7 +69,10 @@ class NodeSTBuilder:
             p[0] = NodeOfST(node_type=NodeType.UnaryOperator.value, value=p[1], children=[p[2]])
 
     def variable(self, p):
-        p[0] = NodeOfST(node_type=NodeType.Variable.value, value=p[1], children=[])
+        if len(p) == 2:
+            p[0] = NodeOfST(node_type=NodeType.Variable.value, value=p[1], children=[])
+        else:
+            p[0] = NodeOfST(node_type='indexing', value=p[1], children=p[3])
 
     def type(self, p):
         p[0] = NodeOfST(node_type=NodeType.Type.value, value=p[1], children=[])
@@ -180,9 +183,15 @@ class NodeSTBuilder:
         elif len(p) == 4:
             p[0] = NodeOfST(NodeType.CallFunction.value, value=p[3], children={'return': p[1]})
         elif len(p) == 5:
-            p[0] = NodeOfST(NodeType.CallFunction.value, value=p[3], children={'return': p[1], 'call': p[4]})
+            if p[1] == "call":
+                p[0] = NodeOfST(NodeType.CallFunction.value, value=p[4], children={'return': p[2]})
+            else:
+                p[0] = NodeOfST(NodeType.CallFunction.value, value=p[3], children={'return': p[1], 'call': p[4]})
         elif len(p) == 6:
-            p[0] = NodeOfST(NodeType.CallFunction.value, value=p[4], children={'return': [p[1], p[2]], 'call': p[5]})
+            if p[1] == "call":
+                p[0] = NodeOfST(NodeType.CallFunction.value, value=p[4], children={'return': p[2], 'call': p[5]})
+            else:
+                p[0] = NodeOfST(NodeType.CallFunction.value, value=p[4], children={'return': [p[1], p[2]], 'call': p[5]})
 
     def ret_list(self, p):
         if len(p) == 2:
@@ -198,18 +207,18 @@ class NodeSTBuilder:
 
     def ind_exp(self, p):
         if len(p) == 3 and p[1] == ':':
-            p[0] = NodeOfST('colon', value=p[1])
+            p[0] = NodeOfST(node_type='colon', value=p[1])
         elif len(p) == 3 and p[2] == ':':
-            p[0] = NodeOfST('colon', value=p[2])
+            p[0] = NodeOfST(node_type='colon', value=p[2])
         else:
-            p[0] = NodeOfST('comma', value=p[1])
+            p[0] = NodeOfST(node_type='comma', value=p[1])
 
-    def ind(self, p):
+    def index(self, p):
         if len(p) == 2:
-            p[0] = NodeOfST('index', value="", children=p[1])
+            p[0] = NodeOfST(node_type='index', value="", children=p[1])
         elif len(p) == 3 and (p[2].type == 'colon' or p[2].type == 'comma'):
-            p[0] = NodeOfST('index', value="", children=[p[1]])
+            p[0] = NodeOfST(node_type='index', value="", children=[p[1], p[2]])
         elif len(p) == 3 and (p[1].type == 'colon' or p[1].type == 'comma'):
-            p[0] = NodeOfST('index', value="", children=[p[1], p[2]])
+            p[0] = NodeOfST(node_type='index', value="", children=[p[1], p[2]])
         elif len(p) == 4:
-            p[0] = NodeOfST('index', value="", children=p[2])
+            p[0] = NodeOfST(node_type='index', value="", children=p[2])

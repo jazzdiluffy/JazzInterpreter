@@ -1,0 +1,45 @@
+int res1, int res2 = function func1(int par1 = 100, int par2) begin
+    int res1 = par1 + 100
+    int res2 = par2 + 1000
+end
+
+function func2(int par1, int par2) begin
+    int a = 5
+end
+
+vint res1 = function func3() begin
+    vint res1 = {1, 2, 3}
+    res1 <- {4, 5, 6}
+end
+
+mint res1 = function func4(int multiplier = 2) begin
+    mint res1 = {{1, 2, 3}, {1, 2, 3}}
+    res1 <- res1 .* multiplier
+end
+
+int res1, mint res2 = function func5(bool flag, int multiplier = 5) begin
+    int res1 = 2 .* multiplier
+    mint tmp = {{1, 2, 3}, {1, 2, 3}}
+    mint res2 = tmp
+    if flag beginif
+        res2 <- tmp'
+    endif
+end
+
+
+function main() begin
+    int x = 0
+    int y = 228
+    cint foo = 2
+    int swag = foo + 5
+    x, y <- func1 3, y
+    func2 1, 2
+    vint func3_result = {0, 0}
+    call func3_result <- func3
+    mint func4_result = {{0, 0}, {0, 0}}
+    call func4_result <- func4
+    // call func4_result <- func4 5
+    int func5_res1 = 0
+    mint func5_res2 = {{0, 0}, {0, 0}}
+    func5_res1, func5_res2 <- func5 true, 3
+end

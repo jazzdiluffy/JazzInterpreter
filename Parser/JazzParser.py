@@ -75,8 +75,8 @@ class JazzParser(object):
         self.node_builder.math_expression(p)
 
     def p_variable(self, p):
-        """variable : VARIABLE"""
-       #             | VARIABLE LEFT_BRACKET index RIGHT_BRACKET"""
+        """variable : VARIABLE
+                   | VARIABLE LEFT_BRACKET index RIGHT_BRACKET"""
         self.node_builder.variable(p)
 
     def p_type(self, p):
@@ -154,11 +154,12 @@ class JazzParser(object):
     # | type VARIABLE EQUAL list_args
     def p_call_func(self, p):
         """call_func : VARIABLE
-                         | VARIABLE call_list
-                         | ret_list ASSIGN VARIABLE call_list
-                         | ret_list ASSIGN VARIABLE
-                         | variable ASSIGN VARIABLE call_list
-                         | type VARIABLE EQUAL VARIABLE call_list"""
+                     | VARIABLE call_list
+                     | ret_list ASSIGN VARIABLE call_list
+                     | CALL ret_list ASSIGN VARIABLE call_list
+                     | CALL ret_list ASSIGN VARIABLE
+                     | variable ASSIGN VARIABLE call_list
+                     | type VARIABLE EQUAL VARIABLE call_list"""
         self.node_builder.func_call(p)
 
     def p_ret_list(self, p):
@@ -170,6 +171,23 @@ class JazzParser(object):
         """call_list : call_list COMMA expression
                     | expression"""
         self.node_builder.call_list(p)
+
+    def p_ind_exp(self, p):
+        """ind : COMMA
+               | COMMA DOUBLE_DOT
+               | DOUBLE_DOT COMMA"""
+        self.node_builder.ind_exp(p)
+
+    def p_index(self, p):
+        """index : expression
+                 | list_expressions
+                 | list_expressions ind
+                 | ind list_expressions
+                 | list_args ind
+                 | ind list_args
+                 | list_args
+                 | LEFT_FIGURE_BRACKET list_args RIGHT_FIGURE_BRACKET"""
+        self.node_builder.index(p)
 
     def p_error(self, p):
         try:

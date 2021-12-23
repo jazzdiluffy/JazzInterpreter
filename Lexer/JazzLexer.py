@@ -28,7 +28,7 @@ class JazzLexer(object):
 
         "function": "FUNCTION", "begin": "BEGIN", "end": "END",
 
-        "and": "AND", "sum": "SUM"
+        "and": "AND", "sum": "SUM", "call": "CALL"
     }
 
     primitive_tokens = [

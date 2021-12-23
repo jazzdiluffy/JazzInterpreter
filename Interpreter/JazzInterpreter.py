@@ -42,8 +42,13 @@ class JazzInterpreter:
         if node is None:
             return "None Node"
         node_type = node.type
+        # print(node_type)
 
         match node_type:
+            case 'comma':
+                return node.value
+            case 'colon':
+                return node.value
             case NodeType.Program.value:
                 self.handleNode(node.children)
             case NodeType.SentenceList.value:
@@ -73,11 +78,21 @@ class JazzInterpreter:
             case NodeType.Expression.value:
                 return self.handleNode(node.children)
             case NodeType.ListExpressions.value:
-                pass
+                L = []
+                for ch in node.children:
+                    L.append(self.handleNode(ch))
+                if len(L) == 2 and isinstance(L[0], list):
+                    L[0].append(L[1])
+                    del L[1]
+                    L = L[0]
+                elif len(L) == 1:
+                    return L[0]
+                return L
             case NodeType.ListArgs.value:
                 if len(node.children) == 1:
                     return self.configure_list(node)
-                return self.configure_list(node)[::-1]
+                a = self.configure_list(node)[::-1]
+                return a
             case NodeType.Variable.value:
                 try:
                     return self.extract_variable_value(node)
@@ -94,16 +109,17 @@ class JazzInterpreter:
                 self.handle_if(node)
             case NodeType.For.value:
                 self.handle_for(node)
-            case NodeType.FuncDeclaration.value:
-                pass
-            case NodeType.Function.value:
-                pass
-            case NodeType.ReturnSpecification.value:
-                pass
-            case NodeType.Parameters.value:
-                pass
-            case NodeType.Parameter.value:
-                pass
+            case "index":
+                if isinstance(node.children, list):
+                    ind = []
+                    for i in range(len(node.children)):
+                        ind.append(self.handleNode(node.children[i]))
+                    return ind
+                else:
+                    a = self.handleNode(node.children)
+                    return a
+            case "indexing":
+                return self.indexing(node.value, node.children)
             case NodeType.CallFunction.value:
                 a = 5
                 # node: type: func_call, value: name of calling function
@@ -262,18 +278,18 @@ class JazzInterpreter:
         return Variable("int", lhs.value + rhs.value)
 
     def handle_binary_minus(self, first_operand, second_operand):
-        lhs = TypeConverter().convert_type("int", self.handleNode(first_operand))
-        rhs = TypeConverter().convert_type("int", self.handleNode(second_operand))
+        lhs = self.handleNode(first_operand)
+        rhs = self.handleNode(second_operand)
         return Variable("int", lhs.value - rhs.value)
 
     def handle_greater_operator(self, first_operand, second_operand):
-        lhs = TypeConverter().convert_type("int", self.handleNode(first_operand))
-        rhs = TypeConverter().convert_type("int", self.handleNode(second_operand))
+        lhs = self.handleNode(first_operand)
+        rhs = self.handleNode(second_operand)
         return Variable("bool", lhs.value > rhs.value)
 
     def handle_less_operator(self, first_operand, second_operand):
-        lhs = TypeConverter().convert_type("int", self.handleNode(first_operand))
-        rhs = TypeConverter().convert_type("int", self.handleNode(second_operand))
+        lhs = self.handleNode(first_operand)
+        rhs = self.handleNode(second_operand)
         return Variable("bool", lhs.value < rhs.value)
 
     def handle_matrix_multiplication(self, first_operand, second_operand):
@@ -453,6 +469,8 @@ class JazzInterpreter:
         if decl_name not in self.declaration_table[self.visibility_scope].keys():
             raise UndeclaredException
         try:
+            if node.value.type == "indexing":
+                a = 5
             # getting instance of class Variable using decl_name: var is Variable("type", value)
             var = self.declaration_table[self.visibility_scope][decl_name]
             new_value = node.children[0]
@@ -484,13 +502,17 @@ class JazzInterpreter:
 
     def handle_if(self, node):
         # if-node has children = [conditionChild, bodyChild]
-        condition = self.handleNode(node.children[0])
-        condition = TypeConverter().convert_type("bool", condition).value
+        condition = self.handleNode(node.children[0]).value
+        # condition = TypeConverter().convert_type("bool", condition).value
         if condition:
             new_interpreter = JazzInterpreter()
             for key in self.declaration_table[self.visibility_scope].keys():
                 new_interpreter.declaration_table[self.visibility_scope][key] = \
                     self.declaration_table[self.visibility_scope][key]
+            for func_name in self.func_table.keys():
+                if func_name != "main":
+                    new_interpreter.func_table[func_name] = self.func_table[func_name]
+            new_interpreter.recursion_depth = self.recursion_depth
             new_interpreter.handleNode(node.children[1])
             try:
                 for key in new_interpreter.declaration_table[self.visibility_scope].keys():
@@ -589,7 +611,7 @@ class JazzInterpreter:
         for key in declared_func_parameters.keys():
             if isinstance(declared_func_parameters[key], Variable):
                 _type = declared_func_parameters[key].type
-                _val = _type = declared_func_parameters[key].value
+                _val = declared_func_parameters[key].value
                 func_assigned_params[key] = Variable(_type, _val)
             else:
                 func_assigned_params[key] = None
@@ -613,7 +635,11 @@ class JazzInterpreter:
         sub_interpreter = JazzInterpreter()
         for key in func_assigned_params.keys():
             param = func_assigned_params[key]
-            _type = "c" + param.type.replace("c", "")
+            _type = ""
+            if "c" in param.type:
+                _type = param.type
+            else:
+                _type = "c" + param.type
             val = self.configure_declaration(_type, param)
             sub_interpreter.declaration_table[sub_interpreter.visibility_scope][key] = val
         for func_name in self.func_table.keys():
@@ -639,12 +665,7 @@ class JazzInterpreter:
             var_name = var_names_will_change[i]
             ret_spec_name = return_specification_sequence[i]
             self.declaration_table[self.visibility_scope][var_name] = sub_decl_table[self.visibility_scope][ret_spec_name]
-        a = 5
-
-
-
-
-
+        del sub_interpreter
         # our return specifications were saved before
         # loop through keys of sub-interpreter declaration table and check if return-values are contained
 
@@ -721,6 +742,7 @@ class JazzInterpreter:
                 assign_dict[param_var_name] = configured_values[i]
             except Exception:
                 raise MissingParameterException
+
     # returns reversed array of passed values
     def get_configured_values_from_call_list(self, node):
         # """call_list : call_list COMMA expression
@@ -753,12 +775,217 @@ class JazzInterpreter:
         else:
             var_names_list.append(node.children[0].value)
 
+    def indexing(self, var_name, child):
+        # child: Type: index
+        if var_name not in self.declaration_table[self.visibility_scope].keys():
+            print("raise InterpreterNameError")
+            # raise InterpreterNameError
+        decl_table_of_scope = self.declaration_table[self.visibility_scope]
+        type = decl_table_of_scope[var_name].type
 
+        # index: [Variable] | [Variable, Variable] | [Variable, ':'] | [',', Variable]
+        # | [[Variable, Variable, ...], ','] | [",", [Variable, Variable, ...]] | [[Variable(type: bool), ...], ","]
+        # | [",", [Variable(type: bool), ...]] | [[Var, Var, ...], [Var, Var, ...], ...]
+        index = self.handleNode(child)
+        # make it not list in case [Variable]
+        if len(index) == 1:
+            index = index[0]
+        # print('indexing', type, index)
+        if isinstance(index, list):
+            if isinstance(index[1], list) and len(index[1]) == 1:
+                # make [',', [Variable]] -> [',', Variable]
+                index[1] = index[1][0]
+            if len(index) == 3:
+                index = self.list_of_smth(index)
+            elif isinstance(index[0], list):
+                # make index[0] instance of Variable
+                index[0] = self.list_of_smth(index[0])
+            elif isinstance(index[1], list):
+                index[1] = self.list_of_smth(index[1])
+        if not isinstance(index, list) and "m" not in index.type and "v" not in index.type:
+            # index now is Variable: type: int, value: index_value
+            # decl_table_of_scope[var_name] is: Type: vint; Value: [Type: int; Value: 1, Type: int; Value: 2, Type: int; Value: 3]
+            return decl_table_of_scope[var_name].value[index.value]
+        elif isinstance(index, Variable) and "m" in index.type and "m" in type:
+            m = len(decl_table_of_scope[var_name].value)
+            n = len(decl_table_of_scope[var_name].value[0])
+            value = index.value
+            check, m_, n_ = self.check_index_mbool(index, m, n)
+            if not check:
+                # raise InterpreterBoolIndexError
+                print("raise InterpreterBoolIndexError")
+            res = [[] for j in range(m_)]
+            for i in range(m):
+                for j in range(n):
+                    if value[i][j].value:
+                        res[i].append(self.declaration_table[self.visibility_scope][var_name].value[i][j])
+            return Variable(type, res)
+        elif isinstance(index, Variable) and "v" in index.type and "v" in type or isinstance(index, list) and "v" in type and index[0].type == index[1].type == 'bool':
+            m = len(decl_table_of_scope[var_name].value)
+            if not isinstance(index, Variable):
+                index = Variable('vbool', index)
+            value = index.value
+            check = self.check_index_vbool(index, m)
+            if not check:
+                print("raise InterpreterBoolIndexError")
+                # raise InterpreterBoolIndexError
+            res = []
+            for i in range(m):
+                if value[i].value:
+                    res.append(decl_table_of_scope[var_name].value[i])
+            return Variable(type, res)
+        else:
+            # case [Variable, Variable]
+            if isinstance(index[0], Variable) and isinstance(index[1], Variable):
+                if index[0].type == index[1].type:
+                    try:
+                        return decl_table_of_scope[var_name].value[index[0].value][index[1].value]
+                    except IndexError:
+                        print("raise InterpreterIndexError")
+                        # raise InterpreterIndexError
+            # indexing for matrix
+            elif "m" in type:
+                # case [Variable, ':']
+                if isinstance(index[0], Variable) and (index[1] == ':' or index[1] == ','):
+                    if "v" not in index[0].type and "m" not in index[0].type:
+                        res = []
+                        index[0] = self.configure_variable('int', index[0])
+                        m = decl_table_of_scope[var_name].value
+                        # configure colon from matrix by index
+                        for i in range(len(m)):
+                            position = index[0].value
+                            res.append(m[i][position])
+                        vint_type = 'v' + type.split('m')[1]
+                        return Variable(vint_type, res)
+                    # case [Variable, ","] where Variable.type is vector
+                    elif "vint" in index[0].type:
+                        index[0] = self.configure_vector('vint', index[0])
+                        value = index[0].value
+                        res = [[] for i in range(len(value))]
+                        m = decl_table_of_scope[var_name].value
+                        for j in range(len(value)):
+                            for i in range(len(m)):
+                                position = value[j].value
+                                res[j].append(m[i][position])
+                        return Variable(type, res)
+                    # case [Variable, ","] where Variable is vector of bool
+                    elif "vbool" in index[0].type:
+                        m = decl_table_of_scope[var_name].value
+                        if len(index[0].value) != len(m):
+                            print("raise InterpreterValueError")
+                            # raise InterpreterValueError
+                        index[0] = self.configure_vector('vbool', index[0])
+                        value = index[0].value
+                        res = []
+                        k = -1
+                        # configure matrix of true colons
+                        for j in range(len(value)):
+                            if not value[j].value:
+                                continue
+                            res.append([])
+                            k += 1
+                            for i in range(len(m)):
+                                res[k].append(m[i][j])
+                        return Variable(type, res)
+                elif isinstance(index[1], Variable) and (index[0] == ':' or index[0] == ','):
+                    # case [',', Variable]
+                    if "v" not in index[1].type:
+                        res = []
+                        index[1] = self.configure_variable('int', index[1])
+                        m = decl_table_of_scope[var_name].value
+                        for i in range(len(m[0])):
+                            row = index[1].value
+                            res.append(m[row][i])
+                        vint_type = 'v' + type.split('m')[1]
+                        return Variable(vint_type, res)
+                    elif "vint" in index[1].type:
+                        index[1] = self.configure_vector('vint', index[1])
+                        value = index[1].value
+                        res = [[] for i in range(len(value))]
+                        m = decl_table_of_scope[var_name].value
+                        for j in range(len(value)):
+                            for i in range(len(m)):
+                                pos = value[j].value
+                                res[j].append(m[pos][i])
+                        return Variable(type, res)
+                    # case [",", Variable] where Variable is vector of bool
+                    elif "vbool" in index[1].type:
+                        m = decl_table_of_scope[var_name].value
+                        if len(index[1].value) != len(m):
+                            print("raise InterpreterValueError")
+                            # raise InterpreterValueError
+                        index[1] = self.configure_vector('vbool', index[1])
+                        value = index[1].value
+                        res = []
+                        k = -1
+                        # configure matrix of true rows
+                        for j in range(len(value)):
+                            if not value[j].value:
+                                continue
+                            res.append([])
+                            k += 1
+                            for i in range(len(m)):
+                                res[k].append(m[j][i])
+                        return Variable(type, res)
+                else:
+                    print("raise InterpreterIndexError")
+                    # raise InterpreterIndexError
+
+    def list_of_smth(self, value):
+        if isinstance(value, Variable):
+            return value
+        elif isinstance(value[0], list):
+            if type(value[0][0].value) is int:
+                return Variable('mint', value)
+            else:
+                return Variable('mbool', value)
+        else:
+            if type(value[0].value) is int:
+                return Variable('vint', value)
+            else:
+                return Variable('vbool', value)
+
+    def check_index_mbool(self, var, m, n):
+        type = var.type
+        value = var.value
+        if "m" not in type:
+            return False
+        if len(value) != m or len(value[0]) != n:
+            return False
+        counts = []
+        etallon = 0
+        for i in range(len(value)):
+            k = 0
+            for j in range(len(value[0])):
+                if value[i][j].value:
+                    k += 1
+            counts.append(k)
+            if etallon == 0:
+                etallon = k
+        if etallon > 1 and len(counts) == (counts.count(etallon) + counts.count(0)):
+            return True, counts.count(etallon), etallon
+        return False, 0, 0
+
+    def check_index_vbool(self, var, n):
+        type = var.type
+        value = var.value
+        if "v" not in type:
+            return False
+        if len(value) != n:
+            return False
+        k = 0
+        for i in range(n):
+            if value[i].value:
+                k += 1
+        if k > 1:
+            return True
+        else:
+            return False
 
 
 if __name__ == '__main__':
     interpreter = JazzInterpreter()
-    s = f'/Users/jazzdiluffy/Desktop/JazzInterpreter/Testing/test_interpreter_smth.txt'
+    s = f'/Users/jazzdiluffy/Desktop/JazzInterpreter/Testing/test_interpreter_indeces.txt'
     f = open(s, "r")
     program = f.read()
     f.close()
