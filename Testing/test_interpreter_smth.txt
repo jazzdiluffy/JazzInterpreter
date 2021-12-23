@@ -1,8 +1,8 @@
 function main() begin
     vint v = {1, 2, 3}
-    mint m = {{1, 2, 3}, {4, 5,6}, {7, 8, 9}}
-
-    mint m1 = m({0,2},)
-
-    mint m3 = m({true, false, true},)
+    v(1) <- 228
+    v(0) <- v(1)
+    int a = v(1)
+    mint m = {{1, 2, 3}, {4, 5,6}, {7,8,9}}
+    a <- m(0,0)
 end

@@ -469,8 +469,9 @@ class JazzInterpreter:
         if decl_name not in self.declaration_table[self.visibility_scope].keys():
             raise UndeclaredException
         try:
+            index = None
             if node.value.type == "indexing":
-                a = 5
+                index = self.handleNode(node.value.children)
             # getting instance of class Variable using decl_name: var is Variable("type", value)
             var = self.declaration_table[self.visibility_scope][decl_name]
             new_value = node.children[0]
@@ -480,12 +481,11 @@ class JazzInterpreter:
                 case NodeType.ListArgs.value:
                     new_value = self.handleNode(new_value)
                     new_value = self.make_variable_instance(new_value)
-            self.assign_to_var(var, decl_name, new_value)
+            self.assign_to_var(var, decl_name, new_value, index)
         except TypeException:
             ErrorHandler().raise_error(ErrorType.TypeError.value)
-        pass
 
-    def assign_to_var(self, var_instance, decl_name, new_value):
+    def assign_to_var(self, var_instance, decl_name, new_value, index):
         var_type = var_instance.type
         new_value_type = new_value.type
 
@@ -497,6 +497,13 @@ class JazzInterpreter:
             self.declaration_table[self.visibility_scope][decl_name] = Variable(var_type, int(new_value.value))
         elif var_type == "bool" and new_value_type.replace("c", "") == "int":
             self.declaration_table[self.visibility_scope][decl_name] = Variable(var_type, bool(new_value.value))
+        elif index is not None:
+            if "m" in var_type:
+                a = 5
+                self.declaration_table[self.visibility_scope][decl_name][index[0].value][index[1].value] = self.configure_declaration(var_type[1:], new_value)
+            if "v" in var_type:
+                index = index[0]
+                self.declaration_table[self.visibility_scope][decl_name].value[index.value] = self.configure_declaration(var_type[1:], new_value)
         else:
             raise TypeException
 
@@ -985,7 +992,7 @@ class JazzInterpreter:
 
 if __name__ == '__main__':
     interpreter = JazzInterpreter()
-    s = f'/Users/jazzdiluffy/Desktop/JazzInterpreter/Testing/test_interpreter_indeces.txt'
+    s = f'/Users/jazzdiluffy/Desktop/JazzInterpreter/Testing/test_interpreter_bubblesort.txt'
     f = open(s, "r")
     program = f.read()
     f.close()
