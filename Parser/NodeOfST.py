@@ -1,10 +1,11 @@
 class NodeOfST:
-    def __init__(self, node_type, value, children=None):
+    def __init__(self, node_type, value, children=None, lineno=-1):
         if children is None:
             children = []
         self.type = node_type
         self.value = value
         self.children = children
+        self.lineno = lineno
 
     def __repr__(self):
         if isinstance(self.value, NodeOfST):
@@ -19,14 +20,14 @@ class NodeOfST:
 
 
 if __name__ == '__main__':
-    root = NodeOfST(node_type="type0", value=0)
-    child1 = NodeOfST(node_type="type1", value=1)
-    child2 = NodeOfST(node_type="type2", value=2)
-    child1child2 = NodeOfST(node_type="type12", value=12)
-    child1child1 = NodeOfST(node_type="type11", value=11)
-    child2child1 = NodeOfST(node_type="type21", value=21)
-    child2child2 = NodeOfST(node_type="type22", value=22)
-    child2child2child1 = NodeOfST(node_type="type221", value=221)
+    root = NodeOfST(node_type="type0", value=0, lineno=1)
+    child1 = NodeOfST(node_type="type1", value=1, lineno=1)
+    child2 = NodeOfST(node_type="type2", value=2, lineno=1)
+    child1child2 = NodeOfST(node_type="type12", value=12, lineno=1)
+    child1child1 = NodeOfST(node_type="type11", value=11, lineno=1)
+    child2child1 = NodeOfST(node_type="type21", value=21, lineno=1)
+    child2child2 = NodeOfST(node_type="type22", value=22, lineno=1)
+    child2child2child1 = NodeOfST(node_type="type221", value=221, lineno=1)
     root.children = [child1, child2]
     child1.children = [child1child1, child1child2]
     child2.children = [child2child1, child2child2]

@@ -1,0 +1,41 @@
+function main() begin
+    error_catcher 5
+end
+
+function error_catcher(int a) begin
+    int redeclaration = 5
+    cbool redeclaration = 2
+
+    int c = 1
+    bool b = 2
+    c, b <- bad_return_names_func 3, 4
+    undecl <- 5
+    c, b <- undecl_func 1, 2
+    cint cnst = 1
+    cnst <- 5
+    c <- {1, 2, 3}
+    c, b <- bad_params 1
+    recursion 15
+    bad_assignment 13
+end
+
+int res, int res = function bad_return_names_func(int a, int b) begin
+    int c = 1
+    int res = 5
+end
+
+int x, int y = function bad_params(int a, int b) begin
+    int c = 1
+    int res = 5
+end
+
+function recursion(int b = 5) begin
+    int a = b
+    recursion a
+end
+
+int res = function bad_assignment(int a) begin
+    int b = 3
+end
+
+

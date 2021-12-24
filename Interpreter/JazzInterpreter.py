@@ -6,6 +6,7 @@ from ErrorHandler import *
 from TypeConverter import TypeConverter
 from Variable import Variable
 from collections import deque
+from Robot.JazzRobot import *
 
 
 class JazzInterpreter:
@@ -17,7 +18,10 @@ class JazzInterpreter:
         self.visibility_scope = 0
         self.recursion_depth = dict()
 
-    def start(self, prog=None):
+        self.robot = None
+
+    def start(self, prog=None, robot=None):
+        self.robot = robot
         self.syntax_tree, self.func_table, has_syntax_errors = self.parser.parse(prog)
         for key in self.func_table.keys():
             self.recursion_depth[key] = 0
@@ -31,7 +35,6 @@ class JazzInterpreter:
             self.handleNode(start_node)
             for d in self.declaration_table:
                 for key in d.keys():
-                    # if "result" in key:
                     print(f"{key}: {d[key]}")
                 print()
         else:
@@ -42,7 +45,6 @@ class JazzInterpreter:
         if node is None:
             return "None Node"
         node_type = node.type
-        # print(node_type)
 
         match node_type:
             case 'comma':
@@ -53,6 +55,7 @@ class JazzInterpreter:
                 self.handleNode(node.children)
             case NodeType.SentenceList.value:
                 for child in node.children:
+                    # print(child.type)
                     self.handleNode(child)
             case NodeType.Declaration.value:
                 # declaration-node has field value which equals type-node, and this type-node has field value
@@ -63,7 +66,12 @@ class JazzInterpreter:
                 try:
                     self.declare(type, children)
                 except RedeclarationException:
-                    ErrorHandler().raise_error(ErrorType.RedeclarationError.value)
+                    var_or_const = ""
+                    if "c" in type:
+                        var_or_const = "constant"
+                    else:
+                        var_or_const = "variable"
+                    ErrorHandler().raise_error(node, ErrorType.RedeclarationError.value, var_or_const)
                 except ValueException:
                     print("[DEBUG]: Value Exception")
                     pass
@@ -74,7 +82,7 @@ class JazzInterpreter:
                 try:
                     return self.handle_assignment(node)
                 except UndeclaredException:
-                    ErrorHandler().raise_error(ErrorType.UndeclaredError.value)
+                    ErrorHandler().raise_error(node=node, code=ErrorType.UndeclaredError.value)
             case NodeType.Expression.value:
                 return self.handleNode(node.children)
             case NodeType.ListExpressions.value:
@@ -121,16 +129,32 @@ class JazzInterpreter:
             case "indexing":
                 return self.indexing(node.value, node.children)
             case NodeType.CallFunction.value:
-                a = 5
                 # node: type: func_call, value: name of calling function
                 try:
                     returned_values = self.handle_function_call(node)
                 except RecursionException:
-                    ErrorHandler().raise_error(ErrorType.RecursionError.value)
+                    ErrorHandler().raise_error(node=node, code=ErrorType.RecursionError.value)
                 except ReturnSpecificationException:
                     ErrorHandler().raise_error(ErrorType.ReturnSpecificationError.value)
                 except FunctionReturnAssignmentException:
-                    ErrorHandler().raise_error(ErrorType.FunctionReturnAssignmentError.value)
+                    ErrorHandler().raise_error(node=node, code=ErrorType.FunctionReturnAssignmentError.value)
+                except UndeclaredFunctionException:
+                    ErrorHandler().raise_error(node=node, code=ErrorType.UndeclaredFunctionError.value)
+                except Exception:
+                    ErrorHandler().raise_error(code=ErrorType.UnexpectedError.value)
+            case "robot":
+                match node.value:
+                    case "wall":
+                        return Variable('int', self.wall())
+                    case "exit":
+                        return Variable('bool', self.exit())
+                    case "right":
+                        return self.right()
+                    case "left":
+                        return self.left()
+                    case "move":
+                        exp = self.handleNode(node.children)
+                        return Variable('bool', self.move(exp.value))
 
             case _:
                 print("[DEBUG]: Errors in grammar and syntax tree building")
@@ -174,6 +198,10 @@ class JazzInterpreter:
             raise UnexpectedTypeException
 
     def configure_variable(self, type, value):
+        if type == "int" and value.type == "cint":
+            return TypeConverter().convert_type(type, Variable("int", value.value))
+        if type == "bool" and value.type == "cbool":
+            return TypeConverter().convert_type(type, value.value)
         return TypeConverter().convert_type(type, value)
 
     def configure_vector(self, type, value):
@@ -483,14 +511,16 @@ class JazzInterpreter:
                     new_value = self.make_variable_instance(new_value)
             self.assign_to_var(var, decl_name, new_value, index)
         except TypeException:
-            ErrorHandler().raise_error(ErrorType.TypeError.value)
+            ErrorHandler().raise_error(node=node, code=ErrorType.TypeError.value)
+        except ConstantAssignmentException:
+            ErrorHandler().raise_error(node=node, code=ErrorType.ConstantAssignmentError.value)
 
     def assign_to_var(self, var_instance, decl_name, new_value, index):
         var_type = var_instance.type
         new_value_type = new_value.type
 
         if "c" in var_type:
-            raise TypeException
+            raise ConstantAssignmentException
         if var_type == new_value_type.replace("c", ""):
             self.declaration_table[self.visibility_scope][decl_name] = Variable(var_type, new_value.value)
         elif var_type == "int" and new_value_type.replace("c", "") == "bool":
@@ -499,8 +529,7 @@ class JazzInterpreter:
             self.declaration_table[self.visibility_scope][decl_name] = Variable(var_type, bool(new_value.value))
         elif index is not None:
             if "m" in var_type:
-                a = 5
-                self.declaration_table[self.visibility_scope][decl_name][index[0].value][index[1].value] = self.configure_declaration(var_type[1:], new_value)
+                self.declaration_table[self.visibility_scope][decl_name].value[index[0].value][index[1].value] = self.configure_declaration(var_type[1:], new_value)
             if "v" in var_type:
                 index = index[0]
                 self.declaration_table[self.visibility_scope][decl_name].value[index.value] = self.configure_declaration(var_type[1:], new_value)
@@ -520,6 +549,7 @@ class JazzInterpreter:
                 if func_name != "main":
                     new_interpreter.func_table[func_name] = self.func_table[func_name]
             new_interpreter.recursion_depth = self.recursion_depth
+            new_interpreter.robot = self.robot
             new_interpreter.handleNode(node.children[1])
             try:
                 for key in new_interpreter.declaration_table[self.visibility_scope].keys():
@@ -552,6 +582,11 @@ class JazzInterpreter:
                 for key in self.declaration_table[self.visibility_scope].keys():
                     new_interpreter.declaration_table[self.visibility_scope][key] = \
                         self.declaration_table[self.visibility_scope][key]
+                for func_name in self.func_table.keys():
+                    if func_name != "main":
+                        new_interpreter.func_table[func_name] = self.func_table[func_name]
+                new_interpreter.recursion_depth = self.recursion_depth
+                new_interpreter.robot = self.robot
                 new_interpreter.handleNode(node.children[3])
                 # if values from MAIN declaration table have changed while working of NEW interpreter,
                 # we have to change them in MAIN declaration table: loop through key in NEW interpreter declaration
@@ -582,7 +617,7 @@ class JazzInterpreter:
         # firstly check was function declared or not and pull out needed info
         function_name = node.value
         if function_name not in self.func_table.keys():
-            raise UndeclaredException
+            raise UndeclaredFunctionException
         func_declaration_node = self.func_table[function_name]
         return_specification_node = func_declaration_node.children.get("return_spec", None)
         parameters_node = func_declaration_node.children.get("params", None)
@@ -598,10 +633,14 @@ class JazzInterpreter:
         return_specification_sequence = []
         if return_specification_node is not None:
             help_arr = []
-            self.extract_return_spec(return_specification_node,
-                                     return_specification,
-                                     help_arr,
-                                     return_specification_sequence)
+            try:
+                self.extract_return_spec(return_specification_node,
+                                         return_specification,
+                                         help_arr,
+                                         return_specification_sequence)
+            except RedeclarationReturnSpecificationException:
+                ErrorHandler().raise_error(node=node, code=ErrorType.RedeclarationReturnSpecificationError.value)
+
             del help_arr
         return_specification_sequence.reverse()
 
@@ -632,7 +671,7 @@ class JazzInterpreter:
             try:
                 self.assign_passed_values(func_assigned_params, func_assigned_params_sequence, passed_values)
             except MissingParameterException:
-                ErrorHandler().raise_error(ErrorType.MissingParameterError.value)
+                ErrorHandler().raise_error(node= node, code=ErrorType.MissingParameterError.value)
         if not self.check_params_relation_types(declared_func_parameters, func_assigned_params):
             print("[DEBUG] Unrelated type in parameters")
 
@@ -653,9 +692,11 @@ class JazzInterpreter:
             if func_name != "main":
                 sub_interpreter.func_table[func_name] = self.func_table[func_name]
         sub_interpreter.recursion_depth = self.recursion_depth
+        sub_interpreter.robot = self.robot
         # TODO: main in recursion - remove it
         sub_interpreter.handleNode(body_node)
         sub_decl_table = sub_interpreter.declaration_table
+
 
         var_will_change_node = node.children.get("return", None)
         if var_will_change_node is None and len(return_specification.keys()) != 0:
@@ -695,7 +736,7 @@ class JazzInterpreter:
             return_var_type = children[1].value
             return_var_name = children[2]
             if result_dict.get(return_var_name):
-                raise RedeclarationException
+                raise RedeclarationReturnSpecificationException
             result_dict[return_var_name] = return_var_type
             sequence.append(return_var_name)
             self.extract_return_spec(children[0], result_dict, flag, sequence)
@@ -704,6 +745,8 @@ class JazzInterpreter:
             return
         # when first condition about consisting of 2 elements worked, we have to add sth in list
         # to check a moment that our algo should finish
+        if result_dict.get(children[1]):
+            raise RedeclarationReturnSpecificationException
         result_dict[children[1]] = children[0].value
         sequence.append(children[1])
         flag.append(0)
@@ -989,11 +1032,60 @@ class JazzInterpreter:
         else:
             return False
 
+    def wall(self):
+        return self.robot.wall()
+
+    def exit(self):
+        result = self.robot.exit()
+        if result:
+            self.exit_found = True
+        return result
+
+    def right(self):
+        return self.robot.right()
+
+    def left(self):
+        return self.robot.left()
+
+    def move(self, expression):
+        return self.robot.move(expression)
+
+
+def create_robot(descriptor):
+    with open(descriptor) as file:
+        text = file.read()
+    text = text.split('\n')
+    robot_info = text.pop(0).split(' ')
+    map_size = text.pop(0).split(' ')
+    x = int(robot_info[0])
+    y = int(robot_info[1])
+    turn = int(robot_info[2])
+    tmpMap = [0] * int(map_size[0])
+
+    for cell in range(int(map_size[0])):
+        tmpMap[cell] = [0] * int(map_size[1])
+    for cell in range(int(map_size[0])):
+        for j in range(int(map_size[1])):
+            tmpMap[cell][j] = Cell("EMPTY")
+    pos = 0
+    while len(text) > 0:
+        line = list(text.pop(0))
+        line = [Cell(cells[i]) for i in line]
+        tmpMap[pos] = line
+        pos += 1
+    return Robot(x=x, y=y, turn=turn, map=tmpMap)
+
 
 if __name__ == '__main__':
     interpreter = JazzInterpreter()
-    s = f'/Users/jazzdiluffy/Desktop/JazzInterpreter/Testing/test_interpreter_bubblesort.txt'
+    print("Enter filename: ", end="")
+    filename = input()
+    s = f'/Users/jazzdiluffy/Desktop/JazzInterpreter/Testing/test_interpreter_{filename}.txt'
+    # s = f'/Users/jazzdiluffy/Desktop/JazzInterpreter/Robot/find_exit_alg.txt'
     f = open(s, "r")
     program = f.read()
     f.close()
+    # robot = create_robot(f'/Users/jazzdiluffy/Desktop/JazzInterpreter/Robot/map1.txt')
+    # interpreter.start(program, robot)
+    # interpreter.robot.show()
     interpreter.start(program)

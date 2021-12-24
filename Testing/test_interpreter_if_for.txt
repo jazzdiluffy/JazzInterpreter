@@ -6,6 +6,10 @@ function main() begin
     for i = 0: b beginfor
         if !i<3 beginif
             if !i>3 beginif
+                i <- 6
+                if i > 5 beginif
+                    matrix <- matrix .* 2
+                endif
                 matrix <- matrix'
             endif
         endif

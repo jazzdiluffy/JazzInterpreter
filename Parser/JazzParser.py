@@ -41,7 +41,8 @@ class JazzParser(object):
                            | if NEW_LINE
                            | for NEW_LINE
                            | function NEW_LINE
-                           | call_func NEW_LINE"""
+                           | call_func NEW_LINE
+                           | robot_action NEW_LINE"""
         self.node_builder.single_sentence(p)
 
     def p_declaration(self, p):
@@ -57,7 +58,8 @@ class JazzParser(object):
     def p_expression(self, p):
         """expression : math_expression
                       | variable
-                      | constant"""
+                      | constant
+                      | robot_action"""
         self.node_builder.expression(p)
 
     def p_math_expression(self, p):
@@ -188,6 +190,31 @@ class JazzParser(object):
                  | list_args
                  | LEFT_FIGURE_BRACKET list_args RIGHT_FIGURE_BRACKET"""
         self.node_builder.index(p)
+
+    def p_robot_action(self, p):
+        """robot_action : MOVE LEFT_BRACKET expression RIGHT_BRACKET
+                        | RIGHT
+                        | LEFT
+                        | WALL
+                        | EXIT"""
+        self.node_builder.robot_action(p)
+
+    def p_if_error1(self, p):
+        """if : IF expression error"""
+        self.node_builder.if_error1(p)
+
+    def p_if_error2(self, p):
+        """if : IF error"""
+        self.node_builder.if_error2(p)
+
+    def p_declaration_error1(self, p):
+        """declaration : type VARIABLE error"""
+        self.node_builder.declaration_error1(p)
+
+    def p_for_error1(self, p):
+        """for : FOR VARIABLE EQUAL expression DOUBLE_DOT expression error"""
+        self.node_builder.for_error1(p)
+
 
     def p_error(self, p):
         try:
