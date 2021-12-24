@@ -1089,38 +1089,16 @@ if __name__ == '__main__':
     program = f.read()
     f.close()
 
-    pygame.init()
-    surface = pygame.display.set_mode([1000, 1000])
-    robot = create_robot(f'/Users/jazzdiluffy/Desktop/JazzInterpreter/Robot/map1.txt', window=surface)
-    interpreter.start(program, robot)
-    interpreter.start(program)
-    interpreter.robot.show2()
-    pygame.display.set_caption("Automata Theory lab3")
-    run = True
-    while run:
-        if pygame.event.get() == "QUIT":
-            run = False
-        interpreter.start(program, robot)
-        interpreter.start(program)
-    interpreter.robot.show()
-    pygame.quit()
+    # robot = create_robot(f'/Users/jazzdiluffy/Desktop/JazzInterpreter/Robot/map1.txt')
+    # interpreter.start(program, robot)
+    # interpreter.start(program)
+    # interpreter.robot.show2()
 
-# pygame.init()
-# win = pygame.display.set_mode([1000, 1000])
-# pygame.display.set_caption("Super-Puper Language")
-# print('Где искать выход?')
-# work1 = True
-# while work1:
-#     for msg in menu_robot:
-#         print(msg)
-#     choice = int(input())
-#     if choice == 0:
-#         work1 = False
-#     elif choice in range(len(menu_robot)):
-#         interpr = Interpreter(window=win)
-#         interpr.read_map_document(maps[choice])
-#         f = open('tests/rh_algritm.txt')
-#         text = f.read()
-#         f.close()
-#         interpr.interpreter(text)
-# pygame.quit()
+    pygame.init()
+    surface = pygame.display.set_mode([800, 800])
+    robot = create_robot(f'/Users/jazzdiluffy/Desktop/JazzInterpreter/Robot/map1.txt', window=surface)
+    pygame.display.set_caption("Automata Theory lab3")
+
+
+    interpreter.start(program, robot)
+    pygame.quit()

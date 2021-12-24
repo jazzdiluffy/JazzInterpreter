@@ -31,8 +31,13 @@ class Robot:
         self.turn = turn
         self.map = map
         self.wall_cell = pygame.image.load('/Users/jazzdiluffy/Desktop/JazzInterpreter/back/wall.png')
+        self.wall_cell = pygame.transform.scale(self.wall_cell, (70, 70))
         self.exit_cell = pygame.image.load('/Users/jazzdiluffy/Desktop/JazzInterpreter/back/exit.png')
-        self.robot_cell = pygame.image.load('/Users/jazzdiluffy/Desktop/JazzInterpreter/back/crab.png')
+        self.exit_cell = pygame.transform.scale(self.exit_cell, (70, 70))
+        self.grass_cell = pygame.image.load('/Users/jazzdiluffy/Desktop/JazzInterpreter/back/grass.png')
+        self.grass_cell = pygame.transform.scale(self.grass_cell, (70, 70))
+        self.robot_cell = pygame.image.load('/Users/jazzdiluffy/Desktop/JazzInterpreter/back/sprite.png')
+        self.robot_cell = pygame.transform.scale(self.robot_cell, (70,70))
         self.window = window
 
     def show2(self):
@@ -45,41 +50,38 @@ class Robot:
             print()
 
     def show(self):
-        width = height = 25
-        size = 25
-        time.sleep(0.05)
+        size = 70
+        time.sleep(1)
         pygame.display.update()
         self.window.fill((255, 255, 255))
         y = 0
         for row in range(len(self.map)):
             x = 0
             for cell in range(len(self.map[row])):
-                # print(f'[{row},{cell}]')
                 if self.map[row][cell].type == 'EMPTY':
-                    if (cell == self.y) and (row == self.x):
+                    if (y == self.y) and (x == self.x):
                         # robot
                         self.window.blit(self.robot_cell, (x * size, y * size))
                         x += 1
                     else:
-                        # road
-                        pygame.draw.rect(self.window, (100, 100, 100), (x * size, y * size, width, height))
+                        # empty
+                        self.window.blit(self.grass_cell, (x * size, y * size))
                         x += 1
                 elif self.map[row][cell].type == 'EXIT':
                     self.window.blit(self.exit_cell, (x * size, y * size))
                     x += 1
                 else:
                     # wall
-                    self.window.blit(self.wall, (x * size, y * size))
+                    self.window.blit(self.wall_cell, (x * size, y * size))
                     x += 1
             y += 1
-        pygame.display.update()
 
     def __repr__(self):
         return f'''\n x = {self.x}\n y = {self.y}\n turn: {look[str(self.turn)]}'''
 
 
     def wall(self):
-        print(f"[WALL]: {self.x}, {self.y}")
+        print("WALL")
         count = 1
         if self.turn == 0:
             while self.map[self.y][self.x+count].type == 'EMPTY':
@@ -96,7 +98,7 @@ class Robot:
         return count - 1
 
     def exit(self):
-        print(f"[EXIT]: {self.x}, {self.y}")
+        print("EXIT")
         count = 1
         flag = False
         if self.turn == 0:
@@ -122,27 +124,34 @@ class Robot:
         return flag
 
     def right(self):
-        print(f"[RIGHT]: {self.x}, {self.y}")
+        print("RIGHT")
         self.turn = (self.turn+1) % 4
-        a = 5
 
     def left(self):
-        print(f"[LEFT]: {self.x}, {self.y}")
+        print("LEFT")
         self.turn = (self.turn-1) % 4
 
     def move(self, dist):
-        print(f"[MOVE]: {self.x}, {self.y}")
+        print("MOVE")
         distance = self.wall()
         if dist > distance:
             return False
         if self.turn == 0:
-            self.x += dist
+            for i in range(dist):
+                self.x += 1
+                self.show()
         elif self.turn == 1:
-            self.y += dist
+            for i in range(dist):
+                self.y += 1
+                self.show()
         elif self.turn == 2:
-            self.x -= dist
+            for i in range(dist):
+                self.x -= 1
+                self.show()
         elif self.turn == 3:
-            self.y -= dist
+            for i in range(dist):
+                self.y -= 1
+                self.show()
         return True
 
 
