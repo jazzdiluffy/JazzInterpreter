@@ -1,3 +1,6 @@
+import pygame
+import time
+
 look = {
     '0': 'right',
     '1': 'down',
@@ -12,25 +15,27 @@ cells = {
 }
 
 
-class Cell:
+class Cell():
     def __init__(self, type):
         self.type = type
+
 
     def __repr__(self):
         return f'{self.type}'
 
 
 class Robot:
-    def __init__(self, x, y, turn, map):
+    def __init__(self, x, y, turn, map, window=None):
         self.x = x
         self.y = y
         self.turn = turn
         self.map = map
+        self.wall_cell = pygame.image.load('/Users/jazzdiluffy/Desktop/JazzInterpreter/back/wall.png')
+        self.exit_cell = pygame.image.load('/Users/jazzdiluffy/Desktop/JazzInterpreter/back/exit.png')
+        self.robot_cell = pygame.image.load('/Users/jazzdiluffy/Desktop/JazzInterpreter/back/crab.png')
+        self.window = window
 
-    def __repr__(self):
-        return f'''\n x = {self.x}\n y = {self.y}\n turn: {look[str(self.turn)]}'''
-
-    def show(self):
+    def show2(self):
         for i in range(len(self.map)):
             for j in range(len(self.map[0])):
                 if i == self.y and j == self.x:
@@ -38,6 +43,40 @@ class Robot:
                 else:
                     print(self.map[i][j].type, end='  ')
             print()
+
+    def show(self):
+        width = height = 25
+        size = 25
+        time.sleep(0.05)
+        pygame.display.update()
+        self.window.fill((255, 255, 255))
+        y = 0
+        for row in range(len(self.map)):
+            x = 0
+            for cell in range(len(self.map[row])):
+                # print(f'[{row},{cell}]')
+                if self.map[row][cell].type == 'EMPTY':
+                    if (cell == self.y) and (row == self.x):
+                        # robot
+                        self.window.blit(self.robot_cell, (x * size, y * size))
+                        x += 1
+                    else:
+                        # road
+                        pygame.draw.rect(self.window, (100, 100, 100), (x * size, y * size, width, height))
+                        x += 1
+                elif self.map[row][cell].type == 'EXIT':
+                    self.window.blit(self.exit_cell, (x * size, y * size))
+                    x += 1
+                else:
+                    # wall
+                    self.window.blit(self.wall, (x * size, y * size))
+                    x += 1
+            y += 1
+        pygame.display.update()
+
+    def __repr__(self):
+        return f'''\n x = {self.x}\n y = {self.y}\n turn: {look[str(self.turn)]}'''
+
 
     def wall(self):
         print(f"[WALL]: {self.x}, {self.y}")

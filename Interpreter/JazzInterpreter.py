@@ -1,5 +1,4 @@
 import copy
-
 from Parser.JazzParser import *
 from Parser.NodeSTBuilder import NodeType
 from ErrorHandler import *
@@ -529,10 +528,12 @@ class JazzInterpreter:
             self.declaration_table[self.visibility_scope][decl_name] = Variable(var_type, bool(new_value.value))
         elif index is not None:
             if "m" in var_type:
-                self.declaration_table[self.visibility_scope][decl_name].value[index[0].value][index[1].value] = self.configure_declaration(var_type[1:], new_value)
+                self.declaration_table[self.visibility_scope][decl_name].value[index[0].value][
+                    index[1].value] = self.configure_declaration(var_type[1:], new_value)
             if "v" in var_type:
                 index = index[0]
-                self.declaration_table[self.visibility_scope][decl_name].value[index.value] = self.configure_declaration(var_type[1:], new_value)
+                self.declaration_table[self.visibility_scope][decl_name].value[
+                    index.value] = self.configure_declaration(var_type[1:], new_value)
         else:
             raise TypeException
 
@@ -671,7 +672,7 @@ class JazzInterpreter:
             try:
                 self.assign_passed_values(func_assigned_params, func_assigned_params_sequence, passed_values)
             except MissingParameterException:
-                ErrorHandler().raise_error(node= node, code=ErrorType.MissingParameterError.value)
+                ErrorHandler().raise_error(node=node, code=ErrorType.MissingParameterError.value)
         if not self.check_params_relation_types(declared_func_parameters, func_assigned_params):
             print("[DEBUG] Unrelated type in parameters")
 
@@ -697,7 +698,6 @@ class JazzInterpreter:
         sub_interpreter.handleNode(body_node)
         sub_decl_table = sub_interpreter.declaration_table
 
-
         var_will_change_node = node.children.get("return", None)
         if var_will_change_node is None and len(return_specification.keys()) != 0:
             raise FunctionReturnAssignmentException
@@ -712,7 +712,8 @@ class JazzInterpreter:
         for i in range(len(var_names_will_change)):
             var_name = var_names_will_change[i]
             ret_spec_name = return_specification_sequence[i]
-            self.declaration_table[self.visibility_scope][var_name] = sub_decl_table[self.visibility_scope][ret_spec_name]
+            self.declaration_table[self.visibility_scope][var_name] = sub_decl_table[self.visibility_scope][
+                ret_spec_name]
         del sub_interpreter
         # our return specifications were saved before
         # loop through keys of sub-interpreter declaration table and check if return-values are contained
@@ -870,7 +871,9 @@ class JazzInterpreter:
                     if value[i][j].value:
                         res[i].append(self.declaration_table[self.visibility_scope][var_name].value[i][j])
             return Variable(type, res)
-        elif isinstance(index, Variable) and "v" in index.type and "v" in type or isinstance(index, list) and "v" in type and index[0].type == index[1].type == 'bool':
+        elif isinstance(index, Variable) and "v" in index.type and "v" in type or isinstance(index,
+                                                                                             list) and "v" in type and \
+                index[0].type == index[1].type == 'bool':
             m = len(decl_table_of_scope[var_name].value)
             if not isinstance(index, Variable):
                 index = Variable('vbool', index)
@@ -1051,7 +1054,7 @@ class JazzInterpreter:
         return self.robot.move(expression)
 
 
-def create_robot(descriptor):
+def create_robot(descriptor, window):
     with open(descriptor) as file:
         text = file.read()
     text = text.split('\n')
@@ -1073,19 +1076,51 @@ def create_robot(descriptor):
         line = [Cell(cells[i]) for i in line]
         tmpMap[pos] = line
         pos += 1
-    return Robot(x=x, y=y, turn=turn, map=tmpMap)
+    return Robot(x=x, y=y, turn=turn, map=tmpMap, window=window)
 
 
 if __name__ == '__main__':
     interpreter = JazzInterpreter()
-    print("Enter filename: ", end="")
-    filename = input()
-    s = f'/Users/jazzdiluffy/Desktop/JazzInterpreter/Testing/test_interpreter_{filename}.txt'
-    # s = f'/Users/jazzdiluffy/Desktop/JazzInterpreter/Robot/find_exit_alg.txt'
+    # print("Enter filename: ", end="")
+    # filename = input()
+    # s = f'/Users/jazzdiluffy/Desktop/JazzInterpreter/Testing/test_interpreter_{filename}.txt'
+    s = f'/Users/jazzdiluffy/Desktop/JazzInterpreter/Robot/find_exit_alg.txt'
     f = open(s, "r")
     program = f.read()
     f.close()
-    # robot = create_robot(f'/Users/jazzdiluffy/Desktop/JazzInterpreter/Robot/map1.txt')
-    # interpreter.start(program, robot)
-    # interpreter.robot.show()
+
+    pygame.init()
+    surface = pygame.display.set_mode([1000, 1000])
+    robot = create_robot(f'/Users/jazzdiluffy/Desktop/JazzInterpreter/Robot/map1.txt', window=surface)
+    interpreter.start(program, robot)
     interpreter.start(program)
+    interpreter.robot.show2()
+    pygame.display.set_caption("Automata Theory lab3")
+    run = True
+    while run:
+        if pygame.event.get() == "QUIT":
+            run = False
+        interpreter.start(program, robot)
+        interpreter.start(program)
+    interpreter.robot.show()
+    pygame.quit()
+
+# pygame.init()
+# win = pygame.display.set_mode([1000, 1000])
+# pygame.display.set_caption("Super-Puper Language")
+# print('Где искать выход?')
+# work1 = True
+# while work1:
+#     for msg in menu_robot:
+#         print(msg)
+#     choice = int(input())
+#     if choice == 0:
+#         work1 = False
+#     elif choice in range(len(menu_robot)):
+#         interpr = Interpreter(window=win)
+#         interpr.read_map_document(maps[choice])
+#         f = open('tests/rh_algritm.txt')
+#         text = f.read()
+#         f.close()
+#         interpr.interpreter(text)
+# pygame.quit()
